@@ -1,0 +1,35 @@
+/* css/style.css */
+@media print {
+    nav, header, footer, #client-tabs, #form-kpi, #form-quebras, #form-recebimento, #form-validade, button, .btn-logout, #blog-section, #contato { 
+        display: none !important; 
+    }
+    body { background-color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #view-client { background-color: white !important; }
+    .shadow-sm, .shadow-md, .shadow-xl { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+    canvas { max-height: 250px !important; }
+    .grid { page-break-inside: avoid; }
+    #portal-cliente { display: block !important; }
+}
+
+.post-title { font-family: 'Montserrat', sans-serif; font-weight: 700; color: #0A2540; font-size: 1.5rem; margin-bottom: 0.5rem; }
+.post-body { color: #475569; line-height: 1.6; margin-bottom: 1.5rem; }
+.post-footer { border-top: 1px solid #e2e8f0; padding-top: 1rem; margin-top: 2rem; }
+.logo-text-bold { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: -1px; }
+.logo-text-light { font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 0px; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+#site-principal { display: block !important; }
+#portal-cliente { display: none !important; }
+
+/* Blinda as ferramentas quando estamos no Hub */
+.estado-hub #loading-data, 
+.estado-hub #empty-state-client, 
+.estado-hub #dashboard-content { display: none !important; }
+.estado-varejo #container-segmentos { display: none !important; }
+.estado-varejo #btn-voltar-hub { display: flex !important; }
+.estado-industria #container-segmentos { display: none !important; }
+.estado-industria #btn-voltar-hub { display: flex !important; }
