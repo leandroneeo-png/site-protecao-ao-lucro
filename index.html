@@ -1,17 +1,274 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html class="scroll-smooth bg-slate-50" lang="pt-BR" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proteção ao Lucro</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; color: #333; }
-        h1 { color: #003366; }
-    </style>
+    <title>LUCROSEGURO</title>
+    <meta name="theme-color" content="#0A2540">
+    
+    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="https://www.lucroseguro.com/" rel="canonical" />
+    <meta property="og:url" content="https://www.lucroseguro.com/" />
+    <meta property="og:title" content="LUCROSEGURO" />
+    <meta property="og:description" content="Consultoria Especializada em Prevenção de Perdas" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;700;800&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#0A2540',
+                        navyLight: '#113A63',
+                        gold: '#D4AF37',
+                        goldLight: '#E5C665',
+                        emerald: '#008950',
+                        lightbg: '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <h1>Proteção ao Lucro</h1>
-    <p>Consultoria especializada em Prevenção de Perdas e Segurança.</p>
-    <p>Ambiente de teste de integração e deploy contínuo.</p>
-</body>
-</html>
+
+<body class="font-sans text-slate-800 antialiased selection:bg-gold selection:text-navy min-h-screen flex flex-col">
+
+    <div class="hidden flex-col w-full min-h-screen" id="portal-cliente">
+        
+        <div class="flex-1 flex items-center justify-center p-4 relative overflow-hidden min-h-screen bg-navy" id="auth-view">
+            <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            <div class="absolute -top-40 -right-40 w-96 h-96 bg-gold rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+            <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+            
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative z-10 border border-white/20 text-center">
+                <div class="flex justify-center mb-6 items-center gap-2">
+                    <svg class="h-10 w-auto" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="translate(10, 10)">
+                            <path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#0A2540"></path>
+                            <rect fill="#D4AF37" height="20" rx="2" width="10" x="16" y="56"></rect>
+                            <rect fill="#D4AF37" height="36" rx="2" width="10" x="34" y="40"></rect>
+                            <rect fill="#D4AF37" height="53" rx="2" width="10" x="52" y="23"></rect>
+                            <path d="M 10 53 L 30 73 L 70 20" fill="none" stroke="#008950" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.3"></path>
+                        </g>
+                    </svg>
+                    <div class="text-navy text-2xl font-heading flex items-center pt-1">
+                        <span class="font-extrabold tracking-tight">LUCRO</span><span class="font-light">SEGURO</span>
+                    </div>
+                </div>
+                <h2 class="text-2xl font-heading font-bold text-navy mb-1">Acesso ao Sistema</h2>
+                <p class="text-slate-500 text-sm mb-8">Insira as credenciais de acesso</p>
+                
+                <form class="space-y-4 text-left" id="login-form">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1 ml-1">E-mail</label>
+                        <div class="relative">
+                            <i class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" data-lucide="mail"></i>
+                            <input class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-all" id="login-email" placeholder="email@empresa.com" required type="email"/>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1 ml-1 pr-1">
+                            <label class="block text-xs font-bold text-slate-700 uppercase">Palavra-passe</label>
+                            <a class="text-[10px] font-bold text-gold hover:text-navy hover:underline transition-colors" href="#" id="btn-forgot-password">Esqueceu?</a>
+                        </div>
+                        <div class="relative">
+                            <i class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" data-lucide="lock"></i>
+                            <input class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-all" id="login-password" placeholder="••••••••" required type="password"/>
+                        </div>
+                    </div>
+                    <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 group mt-6" id="btn-do-login" type="submit">
+                        <i class="w-5 h-5 text-gold group-hover:scale-110 transition-transform" data-lucide="log-in"></i> Entrar na Plataforma
+                    </button>
+                    <a class="w-full mt-5 block text-center text-sm font-bold text-slate-400 hover:text-navy transition-colors" href="#" onclick="document.getElementById('site-principal').style.display='block'; document.getElementById('portal-cliente').style.display='none'; return false;">&#8592; Voltar ao Site Institucional</a>
+                </form>
+                
+                <div class="hidden mt-4 text-sm text-slate-500 flex items-center justify-center gap-2 animate-pulse" id="login-loading">
+                    <i class="w-4 h-4 animate-spin" data-lucide="loader-2"></i> A verificar credenciais...
+                </div>
+                <div class="hidden mt-4 bg-red-50 border border-red-200 text-red-600 text-xs p-3 rounded-lg text-left" id="login-error-box">
+                    <strong class="block mb-1"><i class="w-4 h-4 inline" data-lucide="alert-circle"></i> Aviso:</strong><span id="login-error-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden flex-1 flex flex-col min-h-screen bg-slate-50" id="view-admin">
+            <header class="bg-navy text-white shadow-md py-4 sticky top-0 z-40">
+                <div class="max-w-5xl mx-auto px-4 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="text-gold w-6 h-6" data-lucide="shield-check"></i>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-lg leading-none">Painel do Consultor</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-widest" id="admin-user-email">--</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="text-xs font-bold text-gold hover:underline flex items-center gap-1" id="btn-switch-client">
+                            <i class="w-4 h-4" data-lucide="bar-chart-3"></i> Ver Gráficos
+                        </button>
+                        <button class="btn-logout text-slate-300 hover:text-white flex items-center gap-1 text-sm bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+                            <i class="w-4 h-4" data-lucide="log-out"></i> Sair
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="flex-1 max-w-5xl mx-auto px-4 py-8 w-full">
+                <div class="flex flex-wrap justify-center sm:justify-start gap-3 mb-8" id="admin-menu-abas">
+                    <button class="w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md" id="btn-admin-tab-users">
+                        <i class="w-6 h-6 text-gold mb-1" data-lucide="users"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-center">Gestão de Acessos</span>
+                    </button>
+                    <button class="w-[45%] sm:w-[30%] md:w-[20%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-admin-tab-kpi">
+                        <i class="w-6 h-6 mb-1" data-lucide="target"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-center">Resultados KPI</span>
+                    </button>
+                </div>
+
+                <div class="space-y-8" id="admin-wrapper-tab-users">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="building-2"></i> Cadastrar Empresa (Matriz)</h2>
+                        <p class="text-slate-500 text-sm mb-6">Crie o grupo ou empresa raiz antes de vincular os usuários.</p>
+                        <form class="flex flex-col md:flex-row gap-4 items-start md:items-end" id="form-nova-empresa">
+                            <div class="flex-1 w-full">
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Nome da Empresa</label>
+                                <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="ne-nome" placeholder="Ex: Grupo Carrefour" required type="text"/>
+                            </div>
+                            <button class="w-full md:w-auto bg-emerald hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-empresa" type="submit">
+                                <i class="w-5 h-5" data-lucide="plus"></i> Criar Empresa
+                            </button>
+                        </form>
+                        <p class="hidden text-emerald font-bold mt-3 text-sm" id="msg-ne-success">Empresa cadastrada no banco de dados com sucesso!</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                        <div class="mb-6 border-b border-slate-100 pb-4">
+                            <h2 class="text-xl font-heading font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="user-plus"></i> Vincular Usuário</h2>
+                            <p class="text-slate-500 text-sm mt-1">Vincule os e-mails às suas respectivas Empresas e Filiais (Lojas).</p>
+                        </div>
+                        <form class="space-y-6" id="form-gestao-clientes">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">E-mail do Usuário</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="gc-email" placeholder="usuario@empresa.com" required type="email"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Senha de Acesso</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="gc-senha" placeholder="Mínimo 6 caracteres" required type="text"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Empresa (Matriz)</label>
+                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors font-bold text-navy" id="gc-empresa" required>
+                                        <option value="">Carregando empresas...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Filial / Unidade</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="gc-filial" placeholder="Ex: Loja Centro" required type="text"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Nível de Acesso</label>
+                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="gc-role" required>
+                                        <option value="operacional">Operacional (Lança Dados)</option>
+                                        <option value="admin">Gestor (Vê Dashboards)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="hidden bg-emerald/10 border border-emerald/20 text-emerald px-4 py-3 rounded-lg flex items-center gap-2" id="msg-gc-success">
+                                <i class="w-5 h-5" data-lucide="check-circle-2"></i><span class="font-medium">Vínculo salvo com sucesso!</span>
+                            </div>
+                            <div class="hidden bg-red-100 border border-red-200 text-red-600 px-4 py-3 rounded-lg flex items-center gap-2" id="msg-gc-error">
+                                <i class="w-5 h-5" data-lucide="alert-triangle"></i><span class="font-medium" id="txt-gc-error">Erro ao salvar.</span>
+                            </div>
+                            <div class="flex justify-end pt-4 border-t border-slate-100 mt-6">
+                                <button class="bg-navy hover:bg-navyLight text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 group" id="btn-save-gc" type="submit">
+                                    <i class="w-5 h-5 text-gold group-hover:scale-110 transition-transform" data-lucide="save"></i> Vincular Usuário
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="hidden space-y-8" id="admin-wrapper-tab-kpi">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                        <h1 class="text-2xl font-heading font-bold text-navy mb-2">Registar Resultados de KPI</h1>
+                        <p class="text-slate-500 text-sm mb-6">Insira os dados da auditoria. Estes números atualizarão os gráficos do cliente em tempo real.</p>
+                        <form class="space-y-6" id="form-kpi">
+                            <div class="p-5 bg-navy/5 border border-navy/10 rounded-xl flex flex-col md:flex-row md:items-end gap-4 mb-6">
+                                <div class="flex-1">
+                                    <label class="block text-sm font-bold text-slate-700 mb-1 flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="user-check"></i> E-mail do Cliente</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="input-client-email" placeholder="email@docliente.com" required type="email"/>
+                                </div>
+                                <button class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap" id="btn-load-admin-history" type="button">
+                                    <i class="w-4 h-4" data-lucide="history"></i> Ver Lançamentos
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Mês de Referência</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="input-month" placeholder="Ex: Janeiro/2026" required type="text"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Ações Implantadas (Acumulado)</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="input-actions" min="0" placeholder="Ex: 3 no mês" required type="number"/>
+                                </div>
+                            </div>
+                            <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
+                                <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="target"></i> Dados Globais</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-bold text-slate-700 mb-1">Índice de Perda Total (%)</label>
+                                        <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="input-total" placeholder="Ex: 1.87" required step="0.01" type="number"/>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold text-slate-700 mb-1">Economia Financeira (R$)</label>
+                                        <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="input-savings" placeholder="Ex: 15000" required step="0.01" type="number"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
+                                <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="pie-chart"></i> Detalhamento por Pilar (%)</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Desconhecidas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white" id="input-pilar1" required step="0.01" type="number"/></div>
+                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Conhecidas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white" id="input-pilar2" required step="0.01" type="number"/></div>
+                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Financeiras</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white" id="input-pilar3" required step="0.01" type="number"/></div>
+                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Administrativas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white" id="input-pilar4" required step="0.01" type="number"/></div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-emerald hover:bg-emerald/90 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-kpi" type="submit">
+                                <i class="w-5 h-5" data-lucide="save"></i> Publicar Resultados no Portal
+                            </button>
+                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-success">Dados gravados com sucesso!</p>
+                            <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-error"></p>
+                        </form>
+                    </div>
+                    <div class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" id="admin-history-container">
+                        <div class="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                            <div>
+                                <h2 class="font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="database"></i> Gestão de Registos</h2>
+                                <p class="text-xs text-slate-500 mt-1" id="admin-history-subtitle">Lançamentos do cliente selecionado</p>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-600">
+                                <thead class="bg-slate-100 text-slate-500 uppercase text-[10px] font-bold">
+                                    <tr><th class="px-6 py-3">Mês</th><th class="px-6 py-3">Perda %</th><th class="px-6 py-3">Economia R$</th><th class="px-6 py-3 text-right">Ações</th></tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100" id="admin-history-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
