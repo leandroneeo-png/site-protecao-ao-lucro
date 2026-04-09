@@ -272,3 +272,330 @@
                 </div>
             </main>
         </div>
+<div class="hidden flex-1 flex flex-col min-h-screen bg-slate-50" id="view-client">
+            <header class="bg-navy text-white sticky top-0 z-40 shadow-md">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16 items-center">
+                        <div class="flex items-center gap-3">
+                            <svg class="h-8 w-auto" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                                <g transform="translate(10, 10)">
+                                    <path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#FFFFFF"></path>
+                                    <rect fill="#D4AF37" height="20" rx="2" width="10" x="16" y="56"></rect>
+                                    <rect fill="#D4AF37" height="36" rx="2" width="10" x="34" y="40"></rect>
+                                    <rect fill="#D4AF37" height="53" rx="2" width="10" x="52" y="23"></rect>
+                                    <path d="M 10 53 L 30 73 L 70 20" fill="none" stroke="#008950" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.3"></path>
+                                </g>
+                            </svg>
+                            <span class="font-heading font-bold text-xl tracking-tight hidden sm:block text-white">Proteção ao <span class="font-light">Lucro</span></span>
+                        </div>
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <button class="text-xs font-bold text-navy bg-gold hover:bg-goldLight transition-colors px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-sm" id="btn-switch-admin" style="display: none;">
+                                <i class="w-4 h-4" data-lucide="shield-check"></i> Visão Consultor
+                            </button>
+                            <div class="hidden md:flex items-center gap-3 border-l border-white/10 pl-4">
+                                <div class="flex flex-col text-right">
+                                    <span class="text-sm font-bold text-gold tracking-wide" id="separator-admin">Portal de Resultados</span>
+                                    <span class="text-[11px] font-medium text-slate-300" id="top-user-email">carregando...</span>
+                                </div>
+                                <div class="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-slate-300 shadow-inner">
+                                    <i class="w-4 h-4" data-lucide="user"></i>
+                                </div>
+                            </div>
+                            <button class="btn-logout text-slate-300 hover:text-red-400 transition-colors p-2 rounded-lg bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/20 ml-1 sm:ml-2" title="Sair do Sistema">
+                                <i class="w-5 h-5" data-lucide="log-out"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+                <div class="flex flex-wrap justify-center sm:justify-start gap-3 mb-8" id="menu-abas">
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md" id="btn-tab-dash"><i class="w-6 h-6 text-gold mb-1" data-lucide="bar-chart-2"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Painel</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-form"><i class="w-6 h-6 mb-1" data-lucide="package-minus"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Quebras</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-rec"><i class="w-6 h-6 mb-1" data-lucide="truck"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Docas</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-val"><i class="w-6 h-6 mb-1" data-lucide="calendar-clock"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Validade</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-furtos"><i class="w-6 h-6 mb-1" data-lucide="shield-alert"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Furtos</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-preco"><i class="w-6 h-6 mb-1" data-lucide="tags"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Preços</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-caixa"><i class="w-6 h-6 mb-1" data-lucide="coins"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Caixa</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-inv"><i class="w-6 h-6 mb-1 text-emerald" data-lucide="scan-barcode"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Inventário</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-tar"><i class="w-6 h-6 mb-1 text-orange-500" data-lucide="list-todo"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Tarefas</span></button>
+                </div>
+
+                <div class="hidden flex-wrap justify-center sm:justify-start gap-3 mb-8" id="menu-abas-industria">
+                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md" id="btn-tab-dash-ind"><i class="w-6 h-6 text-gold mb-1" data-lucide="factory"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Painel Fabril</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-prod"><i class="w-6 h-6 mb-1" data-lucide="settings-2"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Produção / Refugo</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-mp"><i class="w-6 h-6 mb-1" data-lucide="scale"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Matéria-Prima (Balança)</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-qualidade"><i class="w-6 h-6 mb-1 text-red-500" data-lucide="shield-alert"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Controle Qualidade</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-inv-ind"><i class="w-6 h-6 mb-1 text-emerald" data-lucide="boxes"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Inventário PA</span></button>
+                </div>
+
+                <div>
+                    <div class="max-w-7xl mx-auto px-4 md:px-8 py-8" id="container-segmentos">
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-heading font-bold text-navy">Selecione o Segmento</h2>
+                            <p class="text-slate-500 mt-2">Escolha a área de atuação da empresa para acessar as ferramentas de Prevenção.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-gold transition-all text-left group w-full" id="card-varejo" onclick="mudarEstadoSegmento('varejo')">
+                                <div class="w-12 h-12 bg-navy/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-navy transition-colors">
+                                    <svg class="w-6 h-6 text-navy group-hover:text-white transition-colors" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-navy mb-2">Varejo</h3>
+                                <p class="text-sm text-slate-500">Quebras, Validades, Recebimento e Dashboards de Loja.</p>
+                            </button>
+                            <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-gold transition-all text-left group w-full" id="card-industria" onclick="mudarEstadoSegmento('industria')">
+                                <div class="w-12 h-12 bg-navy/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-navy transition-colors">
+                                    <svg class="w-6 h-6 text-navy group-hover:text-white transition-colors" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path><path d="M17 18h1"></path><path d="M12 18h1"></path><path d="M7 18h1"></path></svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-navy mb-2">Indústria</h3>
+                                <p class="text-sm text-slate-500">Rendimento de Lotes, Qualidade, Refugo e Balança.</p>
+                            </button>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 opacity-60 cursor-not-allowed">
+                                <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-slate-400" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="16" x="4" y="4"></rect><rect height="6" rx="1" width="6" x="9" y="9"></rect><path d="M15 2v2"></path><path d="M15 20v2"></path><path d="M2 15h2"></path><path d="M2 9h2"></path><path d="M20 15h2"></path><path d="M20 9h2"></path><path d="M9 2v2"></path><path d="M9 20v2"></path></svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-400 mb-2">Logística</h3>
+                                <p class="text-sm text-slate-400">Em breve. Avarias em transporte e centros de distribuição.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 opacity-60 cursor-not-allowed">
+                                <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-slate-400" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path><path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"></path><path d="M12 3v6"></path></svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-400 mb-2">E-Commerce</h3>
+                                <p class="text-sm text-slate-400">Em breve. Controle de fraudes e extravios.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hidden max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-2" id="btn-voltar-hub">
+                        <button class="text-sm font-bold text-slate-500 hover:text-navy flex items-center gap-2 transition-colors bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm" onclick="mudarEstadoSegmento('hub')">
+                            &#8592; Voltar aos Segmentos
+                        </button>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center py-20 text-navy" id="loading-data">
+                        <i class="w-10 h-10 animate-spin mb-4 text-gold" data-lucide="loader-2"></i>
+                        <p class="font-bold">A sincronizar dados da Controladoria...</p>
+                    </div>
+
+                    <div class="hidden" id="wrapper-tab-dash">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                            <div>
+                                <h1 class="text-3xl font-heading font-bold text-navy">Visão Geral de Perdas</h1>
+                                <p class="text-slate-500 mt-1">Evolução dos KPIs após intervenção da Proteção ao Lucro.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="text-slate-500 hover:text-navy font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-4 py-2 rounded-lg bg-white hidden sm:flex shadow-sm hover:bg-slate-50" onclick="window.print()">
+                                    <i class="w-4 h-4" data-lucide="printer"></i> Gerar PDF
+                                </button>
+                                <div class="bg-emerald/10 text-emerald font-bold px-4 py-2 rounded-lg border border-emerald/20 flex items-center gap-2">
+                                    <i class="w-5 h-5" data-lucide="check-circle"></i> Dados Atualizados
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 h-full w-64 bg-gradient-to-l from-emerald/10 to-transparent pointer-events-none"></div>
+                            <div>
+                                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Índice de Perda Total (Último Mês)</h2>
+                                <div class="flex items-baseline gap-3">
+                                    <span class="text-5xl font-heading font-bold text-navy" id="ui-total-loss">--%</span>
+                                    <span class="flex items-center text-sm font-bold px-2 py-1 rounded-md" id="ui-loss-diff">--</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium text-slate-500 mb-1">Economia Financeira Acumulada</p>
+                                <p class="text-3xl font-bold text-emerald" id="ui-savings">R$ --</p>
+                                <p class="text-xs text-slate-400 mt-1">Auditado pela Controladoria</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-red-500 rounded-t-2xl"></div>
+                                <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">Perdas Desconhecidas</h3>
+                                <span class="text-3xl font-bold text-navy" id="ui-p1">--%</span>
+                            </div>
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-orange-400 rounded-t-2xl"></div>
+                                <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">Perdas Conhecidas</h3>
+                                <span class="text-3xl font-bold text-navy" id="ui-p2">--%</span>
+                            </div>
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-emerald rounded-t-2xl"></div>
+                                <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">Perdas Financeiras</h3>
+                                <span class="text-3xl font-bold text-navy" id="ui-p3">--%</span>
+                            </div>
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 rounded-t-2xl"></div>
+                                <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">Perdas Admin.</h3>
+                                <span class="text-3xl font-bold text-navy" id="ui-p4">--%</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+                            <h3 class="font-bold text-navy mb-4 flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="line-chart"></i> Evolução da Perda vs. Intervenção</h3>
+                            <div class="relative h-80 w-full">
+                                <canvas id="mainChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                            <div class="p-6 border-b border-slate-100 bg-slate-50">
+                                <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="table-properties"></i> Razão Analítico (Histórico Mensal)</h3>
+                                <p class="text-xs text-slate-500 mt-1">Detalhamento do histórico de auditorias e impacto nos pilares.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap">
+                                    <thead class="bg-slate-100 text-slate-500 uppercase text-[10px] font-bold">
+                                        <tr>
+                                            <th class="px-6 py-4">Mês / Ano</th>
+                                            <th class="px-6 py-4">Ações / Processos</th>
+                                            <th class="px-6 py-4 text-navy">Perda Global</th>
+                                            <th class="px-6 py-4 text-emerald">Economia (R$)</th>
+                                            <th class="px-6 py-4 border-l border-slate-200">Desconhecida</th>
+                                            <th class="px-6 py-4">Conhecida</th>
+                                            <th class="px-6 py-4">Financeira</th>
+                                            <th class="px-6 py-4">Admin.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100" id="client-history-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hidden text-center py-20" id="empty-state-client">
+                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                            <i class="w-10 h-10" data-lucide="bar-chart"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-navy" id="empty-state-title">Nenhum dado encontrado</h3>
+                        <p class="text-slate-500 mt-2" id="empty-state-desc">O consultor ainda não publicou os resultados.</p>
+                    </div>
+                </div>
+
+                <div class="hidden" id="wrapper-tab-form">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto mb-8">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
+                            <div>
+                                <h2 class="text-2xl font-heading font-bold text-navy">Dashboard de Quebras</h2>
+                                <p class="text-slate-500 text-sm">Análise financeira dos lançamentos operacionais.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button class="text-emerald hover:text-emerald-700 font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" id="btn-export-csv">
+                                    <i class="w-4 h-4" data-lucide="download"></i> Excel (CSV)
+                                </button>
+                                <button class="text-slate-500 hover:text-navy font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" onclick="window.print()">
+                                    <i class="w-4 h-4" data-lucide="printer"></i> PDF
+                                </button>
+                                <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
+                                    <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-quebra"></select>
+                                    <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer" id="filtro-mes-quebra" type="month"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-center justify-center py-10 text-navy hidden" id="loading-quebras">
+                            <i class="w-8 h-8 animate-spin mb-2 text-gold" data-lucide="loader-2"></i>
+                            <p class="font-bold text-sm">A sincronizar com a Controladoria...</p>
+                        </div>
+
+                        <div class="hidden" id="quebras-dashboard-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div class="bg-red-50 rounded-xl p-6 border border-red-100 relative overflow-hidden">
+                                    <div class="absolute right-0 top-0 opacity-10 text-red-500 transform translate-x-4 -translate-y-4">
+                                        <i class="w-32 h-32" data-lucide="trending-down"></i>
+                                    </div>
+                                    <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Perda Financeira (R$)</p>
+                                    <p class="text-4xl font-heading font-bold text-red-700" id="ui-quebra-total-rs">R$ 0,00</p>
+                                    <p class="text-xs text-red-500 mt-2 font-medium" id="ui-quebra-subtitle-rs">Neste mês selecionado</p>
+                                </div>
+                                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
+                                    <div class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
+                                        <i class="w-32 h-32" data-lucide="package-minus"></i>
+                                    </div>
+                                    <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Volume de Itens</p>
+                                    <p class="text-4xl font-heading font-bold text-navy" id="ui-quebra-total-qtd">0</p>
+                                    <p class="text-xs text-slate-400 mt-2 font-medium">Unidades baixadas</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                <div>
+                                    <h3 class="font-bold text-navy mb-4 text-sm flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="pie-chart"></i> Representatividade por Motivo (R$)</h3>
+                                    <div class="relative min-h-[280px] w-full flex justify-center items-center">
+                                        <div class="w-full" id="chart-motivos"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 h-full">
+                                    <h3 class="text-sm font-bold text-navy mb-4">Ranking de Impacto</h3>
+                                    <div class="flex flex-col gap-2" id="ranking-list"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hidden text-center py-12" id="empty-state-quebras">
+                            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                                <i class="w-8 h-8" data-lucide="inbox"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-navy">Sem Lançamentos</h3>
+                            <p class="text-slate-500 text-sm mt-1">Nenhum registo de quebra encontrado para o mês selecionado. <br/>Utilize o formulário abaixo para registar perdas de chão de loja.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto">
+                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="plus-circle"></i> Novo Lançamento</h2>
+                        <p class="text-slate-500 text-sm mb-6">Registe as quebras operacionais (chão de loja). Estes dados são integrados na base de auditoria da Controladoria.</p>
+                        <form class="space-y-6" id="form-quebras">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Filial do Lançamento</label>
+                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 disabled:bg-slate-200 disabled:text-slate-500 font-medium" id="q-filial-lancamento" required>
+                                        <option value="">A carregar filiais...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">GTIN / Código de Barras</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-gtin" placeholder="Ex: 7891010101010" required type="text"/>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Descrição do Produto</label>
+                                <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-desc" placeholder="Ex: Leite Integral 1L" required type="text"/>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Quantidade</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-qtd" inputmode="decimal" placeholder="Ex: 2,5" required type="text"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Custo Unit. (R$)</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-custo" inputmode="decimal" placeholder="Ex: 4,50" required type="text"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Motivo</label>
+                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-motivo" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Vencimento">Vencimento (Validade)</option>
+                                        <option value="Avaria">Avaria / Danificado</option>
+                                        <option value="Consumo Interno">Consumo Interno</option>
+                                        <option value="Furto Identificado">Furto Identificado</option>
+                                        <option value="Erro Administrativo">Erro Admin.</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-quebra" type="submit">
+                                    <i class="w-5 h-5" data-lucide="send"></i> Enviar para Auditoria
+                                </button>
+                                <p class="text-[10px] text-slate-400 text-center mt-3 font-medium tracking-wide">
+                                    <i class="w-3 h-3 inline text-gold" data-lucide="shield-alert"></i> Aviso: Lançamentos são definitivos e integrados ao fecho mensal.
+                                </p>
+                            </div>
+                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-quebra-success">Quebra registada com sucesso na Planilha!</p>
+                            <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-quebra-error"></p>
+                        </form>
+                    </div>
+                </div>
