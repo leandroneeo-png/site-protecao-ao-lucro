@@ -631,7 +631,7 @@ document.getElementById('form-furtos')?.addEventListener('submit', async (e) => 
         local: document.getElementById('f-local')?.value||"", 
         descricao: document.getElementById('f-desc')?.value||"", 
         subtotal: subtotalCalculado, 
-        produtos: JSON.stringify(produtosFurto) // Converte a lista num texto para o Google Sheets não crashar
+        produtos: produtosFurto // <-- REMOVIDO O JSON.stringify. Agora volta a ser uma lista pura!
     };
     
     await submitToSheets(e.target, 'btn-save-furto', 'msg-furto-success', 'msg-furto-error', payload, 'Registrar Sinistro');
