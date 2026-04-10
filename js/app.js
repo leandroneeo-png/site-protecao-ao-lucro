@@ -1113,29 +1113,34 @@ document.getElementById('form-auditoria')?.addEventListener('submit', async (e) 
 // 7. VIEWS E NAVEGAÇÃO GERAL
 // ==========================================
 window.showView = (vN) => {
+    // 1. Esconde tudo e limpa o flex por precaução
     ['portal-cliente', 'site-principal', 'auth-view', 'view-admin', 'view-client'].forEach(id => { 
         const el = document.getElementById(id); 
         if(el) { el.classList.add('hidden'); el.classList.remove('flex'); } 
     });
     
+    // 2. Roteamento inteligente
     if(vN === 'site-principal') { 
-        document.getElementById('site-principal')?.classList.remove('hidden'); 
-        document.getElementById('site-principal')?.classList.add('flex');
+        const site = document.getElementById('site-principal');
+        if(site) {
+            site.classList.remove('hidden'); 
+            // O site principal NUNCA recebe a classe flex aqui, mantendo o comportamento de bloco em cascata
+        }
     } else {
-        document.getElementById('portal-cliente')?.classList.remove('hidden'); 
-        document.getElementById('portal-cliente')?.classList.add('flex');
+        const portal = document.getElementById('portal-cliente');
+        if(portal) { portal.classList.remove('hidden'); portal.classList.add('flex'); }
         
         if(vN === 'login') { 
-            document.getElementById('auth-view')?.classList.remove('hidden');
-            document.getElementById('auth-view')?.classList.add('flex');
+            const auth = document.getElementById('auth-view');
+            if(auth) { auth.classList.remove('hidden'); auth.classList.add('flex'); }
         }
         if(vN === 'admin') {
-            document.getElementById('view-admin')?.classList.remove('hidden');
-            document.getElementById('view-admin')?.classList.add('flex');
+            const admin = document.getElementById('view-admin');
+            if(admin) { admin.classList.remove('hidden'); admin.classList.add('flex'); }
         }
         if(vN === 'client') { 
-            document.getElementById('view-client')?.classList.remove('hidden'); 
-            document.getElementById('view-client')?.classList.add('flex');
+            const client = document.getElementById('view-client');
+            if(client) { client.classList.remove('hidden'); client.classList.add('flex'); }
             if(window.mudarEstadoSegmento) window.mudarEstadoSegmento('hub'); 
         }
     }
