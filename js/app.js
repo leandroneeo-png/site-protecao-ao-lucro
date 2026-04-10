@@ -109,11 +109,16 @@ const submitToSheets = async (form, btnId, msgSuccessId, msgErrorId, payload, bt
     if(msgError) msgError.classList.add('hidden');
     if(window.lucide) lucide.createIcons();
 
-    // INJEÇÃO OTIMISTA: Atualiza a tela antes mesmo de o Google responder
+    // Injeção otimista de dados na tela do cliente
     if (payload.tipo !== 'atualizar_validade' && payload.tipo !== 'concluir_tarefa' && payload.tipo !== 'fechar_inventario' && payload.tipo !== 'atualizar_rebaixa_validade') {
         const payloadExists = sheetsDataRaw.some(i => JSON.stringify(i) === JSON.stringify(payload));
         if(!payloadExists) {
-            sheetsDataRaw.push(payload);
+            const payloadLocal = { ...payload };
+            // Se for furto, converte o texto novamente para lista para a nossa memória cache interna
+            if (payloadLocal.tipo === 'furto' && typeof payloadLocal.produtos === 'string') {
+                payloadLocal.produtos = JSON.parse(payloadLocal.produtos);
+            }
+            sheetsDataRaw.push(payloadLocal);
             window.triggerAllRenders();
         }
     }
@@ -122,7 +127,16 @@ const submitToSheets = async (form, btnId, msgSuccessId, msgErrorId, payload, bt
         const response = await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
             method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' }
         });
-        const result = await response.json();
+        
+        // Leitura à prova de falhas: evita o erro <!DOCTYPE HTML> na tela
+        const textResponse = await response.text();
+        let result;
+        try {
+            result = JSON.parse(textResponse);
+        } catch (err) {
+            console.error("Erro interno do Google Apps Script:", textResponse);
+            throw new Error("O Google Sheets rejeitou a gravação. Verifique as configurações da planilha.");
+        }
         
         if (result.status === 'success') {
             if(payload.tipo === 'atualizar_validade') {
@@ -136,8 +150,6 @@ const submitToSheets = async (form, btnId, msgSuccessId, msgErrorId, payload, bt
             
             if(form) form.reset();
             if(msgSuccess) { msgSuccess.classList.remove('hidden'); setTimeout(() => msgSuccess.classList.add('hidden'), 5000); }
-            
-            // Atualiza o cache silenciosamente após sucesso
             sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
         } else {
             throw new Error(result.message || "Erro desconhecido na planilha.");
@@ -601,8 +613,27 @@ document.getElementById('btn-add-prod')?.addEventListener('click', () => {
 });
 
 document.getElementById('form-furtos')?.addEventListener('submit', async (e) => {
-    e.preventDefault(); if (!auth.currentUser) return; if (produtosFurto.length === 0) { alert("Adicione produtos."); return; }
-    const payload = { tipo: "furto", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: document.getElementById('f-filial')?.value, data_ocorrencia: document.getElementById('f-data')?.value||"", genero: document.getElementById('f-genero')?.value||"", idade: document.getElementById('f-idade')?.value||"", abordagem: document.getElementById('f-abordagem')?.value||"", local: document.getElementById('f-local')?.value||"", descricao: document.getElementById('f-desc')?.value||"", produtos: produtosFurto };
+    e.preventDefault(); if (!auth.currentUser) return; if (produtosFurto.length === 0) { alert("Adicione produtos primeiro."); return; }
+    
+    // Calcula o subtotal financeiro para os gráficos do dashboard lerem
+    let subtotalCalculado = 0;
+    produtosFurto.forEach(p => subtotalCalculado += (p.qtd * p.preco));
+
+    const payload = { 
+        tipo: "furto", 
+        email: auth.currentUser.email, 
+        empresa: currentUserEmpresa, 
+        filial: document.getElementById('f-filial')?.value, 
+        data_ocorrencia: document.getElementById('f-data')?.value||"", 
+        genero: document.getElementById('f-genero')?.value||"", 
+        idade: document.getElementById('f-idade')?.value||"", 
+        abordagem: document.getElementById('f-abordagem')?.value||"", 
+        local: document.getElementById('f-local')?.value||"", 
+        descricao: document.getElementById('f-desc')?.value||"", 
+        subtotal: subtotalCalculado, 
+        produtos: JSON.stringify(produtosFurto) // Converte a lista num texto para o Google Sheets não crashar
+    };
+    
     await submitToSheets(e.target, 'btn-save-furto', 'msg-furto-success', 'msg-furto-error', payload, 'Registrar Sinistro');
     produtosFurto = []; const lP = document.getElementById('f-lista-produtos'); if(lP) lP.innerHTML = '';
 });
