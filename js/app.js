@@ -203,7 +203,7 @@ window.fetchSheetsDataComHierarquia = async () => {
             if(filtroFilial) filtroFilial.onchange = triggerRender;
         });
 
-        // Tenta renderizar todos os painéis
+        // Executa renders iniciais
         try { window.renderQuebrasDashboard(); } catch(e) {}
         try { window.renderPrecoDashboard(); } catch(e) {}
         try { window.renderDocasDashboard(); } catch(e) {}
@@ -269,7 +269,6 @@ window.renderQuebrasDashboard = () => {
         document.getElementById('ui-quebra-total-qtd').innerText = totalQtd.toLocaleString('pt-BR');
     }
 
-    // Renderização do Gráfico de Quebras
     const divChart = document.querySelector("#chart-motivos"); 
     if(divChart && typeof ApexCharts !== 'undefined') {
         if(chartMotivosInstance) chartMotivosInstance.destroy(); 
@@ -286,7 +285,6 @@ window.renderQuebrasDashboard = () => {
         chartMotivosInstance.render();
     }
 
-    // Renderização do Ranking de Impacto (O loop que faltava entra aqui)
     const divRanking = document.getElementById('ranking-list');
     if(divRanking) {
         const rankingArray = Object.keys(rankingMap).map(key => ({ produto: key, valor: rankingMap[key] })).sort((a, b) => b.valor - a.valor);
@@ -397,20 +395,59 @@ window.renderValidadeDashboard = () => {
             const riscoItem = parseLocalFloat(item.quantidade) * parseLocalFloat(item.custo);
             const itemEncoded = encodeURIComponent(JSON.stringify(item));
 
+            let dataVencimento;
+            let partesData = String(item.data_validade).split('/');
+            if (partesData.length === 3) { dataVencimento = new Date(partesData[2], partesData[1] - 1, partesData[0]); }
+            else { dataVencimento = new Date(item.data_validade + 'T00:00:00'); }
+
+            let hoje = new Date(); hoje.setHours(0,0,0,0);
+            let diffTempo = dataVencimento.getTime() - hoje.getTime();
+            let diasRestantes = Math.ceil(diffTempo / (1000 * 3600 * 24));
+
+            let corSinalizacao = "bg-emerald";
+            if (diasRestantes < 0) corSinalizacao = "bg-red-600 animate-pulse";
+            else if (diasRestantes <= 15) corSinalizacao = "bg-yellow-500";
+
+            let dataExibicao = item.data_validade;
+            if (dataExibicao && String(dataExibicao).includes('-')) {
+                const partes = String(dataExibicao).split('-');
+                if (partes.length === 3) dataExibicao = `${partes[2]}/${partes[1]}/${partes[0]}`;
+            }
+
+            const isRebaixado = item.rebaixado === 'SIM';
+            const corCard = isRebaixado ? 'border-gold/50 bg-gold/5' : 'border-slate-200 bg-white';
+            const corTextoCheck = isRebaixado ? 'text-gold' : 'text-slate-400';
+
             divLista.innerHTML += `
-                <div class="p-3 mb-2 border-slate-200 bg-white border rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm">
-                    <div class="flex-1 mb-3 md:mb-0">
-                        <p class="font-bold text-navy text-sm">${item.descricao || 'Produto'}</p>
-                        <p class="text-[11px] text-slate-500">Vence: <strong class="text-slate-700">${item.data_validade}</strong> | Qtd: <strong>${item.quantidade} un</strong></p>
+                <div class="p-3 mb-2 ${corCard} border rounded-lg flex flex-col md:flex-row md:items-center gap-3 shadow-sm min-w-0 transition-all">
+                    <div class="flex items-center gap-3 flex-1 min-w-0 text-left">
+                        <div class="w-3 h-3 rounded-full shrink-0 ${corSinalizacao}"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold text-navy text-sm mb-1 truncate">${item.descricao || 'Produto'}</p>
+                            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
+                                <span>Vence: <strong class="text-slate-700">${dataExibicao}</strong></span>
+                                <span class="text-slate-300">|</span>
+                                <span>GTIN: ${item.gtin || '-'}</span>
+                                <span class="text-slate-300">|</span>
+                                <span>Qtd: <strong class="text-slate-700">${item.quantidade} un</strong></span>
+                                <span class="text-slate-300">|</span>
+                                <span>Risco: <strong class="text-red-600">R$ ${riscoItem.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                        <span class="text-xs font-bold text-red-600">R$ ${riscoItem.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
-                        <button onclick="abrirModalAuditoria('${itemEncoded}')" class="bg-slate-50 hover:bg-slate-200 text-navy text-xs font-bold px-4 py-2 border border-slate-200 rounded transition-colors shadow-sm">
+
+                    <div class="flex items-center justify-end gap-3 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-2 md:pt-0 md:pl-3 mt-2 md:mt-0">
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold ${corTextoCheck} hover:text-gold transition-colors uppercase tracking-wider">
+                            <input type="checkbox" onchange="window.marcarRebaixaValidade('${itemEncoded}', this)" class="w-4 h-4 rounded border-slate-300 text-gold focus:ring-gold cursor-pointer" ${isRebaixado ? 'checked' : ''}>
+                            Rebaixado
+                        </label>
+                        <button onclick="abrirModalAuditoria('${itemEncoded}')" class="bg-slate-50 hover:bg-slate-200 border border-slate-200 text-navy text-xs font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap shadow-sm">
                             Auditar
                         </button>
                     </div>
                 </div>`;
         });
+        if(window.lucide) window.lucide.createIcons();
     }
 };
 
@@ -939,6 +976,7 @@ window.exportarInventarioId = (idInv) => {
 // ==========================================
 // 6. LISTENERS DE SUBMISSÃO E FORMS GERAIS
 // ==========================================
+
 // EXPORTAÇÕES GLOBAIS (EXCEL/CSV)
 document.getElementById('btn-export-csv')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('quebra', 'Quebras'); });
 document.getElementById('btn-export-csv-docas')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('recebimento', 'Docas'); });
@@ -947,6 +985,7 @@ document.getElementById('btn-export-csv-preco')?.addEventListener('click', (e) =
 document.getElementById('btn-export-csv-caixa')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('caixa_central', 'Caixa_Central'); });
 document.getElementById('btn-export-csv-furtos')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('furto', 'Furtos_Evitados'); });
 document.getElementById('btn-export-csv-inv')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('inventario', 'Inventario_Completo'); });
+
 
 document.getElementById('form-quebras')?.addEventListener('submit', (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
@@ -1052,9 +1091,8 @@ document.getElementById('form-furtos')?.addEventListener('submit', async (e) => 
 document.getElementById('form-tarefas')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
     const payload = { 
-        tipo: "tarefa", email: auth.currentUser.email, empresa: currentUserEmpresa, 
-        filial: document.getElementById('t-filial').value, titulo: document.getElementById('t-titulo').value, 
-        prazo: document.getElementById('t-prazo').value, status: 'PENDENTE' 
+        tipo: "tarefa", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: document.getElementById('t-filial').value, 
+        titulo: document.getElementById('t-titulo').value, prazo: document.getElementById('t-prazo').value, status: 'PENDENTE' 
     };
     await submitToSheets(e.target, 'btn-save-tar', 'msg-tar-success', '', payload, 'Criar Demanda');
 });
