@@ -534,14 +534,23 @@ window.encerrarInventarioAtual = async (event) => {
 document.getElementById('form-inventario')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
     const idInv = document.getElementById('inv-id-oculto').value; const filial = document.getElementById('inv-filial-oculto').value; 
-    const lote = document.getElementById('inv-lote').value.trim().toUpperCase(); const inputGtin = document.getElementById('inv-gtin'); const inputQtd = document.getElementById('inv-qtd');
+    const inputLote = document.getElementById('inv-lote');
+    const inputGtin = document.getElementById('inv-gtin');
+    const inputQtd = document.getElementById('inv-qtd');
+    const lote = inputLote.value.trim().toUpperCase();
     
     const payload = { tipo: "inventario", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: filial, lote: lote, gtin: inputGtin.value, descricao: document.getElementById('inv-desc')?.value || "", quantidade: inputQtd.value, id_inventario: idInv, status: "ABERTO" };
     
-    // Submissão otimista via helper customizado
+    // Submissão otimista
     submitToSheets(null, 'btn-save-inv', '', '', payload, '<i data-lucide="plus-square" class="w-5 h-5 text-gold"></i> Salvar Bipagem');
     
-    inputGtin.value = ''; document.getElementById('inv-desc').value = ''; setTimeout(() => inputGtin.focus(), 100); 
+    inputGtin.value = ''; document.getElementById('inv-desc').value = ''; 
+    
+    // Força o retorno do cursor de forma agressiva após limpar os dados
+    setTimeout(() => { 
+        inputGtin.focus(); 
+    }, 50); 
+    
     window.renderHistoricoBipagem(idInv);
 });
 
@@ -550,8 +559,58 @@ window.renderHistoricoBipagem = (idInv) => {
     const items = sheetsDataRaw.filter(i => i.tipo === 'inventario' && i.id_inventario === idInv && i.gtin !== 'FECHAMENTO');
     const bipagens = items.filter(i => i.gtin !== 'LISTA_DIRIGIDA').reverse();
 
-    if(bipagens.length === 0) { divHist.innerHTML = '<p class="text-xs text-slate-400 italic">Nenhum item bipado.</p>'; } 
-    else { let html = ''; bipagens.slice(0, 15).forEach(i => { html += `<div class="flex justify-between items-center p-2 bg-slate-50 border border-slate-100 rounded mb-1"><div class="flex flex-col"><span class="text-xs font-bold text-navy">${i.descricao || i.gtin}</span><span class="text-[10px] text-slate-400">Lote: ${i.lote} | EAN: ${i.gtin}</span></div><span class="text-sm font-black text-emerald bg-emerald/10 px-2 py-1 rounded border border-emerald/20">${i.quantidade} un</span></div>`; }); divHist.innerHTML = html; }
+    if(bipagens.length === 0) { 
+        divHist.innerHTML = '<p class="text-xs text-slate-400 italic">Nenhum item bipado.</p>'; 
+    } else { 
+        let html = ''; 
+        bipagens.slice(0, 15).forEach(i => { 
+            const itemEnc = encodeURIComponent(JSON.stringify(i));
+            const isEstorno = parseFloat(i.quantidade) < 0;
+            
+            // Renderiza o botão de lixeira (apenas se não for já um estorno)
+            const btnExcluir = isEstorno ? '' : `<button type="button" onclick="window.estornarBipagem('${itemEnc}')" class="text-red-400 hover:text-red-600 p-1.5 rounded transition-colors" title="Cancelar Leitura"><i class="w-4 h-4" data-lucide="trash-2"></i></button>`;
+            const corQtd = isEstorno ? 'text-red-600 bg-red-50 border-red-200' : 'text-emerald bg-emerald/10 border-emerald/20';
+            const textNome = isEstorno ? 'text-red-600 line-through' : 'text-navy';
+
+            html += `<div class="flex justify-between items-center p-2 bg-slate-50 border border-slate-100 rounded mb-1">
+                <div class="flex flex-col flex-1 min-w-0 pr-2">
+                    <span class="text-xs font-bold ${textNome} truncate">${i.descricao || i.gtin}</span>
+                    <span class="text-[10px] text-slate-400">Lote: ${i.lote} | EAN: ${i.gtin}</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-sm font-black px-2 py-1 rounded border ${corQtd}">${i.quantidade} un</span>
+                    ${btnExcluir}
+                </div>
+            </div>`; 
+        }); 
+        divHist.innerHTML = html; 
+        if(window.lucide) window.lucide.createIcons();
+    }
+};
+
+// Motor de Estorno (Auditoria Limpa)
+window.estornarBipagem = async (itemEncoded) => {
+    if(!confirm("Deseja cancelar esta leitura?")) return;
+    const item = JSON.parse(decodeURIComponent(itemEncoded));
+
+    // Cria o registro negativo para anular a contagem anterior
+    const payload = { 
+        ...item, 
+        quantidade: -Math.abs(parseFloat(item.quantidade)), 
+        descricao: "[ESTORNO] " + (item.descricao || "Produto") 
+    };
+
+    // Atualiza a tela imediatamente (Otimista)
+    sheetsDataRaw.push(payload);
+    window.renderHistoricoBipagem(item.id_inventario);
+
+    // Envia o estorno para o Sheets
+    try { 
+        await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) }); 
+        sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre])); 
+    } catch(e) { 
+        console.error("Erro ao estornar", e); 
+    }
 };
 
 window.exportarInventarioId = (idInv) => {
