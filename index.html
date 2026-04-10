@@ -597,12 +597,299 @@
         </div>
     </div>
 
+<!-- ========================================================= -->
+    <!-- MODO 2: SITE PRINCIPAL (INSTITUCIONAL COMPLETO)           -->
+    <!-- ========================================================= -->
     <div class="w-full bg-lightbg min-h-screen" id="site-principal">
-        <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-sm border-b shadow-sm h-20 flex justify-between items-center px-4 sm:px-6 lg:px-8">
-            <div class="text-navy text-2xl font-heading font-extrabold">LUCRO<span class="font-light">SEGURO</span></div>
-            <a class="text-gold hover:text-navy font-bold flex items-center gap-1" href="#" onclick="showView('login')"><i class="w-4 h-4" data-lucide="lock"></i> Área do Cliente</a>
+        <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <a class="flex-shrink-0 flex items-center gap-2 sm:gap-3 hover:opacity-90 transition-opacity" href="#" onclick="window.scrollTo(0,0)">
+                        <svg class="h-10 sm:h-12 w-auto" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="translate(10, 10)">
+                                <path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#0A2540"/>
+                                <rect fill="#D4AF37" height="20" rx="2" width="10" x="16" y="56"/>
+                                <rect fill="#D4AF37" height="36" rx="2" width="10" x="34" y="40"/>
+                                <rect fill="#D4AF37" height="53" rx="2" width="10" x="52" y="23"/>
+                                <path d="M 10 53 L 30 73 L 70 20" fill="none" stroke="#008950" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.3"/>
+                            </g>
+                        </svg>
+                        <div class="text-navy text-2xl sm:text-3xl font-heading flex items-center pt-1">
+                            <span class="font-extrabold tracking-tight">LUCRO</span><span class="font-light">SEGURO</span>
+                        </div>
+                    </a>
+                    <div class="hidden lg:flex space-x-6 items-center text-sm">
+                        <a class="text-slate-600 hover:text-navy font-medium transition-colors" href="#cenario">O Cenário</a>
+                        <a class="text-slate-600 hover:text-navy font-medium transition-colors" href="#metodologia">Metodologia</a>
+                        <a class="text-slate-600 hover:text-navy font-medium transition-colors" href="#historia">Quem Somos</a>
+                        <a class="text-slate-600 hover:text-navy font-medium transition-colors" href="#blog-section">Artigos</a>
+                        <a class="text-gold hover:text-navy font-bold transition-colors flex items-center gap-1 border-l border-slate-200 pl-6 ml-2" href="#" onclick="showView('login')">
+                            <i class="w-4 h-4" data-lucide="lock"></i> Área do Cliente
+                        </a>
+                        <a class="bg-navy hover:bg-navyLight text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg flex items-center gap-2" href="#contato">
+                            <i class="w-4 h-4" data-lucide="message-square"></i> Fale Connosco
+                        </a>
+                    </div>
+
+                    <!-- Botão de Login Mobile -->
+                    <div class="flex lg:hidden items-center">
+                        <a class="bg-navy/5 border border-navy/10 text-navy hover:bg-navy hover:text-white font-bold transition-all flex items-center gap-2 px-4 py-2 rounded-lg text-sm shadow-sm" href="#" onclick="showView('login')">
+                            <i class="w-4 h-4 text-gold" data-lucide="lock"></i> Entrar
+                        </a>
+                    </div>
+                </div>
+            </div>
         </nav>
-        <section class="pt-32 pb-20 bg-navy text-center"><h1 class="text-4xl font-heading font-bold text-white mb-6">Transformando Perdas Invisíveis em <br/><span class="text-emerald">Lucro Líquido Real</span>.</h1></section>
+
+        <section class="relative bg-navy pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <svg class="absolute right-0 top-0 h-full w-1/2 transform translate-x-1/3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5"/>
+                </svg>
+            </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <span class="inline-block py-1 px-3 rounded-full bg-white/10 text-gold font-medium text-sm tracking-wide mb-6 border border-white/20">
+                    Consultoria Especializada em Prevenção de Perdas
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-6 leading-tight">
+                    Transformando Perdas Invisíveis em <br/><span class="text-emerald">Lucro Líquido Real</span>.
+                </h1>
+                <p class="mt-4 text-xl text-slate-300 max-w-2xl mx-auto font-light mb-10">
+                    O seu caixa está a sangrar diariamente devido a falhas invisíveis. Nós diagnosticamos a raiz do problema e cobramos apenas sobre a economia financeira comprovada.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a class="bg-gold hover:bg-goldLight text-navy font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2" href="#modelo">
+                        <i class="w-5 h-5" data-lucide="shield-check"></i> Conheça o nosso Modelo
+                    </a>
+                    <a class="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-medium text-lg px-8 py-4 rounded-xl backdrop-blur-sm transition-all flex items-center justify-center gap-2" href="#cenario">
+                        <i class="w-5 h-5" data-lucide="bar-chart-2"></i> Ver Dados do Retalho
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-white" id="cenario">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-navy mb-4">Onde está o dinheiro que falta no fim do mês?</h2>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto">O retalho sofre uma hemorragia silenciosa. Milhões são perdidos anualmente não apenas por furtos, mas principalmente por processos falhos.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center relative overflow-hidden group hover:border-gold transition-colors">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-full -z-10 group-hover:bg-gold/20 transition-colors"></div>
+                        <p class="text-5xl font-heading font-bold text-navy mb-2">R$ 34,9<span class="text-2xl">Bi</span></p>
+                        <p class="text-slate-600 font-medium">Perdidos anualmente pelo Retalho.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center relative overflow-hidden group hover:border-gold transition-colors">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-full -z-10 group-hover:bg-gold/20 transition-colors"></div>
+                        <p class="text-5xl font-heading font-bold text-navy mb-2">1,87%</p>
+                        <p class="text-slate-600 font-medium">Índice médio de perda sobre a faturação bruta.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center relative overflow-hidden group hover:border-gold transition-colors">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-full -z-10 group-hover:bg-gold/20 transition-colors"></div>
+                        <p class="text-5xl font-heading font-bold text-navy mb-2">42,9%</p>
+                        <p class="text-slate-600 font-medium">Das quebras são estritamente operacionais.</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center relative overflow-hidden group hover:border-gold transition-colors">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-full -z-10 group-hover:bg-gold/20 transition-colors"></div>
+                        <p class="text-5xl font-heading font-bold text-navy mb-2">39,7%</p>
+                        <p class="text-slate-600 font-medium">Das quebras originam-se de perecibilidade (ex: FLV).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-slate-50 border-y border-slate-200" id="metodologia">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row gap-12 items-center">
+                    <div class="lg:w-1/3">
+                        <h2 class="text-3xl md:text-4xl font-heading font-bold text-navy mb-6">A Anatomia da Perda na Sua Loja</h2>
+                        <p class="text-lg text-slate-600 mb-6">Mapeamos os processos operacionais no chão de loja, desde as docas até à frente de caixa, monitorizando KPIs específicos para estancar 4 frentes de sangramento financeiro.</p>
+                    </div>
+                    <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-4">
+                            <div class="bg-red-100 text-red-600 p-3 rounded-lg shrink-0"><i class="w-6 h-6" data-lucide="search-x"></i></div>
+                            <div><h3 class="font-bold text-navy text-lg mb-2">Perdas Desconhecidas</h3><p class="text-slate-600 text-sm">Furtos internos/externos, fraudes não detetadas e erros de registo descobertos apenas no inventário geral.</p></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-4">
+                            <div class="bg-orange-100 text-orange-600 p-3 rounded-lg shrink-0"><i class="w-6 h-6" data-lucide="package-minus"></i></div>
+                            <div><h3 class="font-bold text-navy text-lg mb-2">Perdas Conhecidas</h3><p class="text-slate-600 text-sm">Mercadorias que a loja sabe que perdeu (avarias, produtos fora da validade, consumo interno e descartes).</p></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-4">
+                            <div class="bg-emerald/10 text-emerald p-3 rounded-lg shrink-0"><i class="w-6 h-6" data-lucide="trending-down"></i></div>
+                            <div><h3 class="font-bold text-navy text-lg mb-2">Perdas Financeiras</h3><p class="text-slate-600 text-sm">Quebra de margem, erros de preço, multas, falta no caixa e venda perdida por rutura.</p></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-4">
+                            <div class="bg-blue-100 text-blue-600 p-3 rounded-lg shrink-0"><i class="w-6 h-6" data-lucide="file-warning"></i></div>
+                            <div><h3 class="font-bold text-navy text-lg mb-2">Perdas Administrativas</h3><p class="text-slate-600 text-sm">Distorções do stock virtual, erros de entrada de faturas, conversões erradas e falhas de sistema.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 lg:py-28 bg-navy relative overflow-hidden" id="modelo">
+            <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <span class="text-gold font-bold tracking-wider uppercase text-sm mb-2 block">O Nosso Diferencial</span>
+                    <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mb-6">O Risco é Nosso. <br/><span class="text-emerald">O Retorno é Seu.</span></h2>
+                    <p class="text-slate-300 max-w-2xl mx-auto text-lg">Não vendemos folhas de cálculo. Vendemos resultados práticos. O nosso modelo de parceria garante que só ganhamos se o seu caixa também ganhar.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+                        <div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mb-6 text-gold text-2xl font-bold font-heading">1</div>
+                        <h3 class="text-xl font-bold text-white mb-3">Diagnóstico Inicial</h3>
+                        <div class="inline-block px-3 py-1 bg-emerald/20 text-emerald border border-emerald/30 rounded-full text-xs font-bold mb-4">Custo ZERO</div>
+                        <p class="text-slate-300">Um investimento do nosso tempo para aplicar o Kit Diagnóstico na sua operação e provar o nosso valor.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+                        <div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mb-6 text-gold text-2xl font-bold font-heading">2</div>
+                        <h3 class="text-xl font-bold text-white mb-3">Implementação</h3>
+                        <div class="inline-block px-3 py-1 bg-white/10 text-slate-300 border border-white/20 rounded-full text-xs font-bold mb-4">Custo Fixo Reduzido</div>
+                        <p class="text-slate-300">Cobramos um valor operacional mínimo e exclusivo para cobrir deslocações de forma 100% presencial.</p>
+                    </div>
+                    <div class="bg-gold/10 border border-gold/30 rounded-2xl p-8 backdrop-blur-sm">
+                        <div class="w-14 h-14 bg-gold rounded-full flex items-center justify-center mb-6 text-navy text-2xl font-bold font-heading">3</div>
+                        <h3 class="text-xl font-bold text-white mb-3">Taxa de Sucesso</h3>
+                        <div class="inline-block px-3 py-1 bg-gold/20 text-gold border border-gold/40 rounded-full text-xs font-bold mb-4">10% a 15% da Economia</div>
+                        <p class="text-slate-200 font-medium">Cobramos exclusivamente sobre a economia financeira comprovada que gerarmos para o seu caixa.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 lg:py-28 bg-white" id="historia">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-navy/10 rounded-2xl transform -rotate-3 scale-105"></div>
+                        <img alt="Leandro Silva - Fundador e Especialista em Prevenção de Perdas" class="relative rounded-xl shadow-2xl w-full object-cover aspect-[4/5] object-top" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgzDi6NEP6XaGYLEyFlpOOBK_JaBnl1TqIXnbTUFjFb_kCVf4b_dfu1S7lNkb3dcgz-Vukc4HIongzVmd2pfZ1lZRdz49gFfk-tIjWEIeZWmkRekHO2fp_rbyQCHV3c3xXGn3W4KAzIGykVecvU4I36NPhJO-wWH8NmnsjgIh8c4fDEequ6mPjRMATLL8c/s1600/Foto%20Pessoal.jpeg"/>
+                        <div class="absolute -bottom-6 -right-6 bg-gold text-navy p-6 rounded-xl shadow-xl hidden md:block z-10">
+                            <p class="font-heading font-bold text-4xl mb-1">+12</p>
+                            <p class="text-sm font-bold uppercase tracking-wider">Anos de Foco em<br/>Prevenção de Perdas</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-heading font-bold text-navy mb-6">De onde vêm os resultados que entregamos?</h2>
+                        <div class="space-y-4 text-slate-600 text-lg leading-relaxed">
+                            <p>A <strong>LUCROSEGURO</strong> não nasceu numa sala de reuniões teórica, mas no chão de loja, a lidar com problemas reais de logística, ruturas e frente de caixa.</p>
+                            <p>Fundada por <strong>Leandro Silva</strong>, profissional com formação em Gestão Comercial e MBA em Controladoria e Finanças, a empresa une a visão técnica das operações com a inteligência financeira.</p>
+                            <p>O nosso perfil é estritamente <span class="italic text-navy font-bold">'mão na massa'</span>. Utilizamos paixão por análise de dados para garantir que a prevenção de perdas seja um motor ativo de lucratividade.</p>
+                            <blockquote class="border-l-4 border-emerald pl-5 my-8 italic text-slate-700 bg-slate-50 p-6 rounded-r-lg font-medium text-xl shadow-sm">
+                                "Proteger o seu lucro exige mais do que câmaras de segurança. Exige compreender onde o processo falha, auditar a execução e ligar a segurança diretamente à Controladoria."
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUBSTITUIÇÃO DO BLOGGER XML POR ESTRUTURA HTML LIMPA -->
+        <section class="py-16 bg-slate-50 mt-20 md:mt-0" id="blog-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12 mt-10">
+                    <h2 class="text-3xl font-heading font-bold text-navy mb-4">Os Nossos Artigos</h2>
+                    <p class="text-slate-600 text-lg">Conteúdo especializado em prevenção de perdas e controladoria.</p>
+                </div>
+                <div class="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-slate-200 text-center">
+                    <div class="py-10">
+                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                            <i class="w-8 h-8" data-lucide="book-open"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-navy">Blog em Construção</h3>
+                        <p class="text-slate-500 mt-2">Em breve, novos artigos sobre prevenção de perdas, Varejo e KPIs operacionais estarão disponíveis aqui.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 lg:py-28 bg-lightbg relative border-t border-slate-200" id="contato">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-heading font-bold text-navy mb-4">O Próximo Passo: Vamos medir a temperatura da sua loja?</h2>
+                    <p class="text-slate-600 text-lg">Agende uma reunião estratégica para entendermos os desafios da sua operação.</p>
+                </div>
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl flex flex-col lg:flex-row border border-slate-100">
+                    <div class="lg:w-2/5 p-10 lg:p-14 bg-navy relative text-white">
+                        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                        <div class="relative z-10 h-full flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-2xl font-heading font-bold text-gold mb-8">Fale Connosco</h3>
+                                <div class="space-y-8">
+                                    <div class="flex items-start gap-4">
+                                        <div class="bg-white/10 p-3 rounded-lg text-gold shrink-0"><i class="w-6 h-6" data-lucide="user"></i></div>
+                                        <div><p class="text-sm text-slate-400 uppercase tracking-wider font-bold mb-1">Responsável</p><p class="text-lg font-medium">Leandro Silva</p></div>
+                                    </div>
+                                    <div class="flex items-start gap-4">
+                                        <div class="bg-white/10 p-3 rounded-lg text-gold shrink-0"><i class="w-6 h-6" data-lucide="phone"></i></div>
+                                        <div><p class="text-sm text-slate-400 uppercase tracking-wider font-bold mb-1">WhatsApp</p><a class="text-lg font-medium hover:text-gold transition-colors" href="https://wa.me/5541996369717" target="_blank">(41) 9 9636-9717</a></div>
+                                    </div>
+                                    <div class="flex items-start gap-4">
+                                        <div class="bg-white/10 p-3 rounded-lg text-gold shrink-0"><i class="w-6 h-6" data-lucide="mail"></i></div>
+                                        <div><p class="text-sm text-slate-400 uppercase tracking-wider font-bold mb-1">E-mail</p><a class="text-lg font-medium hover:text-gold transition-colors break-all" href="mailto:contato@lucroseguro.com.br">contato@lucroseguro.com.br</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-12 pt-8 border-t border-white/10">
+                                <a class="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-colors shadow-lg" href="https://wa.me/5541996369717" target="_blank">
+                                    <i class="w-6 h-6" data-lucide="message-circle"></i> Chamar no WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:w-3/5 p-10 lg:p-14">
+                        <form class="space-y-5" id="contactForm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div><label class="block text-sm font-bold text-slate-700 mb-1">Nome Completo</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" placeholder="O seu nome" required type="text"/></div>
+                                <div><label class="block text-sm font-bold text-slate-700 mb-1">Empresa / Loja</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" placeholder="Nome do seu negócio" type="text"/></div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div><label class="block text-sm font-bold text-slate-700 mb-1">E-mail Corporativo</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" placeholder="seu@email.com" required type="email"/></div>
+                                <div><label class="block text-sm font-bold text-slate-700 mb-1">WhatsApp</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" placeholder="(00) 00000-0000" required type="tel"/></div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Maior constrangimento na operação hoje?</label>
+                                <textarea class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 resize-none" placeholder="Ex: Quebras no FLV, controlo de docas..." required rows="4"></textarea>
+                            </div>
+                            <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" type="submit">
+                                Solicitar Contacto <i class="w-5 h-5" data-lucide="send"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-[#051424] border-t border-white/5 pt-16 pb-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center text-center md:text-left border-b border-white/10 pb-12 mb-8">
+                    <div class="flex flex-col items-center md:items-start">
+                        <div class="flex items-center gap-3 mb-4">
+                            <svg class="h-12 w-auto" viewBox="0 0 120 120"><path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#FFFFFF"/></svg>
+                            <div class="text-white text-3xl font-heading flex items-center pt-1"><span class="font-extrabold tracking-tight">LUCRO</span><span class="font-light">SEGURO</span></div>
+                        </div>
+                        <p class="text-slate-400 text-sm max-w-xs">Transformando Perdas Invisíveis em Lucro Líquido através de processos auditáveis e controladoria.</p>
+                    </div>
+                    <div class="flex flex-col items-center md:items-start">
+                        <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Navegação</h4>
+                        <div class="space-y-2 flex flex-col items-center md:items-start">
+                            <a class="text-slate-400 hover:text-gold transition-colors text-sm" href="#cenario">O Cenário do Retalho</a>
+                            <a class="text-slate-400 hover:text-gold transition-colors text-sm" href="#metodologia">A Metodologia</a>
+                            <a class="text-slate-400 hover:text-gold transition-colors text-sm" href="#" onclick="showView('login')">Portal do Cliente</a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center md:items-start">
+                        <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Dê o primeiro passo</h4>
+                        <p class="text-slate-400 text-sm mb-4 text-center md:text-left">Agende a aplicação do Kit Diagnóstico Gratuito na sua loja.</p>
+                        <a class="text-gold border border-gold hover:bg-gold hover:text-navy font-bold py-2 px-6 rounded-lg transition-all text-sm inline-flex items-center gap-2" href="https://wa.me/5541996369717" target="_blank">Falar no WhatsApp</a>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-slate-500 text-sm">&copy; 2026 LUCROSEGURO. Todos os direitos reservados. Sede em Curitiba, PR.</p>
+                </div>
+            </div>
+        </footer>
     </div>
 
 </div>
