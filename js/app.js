@@ -1120,12 +1120,24 @@ window.showView = (vN) => {
     
     if(vN === 'site-principal') { 
         document.getElementById('site-principal')?.classList.remove('hidden'); 
+        document.getElementById('site-principal')?.classList.add('flex');
     } else {
         document.getElementById('portal-cliente')?.classList.remove('hidden'); 
         document.getElementById('portal-cliente')?.classList.add('flex');
-        if(vN === 'login') document.getElementById('auth-view')?.classList.remove('hidden');
-        if(vN === 'admin') document.getElementById('view-admin')?.classList.remove('hidden');
-        if(vN === 'client') { document.getElementById('view-client')?.classList.remove('hidden'); if(window.mudarEstadoSegmento) window.mudarEstadoSegmento('hub'); }
+        
+        if(vN === 'login') { 
+            document.getElementById('auth-view')?.classList.remove('hidden');
+            document.getElementById('auth-view')?.classList.add('flex');
+        }
+        if(vN === 'admin') {
+            document.getElementById('view-admin')?.classList.remove('hidden');
+            document.getElementById('view-admin')?.classList.add('flex');
+        }
+        if(vN === 'client') { 
+            document.getElementById('view-client')?.classList.remove('hidden'); 
+            document.getElementById('view-client')?.classList.add('flex');
+            if(window.mudarEstadoSegmento) window.mudarEstadoSegmento('hub'); 
+        }
     }
     window.scrollTo(0, 0);
 };
