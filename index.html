@@ -1,35 +1,22 @@
 <!DOCTYPE html>
-<html class="scroll-smooth bg-slate-50" lang="pt-BR" dir="ltr">
+<html lang="pt-PT" class="scroll-smooth bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUCROSEGURO</title>
-    <meta name="theme-color" content="#0A2540">
-    
-    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
-    <link href="https://www.lucroseguro.com/" rel="canonical" />
-    <meta property="og:url" content="https://www.lucroseguro.com/" />
-    <meta property="og:title" content="LUCROSEGURO" />
-    <meta property="og:description" content="Consultoria Especializada em Prevenção de Perdas" />
+    <title>LUCROSEGURO - Prevenção de Perdas e Controladoria</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;700;800&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;700;800&display=swap" rel="stylesheet" />
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        navy: '#0A2540',
-                        navyLight: '#113A63',
-                        gold: '#D4AF37',
-                        goldLight: '#E5C665',
-                        emerald: '#008950',
-                        lightbg: '#F8FAFC',
+                        navy: '#0A2540', navyLight: '#113A63',
+                        gold: '#D4AF37', goldLight: '#E5C665',
+                        emerald: '#008950', lightbg: '#F8FAFC',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -40,10 +27,39 @@
         }
     </script>
 
-    <link rel="stylesheet" href="css/style.css">
-</head>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+    <style>
+        .logo-text-bold { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: -1px; }
+        .logo-text-light { font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 0px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        @media print {
+            nav, header, footer, #client-tabs, #form-kpi, #form-quebras, #form-recebimento, #form-validade, #form-auditoria-preco, #form-caixa-central, #form-furtos, #form-inventario, button, .btn-logout, #contato { 
+                display: none !important; 
+            }
+            body { background-color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #view-client { background-color: white !important; }
+            .shadow-sm, .shadow-md, .shadow-xl { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+            canvas { max-height: 250px !important; }
+            .grid { page-break-inside: avoid; }
+            #portal-cliente { display: block !important; }
+        }
+
+        .estado-hub #loading-data, .estado-hub #empty-state-client, .estado-hub #dashboard-content { display: none !important; }
+        .estado-varejo #container-segmentos { display: none !important; }
+        .estado-varejo #btn-voltar-hub { display: flex !important; }
+        .estado-industria #container-segmentos { display: none !important; }
+        .estado-industria #btn-voltar-hub { display: flex !important; }
+    </style>
+</head>
 <body class="font-sans text-slate-800 antialiased selection:bg-gold selection:text-navy min-h-screen flex flex-col">
+
+<div id="app-root">
 
     <div class="hidden flex-col w-full min-h-screen" id="portal-cliente">
         
@@ -51,25 +67,26 @@
             <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
             <div class="absolute -top-40 -right-40 w-96 h-96 bg-gold rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
             <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-            
+
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative z-10 border border-white/20 text-center">
                 <div class="flex justify-center mb-6 items-center gap-2">
                     <svg class="h-10 w-auto" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
                         <g transform="translate(10, 10)">
-                            <path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#0A2540"></path>
-                            <rect fill="#D4AF37" height="20" rx="2" width="10" x="16" y="56"></rect>
-                            <rect fill="#D4AF37" height="36" rx="2" width="10" x="34" y="40"></rect>
-                            <rect fill="#D4AF37" height="53" rx="2" width="10" x="52" y="23"></rect>
-                            <path d="M 10 53 L 30 73 L 70 20" fill="none" stroke="#008950" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.3"></path>
+                            <path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#0A2540"/>
+                            <rect fill="#D4AF37" height="20" rx="2" width="10" x="16" y="56"/>
+                            <rect fill="#D4AF37" height="36" rx="2" width="10" x="34" y="40"/>
+                            <rect fill="#D4AF37" height="53" rx="2" width="10" x="52" y="23"/>
+                            <path d="M 10 53 L 30 73 L 70 20" fill="none" stroke="#008950" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.3"/>
                         </g>
                     </svg>
                     <div class="text-navy text-2xl font-heading flex items-center pt-1">
                         <span class="font-extrabold tracking-tight">LUCRO</span><span class="font-light">SEGURO</span>
                     </div>
                 </div>
+
                 <h2 class="text-2xl font-heading font-bold text-navy mb-1">Acesso ao Sistema</h2>
                 <p class="text-slate-500 text-sm mb-8">Insira as credenciais de acesso</p>
-                
+
                 <form class="space-y-4 text-left" id="login-form">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1 ml-1">E-mail</label>
@@ -89,16 +106,18 @@
                         </div>
                     </div>
                     <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 group mt-6" id="btn-do-login" type="submit">
-                        <i class="w-5 h-5 text-gold group-hover:scale-110 transition-transform" data-lucide="log-in"></i> Entrar na Plataforma
+                        <i class="w-5 h-5 text-gold group-hover:scale-110 transition-transform" data-lucide="log-in"></i>
+                        Entrar na Plataforma
                     </button>
-                    <a class="w-full mt-5 block text-center text-sm font-bold text-slate-400 hover:text-navy transition-colors" href="#" onclick="document.getElementById('site-principal').style.display='block'; document.getElementById('portal-cliente').style.display='none'; return false;">&#8592; Voltar ao Site Institucional</a>
+                    <a class="w-full mt-5 block text-center text-sm font-bold text-slate-400 hover:text-navy transition-colors" href="#" onclick="showView('site-principal')">&#8592; Voltar ao Site Institucional</a>
                 </form>
                 
                 <div class="hidden mt-4 text-sm text-slate-500 flex items-center justify-center gap-2 animate-pulse" id="login-loading">
                     <i class="w-4 h-4 animate-spin" data-lucide="loader-2"></i> A verificar credenciais...
                 </div>
                 <div class="hidden mt-4 bg-red-50 border border-red-200 text-red-600 text-xs p-3 rounded-lg text-left" id="login-error-box">
-                    <strong class="block mb-1"><i class="w-4 h-4 inline" data-lucide="alert-circle"></i> Aviso:</strong><span id="login-error-text"></span>
+                    <strong class="block mb-1"><i class="w-4 h-4 inline" data-lucide="alert-circle"></i> Aviso:</strong>
+                    <span id="login-error-text"></span>
                 </div>
             </div>
         </div>
@@ -123,7 +142,7 @@
                     </div>
                 </div>
             </header>
-            
+
             <main class="flex-1 max-w-5xl mx-auto px-4 py-8 w-full">
                 <div class="flex flex-wrap justify-center sm:justify-start gap-3 mb-8" id="admin-menu-abas">
                     <button class="w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md" id="btn-admin-tab-users">
@@ -139,7 +158,6 @@
                 <div class="space-y-8" id="admin-wrapper-tab-users">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
                         <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="building-2"></i> Cadastrar Empresa (Matriz)</h2>
-                        <p class="text-slate-500 text-sm mb-6">Crie o grupo ou empresa raiz antes de vincular os usuários.</p>
                         <form class="flex flex-col md:flex-row gap-4 items-start md:items-end" id="form-nova-empresa">
                             <div class="flex-1 w-full">
                                 <label class="block text-sm font-bold text-slate-700 mb-1">Nome da Empresa</label>
@@ -149,52 +167,43 @@
                                 <i class="w-5 h-5" data-lucide="plus"></i> Criar Empresa
                             </button>
                         </form>
-                        <p class="hidden text-emerald font-bold mt-3 text-sm" id="msg-ne-success">Empresa cadastrada no banco de dados com sucesso!</p>
+                        <p class="hidden text-emerald font-bold mt-3 text-sm" id="msg-ne-success">Empresa cadastrada com sucesso!</p>
                     </div>
 
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
                         <div class="mb-6 border-b border-slate-100 pb-4">
                             <h2 class="text-xl font-heading font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="user-plus"></i> Vincular Usuário</h2>
-                            <p class="text-slate-500 text-sm mt-1">Vincule os e-mails às suas respectivas Empresas e Filiais (Lojas).</p>
                         </div>
                         <form class="space-y-6" id="form-gestao-clientes">
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div>
                                     <label class="block text-sm font-bold text-slate-700 mb-1">E-mail do Usuário</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="gc-email" placeholder="usuario@empresa.com" required type="email"/>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="gc-email" required type="email"/>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-slate-700 mb-1">Senha de Acesso</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="gc-senha" placeholder="Mínimo 6 caracteres" required type="text"/>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="gc-senha" required type="text"/>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-slate-700 mb-1">Empresa (Matriz)</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors font-bold text-navy" id="gc-empresa" required>
-                                        <option value="">Carregando empresas...</option>
-                                    </select>
+                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 font-bold text-navy" id="gc-empresa" required></select>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-slate-700 mb-1">Filial / Unidade</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="gc-filial" placeholder="Ex: Loja Centro" required type="text"/>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="gc-filial" required type="text"/>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-slate-700 mb-1">Nível de Acesso</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="gc-role" required>
+                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="gc-role" required>
                                         <option value="operacional">Operacional (Lança Dados)</option>
                                         <option value="admin">Gestor (Vê Dashboards)</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="hidden bg-emerald/10 border border-emerald/20 text-emerald px-4 py-3 rounded-lg flex items-center gap-2" id="msg-gc-success">
-                                <i class="w-5 h-5" data-lucide="check-circle-2"></i><span class="font-medium">Vínculo salvo com sucesso!</span>
-                            </div>
-                            <div class="hidden bg-red-100 border border-red-200 text-red-600 px-4 py-3 rounded-lg flex items-center gap-2" id="msg-gc-error">
-                                <i class="w-5 h-5" data-lucide="alert-triangle"></i><span class="font-medium" id="txt-gc-error">Erro ao salvar.</span>
-                            </div>
+                            <div class="hidden bg-emerald/10 border border-emerald/20 text-emerald px-4 py-3 rounded-lg flex items-center gap-2" id="msg-gc-success">Vínculo salvo!</div>
+                            <div class="hidden bg-red-100 border border-red-200 text-red-600 px-4 py-3 rounded-lg flex items-center gap-2" id="msg-gc-error"><span id="txt-gc-error"></span></div>
                             <div class="flex justify-end pt-4 border-t border-slate-100 mt-6">
-                                <button class="bg-navy hover:bg-navyLight text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 group" id="btn-save-gc" type="submit">
-                                    <i class="w-5 h-5 text-gold group-hover:scale-110 transition-transform" data-lucide="save"></i> Vincular Usuário
-                                </button>
+                                <button class="bg-navy hover:bg-navyLight text-white font-bold py-3 px-8 rounded-xl shadow-md flex items-center justify-center gap-2" id="btn-save-gc" type="submit">Vincular Usuário</button>
                             </div>
                         </form>
                     </div>
@@ -203,63 +212,39 @@
                 <div class="hidden space-y-8" id="admin-wrapper-tab-kpi">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
                         <h1 class="text-2xl font-heading font-bold text-navy mb-2">Registar Resultados de KPI</h1>
-                        <p class="text-slate-500 text-sm mb-6">Insira os dados da auditoria. Estes números atualizarão os gráficos do cliente em tempo real.</p>
                         <form class="space-y-6" id="form-kpi">
                             <div class="p-5 bg-navy/5 border border-navy/10 rounded-xl flex flex-col md:flex-row md:items-end gap-4 mb-6">
                                 <div class="flex-1">
-                                    <label class="block text-sm font-bold text-slate-700 mb-1 flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="user-check"></i> E-mail do Cliente</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="input-client-email" placeholder="email@docliente.com" required type="email"/>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">E-mail do Cliente (Gaveta)</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="input-client-email" required type="email"/>
                                 </div>
-                                <button class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap" id="btn-load-admin-history" type="button">
-                                    <i class="w-4 h-4" data-lucide="history"></i> Ver Lançamentos
-                                </button>
+                                <button class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg shadow-sm" id="btn-load-admin-history" type="button">Ver Lançamentos</button>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Mês de Referência</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="input-month" placeholder="Ex: Janeiro/2026" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Ações Implantadas (Acumulado)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="input-actions" min="0" placeholder="Ex: 3 no mês" required type="number"/>
-                                </div>
+                                <div><label class="block text-sm font-bold text-slate-700 mb-1">Mês de Referência</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-slate-50" id="input-month" required type="text"/></div>
+                                <div><label class="block text-sm font-bold text-slate-700 mb-1">Ações Implantadas (Acumulado)</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-slate-50" id="input-actions" required type="number"/></div>
                             </div>
                             <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
-                                <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="target"></i> Dados Globais</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-bold text-slate-700 mb-1">Índice de Perda Total (%)</label>
-                                        <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="input-total" placeholder="Ex: 1.87" required step="0.01" type="number"/>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-bold text-slate-700 mb-1">Economia Financeira (R$)</label>
-                                        <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="input-savings" placeholder="Ex: 15000" required step="0.01" type="number"/>
-                                    </div>
+                                    <div><label class="block text-sm font-bold text-slate-700 mb-1">Índice de Perda Total (%)</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-white" id="input-total" required step="0.01" type="number"/></div>
+                                    <div><label class="block text-sm font-bold text-slate-700 mb-1">Economia Financeira (R$)</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-white" id="input-savings" required step="0.01" type="number"/></div>
                                 </div>
                             </div>
                             <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
-                                <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="pie-chart"></i> Detalhamento por Pilar (%)</h3>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Desconhecidas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white" id="input-pilar1" required step="0.01" type="number"/></div>
-                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Conhecidas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white" id="input-pilar2" required step="0.01" type="number"/></div>
-                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Financeiras</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white" id="input-pilar3" required step="0.01" type="number"/></div>
-                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Administrativas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white" id="input-pilar4" required step="0.01" type="number"/></div>
+                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Desconhecidas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none" id="input-pilar1" required step="0.01" type="number"/></div>
+                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Conhecidas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none" id="input-pilar2" required step="0.01" type="number"/></div>
+                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Financeiras</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none" id="input-pilar3" required step="0.01" type="number"/></div>
+                                    <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Administrativas</label><input class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none" id="input-pilar4" required step="0.01" type="number"/></div>
                                 </div>
                             </div>
-                            <button class="w-full bg-emerald hover:bg-emerald/90 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-kpi" type="submit">
-                                <i class="w-5 h-5" data-lucide="save"></i> Publicar Resultados no Portal
-                            </button>
-                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-success">Dados gravados com sucesso!</p>
+                            <button class="w-full bg-emerald hover:bg-emerald/90 text-white font-bold py-4 px-6 rounded-xl shadow-md" id="btn-save-kpi" type="submit">Publicar Resultados no Portal</button>
+                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-success">Dados gravados!</p>
                             <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-error"></p>
                         </form>
                     </div>
+                    
                     <div class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" id="admin-history-container">
-                        <div class="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                            <div>
-                                <h2 class="font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="database"></i> Gestão de Registos</h2>
-                                <p class="text-xs text-slate-500 mt-1" id="admin-history-subtitle">Lançamentos do cliente selecionado</p>
-                            </div>
-                        </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm text-slate-600">
                                 <thead class="bg-slate-100 text-slate-500 uppercase text-[10px] font-bold">
@@ -272,1351 +257,286 @@
                 </div>
             </main>
         </div>
-<div class="hidden flex-1 flex flex-col min-h-screen bg-slate-50" id="view-client">
+      
+        <div class="hidden flex-1 flex flex-col min-h-screen bg-slate-50" id="view-client">
             <header class="bg-navy text-white sticky top-0 z-40 shadow-md">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16 items-center">
-                        <div class="flex items-center gap-3">
-                            <svg class="h-8 w-auto" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                                <g transform="translate(10, 10)">
-                                    <path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#FFFFFF"></path>
-                                    <rect fill="#D4AF37" height="20" rx="2" width="10" x="16" y="56"></rect>
-                                    <rect fill="#D4AF37" height="36" rx="2" width="10" x="34" y="40"></rect>
-                                    <rect fill="#D4AF37" height="53" rx="2" width="10" x="52" y="23"></rect>
-                                    <path d="M 10 53 L 30 73 L 70 20" fill="none" stroke="#008950" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.3"></path>
-                                </g>
-                            </svg>
-                            <span class="font-heading font-bold text-xl tracking-tight hidden sm:block text-white">Proteção ao <span class="font-light">Lucro</span></span>
-                        </div>
-                        <div class="flex items-center gap-3 sm:gap-4">
-                            <button class="text-xs font-bold text-navy bg-gold hover:bg-goldLight transition-colors px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-sm" id="btn-switch-admin" style="display: none;">
-                                <i class="w-4 h-4" data-lucide="shield-check"></i> Visão Consultor
-                            </button>
-                            <div class="hidden md:flex items-center gap-3 border-l border-white/10 pl-4">
-                                <div class="flex flex-col text-right">
-                                    <span class="text-sm font-bold text-gold tracking-wide" id="separator-admin">Portal de Resultados</span>
-                                    <span class="text-[11px] font-medium text-slate-300" id="top-user-email">carregando...</span>
-                                </div>
-                                <div class="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-slate-300 shadow-inner">
-                                    <i class="w-4 h-4" data-lucide="user"></i>
-                                </div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+                    <div class="flex items-center gap-3">
+                        <span class="font-heading font-bold text-xl tracking-tight hidden sm:block text-white">LUCRO<span class="font-light">SEGURO</span></span>
+                    </div>
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <button class="text-xs font-bold text-navy bg-gold px-3 py-1.5 rounded-lg shadow-sm" id="btn-switch-admin" style="display: none;">Visão Consultor</button>
+                        <div class="hidden md:flex items-center gap-3 border-l border-white/10 pl-4">
+                            <div class="flex flex-col text-right">
+                                <span class="text-sm font-bold text-gold" id="separator-admin">Portal</span>
+                                <span class="text-[11px] text-slate-300" id="top-user-email">--</span>
                             </div>
-                            <button class="btn-logout text-slate-300 hover:text-red-400 transition-colors p-2 rounded-lg bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/20 ml-1 sm:ml-2" title="Sair do Sistema">
-                                <i class="w-5 h-5" data-lucide="log-out"></i>
-                            </button>
                         </div>
+                        <button class="btn-logout text-slate-300 hover:text-red-400 p-2 rounded-lg bg-white/5 border border-white/10"><i class="w-5 h-5" data-lucide="log-out"></i></button>
                     </div>
                 </div>
             </header>
 
             <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+                
                 <div class="flex flex-wrap justify-center sm:justify-start gap-3 mb-8" id="menu-abas">
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md" id="btn-tab-dash"><i class="w-6 h-6 text-gold mb-1" data-lucide="bar-chart-2"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Painel</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-form"><i class="w-6 h-6 mb-1" data-lucide="package-minus"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Quebras</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-rec"><i class="w-6 h-6 mb-1" data-lucide="truck"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Docas</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-val"><i class="w-6 h-6 mb-1" data-lucide="calendar-clock"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Validade</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-furtos"><i class="w-6 h-6 mb-1" data-lucide="shield-alert"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Furtos</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-preco"><i class="w-6 h-6 mb-1" data-lucide="tags"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Preços</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-caixa"><i class="w-6 h-6 mb-1" data-lucide="coins"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Caixa</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-inv"><i class="w-6 h-6 mb-1 text-emerald" data-lucide="scan-barcode"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Inventário</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-tar"><i class="w-6 h-6 mb-1 text-orange-500" data-lucide="list-todo"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Tarefas</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center gap-1 shadow-md" id="btn-tab-dash"><i class="w-6 h-6 text-gold mb-1" data-lucide="bar-chart-2"></i><span class="text-[10px] font-bold uppercase text-center">Painel</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center gap-1 shadow-sm" id="btn-tab-form"><i class="w-6 h-6 mb-1" data-lucide="package-minus"></i><span class="text-[10px] font-bold uppercase text-center">Quebras</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center gap-1 shadow-sm" id="btn-tab-rec"><i class="w-6 h-6 mb-1" data-lucide="truck"></i><span class="text-[10px] font-bold uppercase text-center">Docas</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center gap-1 shadow-sm" id="btn-tab-val"><i class="w-6 h-6 mb-1" data-lucide="calendar-clock"></i><span class="text-[10px] font-bold uppercase text-center">Validade</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center gap-1 shadow-sm" id="btn-tab-furtos"><i class="w-6 h-6 mb-1" data-lucide="shield-alert"></i><span class="text-[10px] font-bold uppercase text-center">Furtos</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center gap-1 shadow-sm" id="btn-tab-preco"><i class="w-6 h-6 mb-1" data-lucide="tags"></i><span class="text-[10px] font-bold uppercase text-center">Preços</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center gap-1 shadow-sm" id="btn-tab-caixa"><i class="w-6 h-6 mb-1" data-lucide="coins"></i><span class="text-[10px] font-bold uppercase text-center">Caixa</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center gap-1 shadow-sm" id="btn-tab-inv"><i class="w-6 h-6 mb-1 text-emerald" data-lucide="scan-barcode"></i><span class="text-[10px] font-bold uppercase text-center">Inventário</span></button>
+                    <button class="w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center gap-1 shadow-sm" id="btn-tab-tar"><i class="w-6 h-6 mb-1 text-orange-500" data-lucide="list-todo"></i><span class="text-[10px] font-bold uppercase text-center">Tarefas</span></button>
                 </div>
 
-                <div class="hidden flex-wrap justify-center sm:justify-start gap-3 mb-8" id="menu-abas-industria">
-                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md" id="btn-tab-dash-ind"><i class="w-6 h-6 text-gold mb-1" data-lucide="factory"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Painel Fabril</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-prod"><i class="w-6 h-6 mb-1" data-lucide="settings-2"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Produção / Refugo</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-mp"><i class="w-6 h-6 mb-1" data-lucide="scale"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Matéria-Prima (Balança)</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-qualidade"><i class="w-6 h-6 mb-1 text-red-500" data-lucide="shield-alert"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Controle Qualidade</span></button>
-                    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-inv-ind"><i class="w-6 h-6 mb-1 text-emerald" data-lucide="boxes"></i><span class="text-[10px] font-bold uppercase tracking-wider text-center">Inventário PA</span></button>
-                </div>
-
-                <div>
-                    <div class="max-w-7xl mx-auto px-4 md:px-8 py-8" id="container-segmentos">
-                        <div class="mb-8">
-                            <h2 class="text-3xl font-heading font-bold text-navy">Selecione o Segmento</h2>
-                            <p class="text-slate-500 mt-2">Escolha a área de atuação da empresa para acessar as ferramentas de Prevenção.</p>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-gold transition-all text-left group w-full" id="card-varejo" onclick="mudarEstadoSegmento('varejo')">
-                                <div class="w-12 h-12 bg-navy/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-navy transition-colors">
-                                    <svg class="w-6 h-6 text-navy group-hover:text-white transition-colors" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                                </div>
-                                <h3 class="text-lg font-bold text-navy mb-2">Varejo</h3>
-                                <p class="text-sm text-slate-500">Quebras, Validades, Recebimento e Dashboards de Loja.</p>
-                            </button>
-                            <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-gold transition-all text-left group w-full" id="card-industria" onclick="mudarEstadoSegmento('industria')">
-                                <div class="w-12 h-12 bg-navy/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-navy transition-colors">
-                                    <svg class="w-6 h-6 text-navy group-hover:text-white transition-colors" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path><path d="M17 18h1"></path><path d="M12 18h1"></path><path d="M7 18h1"></path></svg>
-                                </div>
-                                <h3 class="text-lg font-bold text-navy mb-2">Indústria</h3>
-                                <p class="text-sm text-slate-500">Rendimento de Lotes, Qualidade, Refugo e Balança.</p>
-                            </button>
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 opacity-60 cursor-not-allowed">
-                                <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-slate-400" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="16" x="4" y="4"></rect><rect height="6" rx="1" width="6" x="9" y="9"></rect><path d="M15 2v2"></path><path d="M15 20v2"></path><path d="M2 15h2"></path><path d="M2 9h2"></path><path d="M20 15h2"></path><path d="M20 9h2"></path><path d="M9 2v2"></path><path d="M9 20v2"></path></svg>
-                                </div>
-                                <h3 class="text-lg font-bold text-slate-400 mb-2">Logística</h3>
-                                <p class="text-sm text-slate-400">Em breve. Avarias em transporte e centros de distribuição.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 opacity-60 cursor-not-allowed">
-                                <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-slate-400" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path><path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"></path><path d="M12 3v6"></path></svg>
-                                </div>
-                                <h3 class="text-lg font-bold text-slate-400 mb-2">E-Commerce</h3>
-                                <p class="text-sm text-slate-400">Em breve. Controle de fraudes e extravios.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="hidden max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-2" id="btn-voltar-hub">
-                        <button class="text-sm font-bold text-slate-500 hover:text-navy flex items-center gap-2 transition-colors bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm" onclick="mudarEstadoSegmento('hub')">
-                            &#8592; Voltar aos Segmentos
+                <div class="max-w-7xl mx-auto px-4 md:px-8 py-8" id="container-segmentos">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-gold w-full text-left" id="card-varejo" onclick="mudarEstadoSegmento('varejo')">
+                            <h3 class="text-lg font-bold text-navy mb-2">Varejo</h3>
+                            <p class="text-sm text-slate-500">Quebras, Validades, Recebimento.</p>
                         </button>
                     </div>
+                </div>
 
-                    <div class="flex flex-col items-center justify-center py-20 text-navy" id="loading-data">
-                        <i class="w-10 h-10 animate-spin mb-4 text-gold" data-lucide="loader-2"></i>
-                        <p class="font-bold">A sincronizar dados da Controladoria...</p>
+                <div class="hidden max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-2" id="btn-voltar-hub">
+                    <button class="text-sm font-bold text-slate-500 hover:text-navy bg-white px-4 py-2 rounded-lg border border-slate-200" onclick="mudarEstadoSegmento('hub')">&#8592; Voltar</button>
+                </div>
+                
+                <div class="flex flex-col items-center justify-center py-20 text-navy" id="loading-data">
+                    <i class="w-10 h-10 animate-spin mb-4 text-gold" data-lucide="loader-2"></i>
+                    <p class="font-bold">A sincronizar dados...</p>
+                </div>
+
+                <div class="hidden" id="wrapper-tab-dash">
+                    <h1 class="text-3xl font-heading font-bold text-navy mb-8">Visão Geral de Perdas</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl shadow-sm border p-6"><h3 class="text-[10px] text-slate-400 font-bold">Total</h3><span class="text-3xl font-bold" id="ui-total-loss">--%</span></div>
                     </div>
-
-                    <div class="hidden" id="wrapper-tab-dash">
-                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-                            <div>
-                                <h1 class="text-3xl font-heading font-bold text-navy">Visão Geral de Perdas</h1>
-                                <p class="text-slate-500 mt-1">Evolução dos KPIs após intervenção da Proteção ao Lucro.</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="text-slate-500 hover:text-navy font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-4 py-2 rounded-lg bg-white hidden sm:flex shadow-sm hover:bg-slate-50" onclick="window.print()">
-                                    <i class="w-4 h-4" data-lucide="printer"></i> Gerar PDF
-                                </button>
-                                <div class="bg-emerald/10 text-emerald font-bold px-4 py-2 rounded-lg border border-emerald/20 flex items-center gap-2">
-                                    <i class="w-5 h-5" data-lucide="check-circle"></i> Dados Atualizados
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                            <div class="absolute right-0 top-0 h-full w-64 bg-gradient-to-l from-emerald/10 to-transparent pointer-events-none"></div>
-                            <div>
-                                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Índice de Perda Total (Último Mês)</h2>
-                                <div class="flex items-baseline gap-3">
-                                    <span class="text-5xl font-heading font-bold text-navy" id="ui-total-loss">--%</span>
-                                    <span class="flex items-center text-sm font-bold px-2 py-1 rounded-md" id="ui-loss-diff">--</span>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-medium text-slate-500 mb-1">Economia Financeira Acumulada</p>
-                                <p class="text-3xl font-bold text-emerald" id="ui-savings">R$ --</p>
-                                <p class="text-xs text-slate-400 mt-1">Auditado pela Controladoria</p>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-red-500 rounded-t-2xl"></div>
-                                <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">Perdas Desconhecidas</h3>
-                                <span class="text-3xl font-bold text-navy" id="ui-p1">--%</span>
-                            </div>
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-orange-400 rounded-t-2xl"></div>
-                                <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">Perdas Conhecidas</h3>
-                                <span class="text-3xl font-bold text-navy" id="ui-p2">--%</span>
-                            </div>
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-emerald rounded-t-2xl"></div>
-                                <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">Perdas Financeiras</h3>
-                                <span class="text-3xl font-bold text-navy" id="ui-p3">--%</span>
-                            </div>
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 rounded-t-2xl"></div>
-                                <h3 class="text-[10px] text-slate-400 font-bold uppercase mb-1">Perdas Admin.</h3>
-                                <span class="text-3xl font-bold text-navy" id="ui-p4">--%</span>
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
-                            <h3 class="font-bold text-navy mb-4 flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="line-chart"></i> Evolução da Perda vs. Intervenção</h3>
-                            <div class="relative h-80 w-full">
-                                <canvas id="mainChart"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-                            <div class="p-6 border-b border-slate-100 bg-slate-50">
-                                <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="table-properties"></i> Razão Analítico (Histórico Mensal)</h3>
-                                <p class="text-xs text-slate-500 mt-1">Detalhamento do histórico de auditorias e impacto nos pilares.</p>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap">
-                                    <thead class="bg-slate-100 text-slate-500 uppercase text-[10px] font-bold">
-                                        <tr>
-                                            <th class="px-6 py-4">Mês / Ano</th>
-                                            <th class="px-6 py-4">Ações / Processos</th>
-                                            <th class="px-6 py-4 text-navy">Perda Global</th>
-                                            <th class="px-6 py-4 text-emerald">Economia (R$)</th>
-                                            <th class="px-6 py-4 border-l border-slate-200">Desconhecida</th>
-                                            <th class="px-6 py-4">Conhecida</th>
-                                            <th class="px-6 py-4">Financeira</th>
-                                            <th class="px-6 py-4">Admin.</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100" id="client-history-tbody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="hidden text-center py-20" id="empty-state-client">
-                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                            <i class="w-10 h-10" data-lucide="bar-chart"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-navy" id="empty-state-title">Nenhum dado encontrado</h3>
-                        <p class="text-slate-500 mt-2" id="empty-state-desc">O consultor ainda não publicou os resultados.</p>
-                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border p-6"><canvas id="mainChart"></canvas></div>
                 </div>
 
                 <div class="hidden" id="wrapper-tab-form">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto mb-8">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
-                            <div>
-                                <h2 class="text-2xl font-heading font-bold text-navy">Dashboard de Quebras</h2>
-                                <p class="text-slate-500 text-sm">Análise financeira dos lançamentos operacionais.</p>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <button class="text-emerald hover:text-emerald-700 font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" id="btn-export-csv">
-                                    <i class="w-4 h-4" data-lucide="download"></i> Excel (CSV)
-                                </button>
-                                <button class="text-slate-500 hover:text-navy font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" onclick="window.print()">
-                                    <i class="w-4 h-4" data-lucide="printer"></i> PDF
-                                </button>
-                                <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                    <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
-                                    <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-quebra"></select>
-                                    <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer" id="filtro-mes-quebra" type="month"/>
-                                </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto mb-8">
+                        <div class="flex justify-between items-center border-b pb-4 mb-4">
+                            <h2 class="text-xl font-bold text-navy">Dashboard de Quebras</h2>
+                            <div class="flex gap-2">
+                                <select class="px-3 py-2 rounded-lg border" id="filtro-filial-quebra"></select>
+                                <input class="bg-transparent text-sm" id="filtro-mes-quebra" type="month"/>
                             </div>
                         </div>
-
-                        <div class="flex flex-col items-center justify-center py-10 text-navy hidden" id="loading-quebras">
-                            <i class="w-8 h-8 animate-spin mb-2 text-gold" data-lucide="loader-2"></i>
-                            <p class="font-bold text-sm">A sincronizar com a Controladoria...</p>
-                        </div>
-
-                        <div class="hidden" id="quebras-dashboard-content">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div class="bg-red-50 rounded-xl p-6 border border-red-100 relative overflow-hidden">
-                                    <div class="absolute right-0 top-0 opacity-10 text-red-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="trending-down"></i>
-                                    </div>
-                                    <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Perda Financeira (R$)</p>
-                                    <p class="text-4xl font-heading font-bold text-red-700" id="ui-quebra-total-rs">R$ 0,00</p>
-                                    <p class="text-xs text-red-500 mt-2 font-medium" id="ui-quebra-subtitle-rs">Neste mês selecionado</p>
-                                </div>
-                                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
-                                    <div class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="package-minus"></i>
-                                    </div>
-                                    <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Volume de Itens</p>
-                                    <p class="text-4xl font-heading font-bold text-navy" id="ui-quebra-total-qtd">0</p>
-                                    <p class="text-xs text-slate-400 mt-2 font-medium">Unidades baixadas</p>
-                                </div>
+                        <div id="quebras-dashboard-content">
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="bg-red-50 p-4 rounded-xl border"><p class="text-xs text-red-600">Perda (R$)</p><p class="text-3xl font-bold text-red-700" id="ui-quebra-total-rs">R$ 0,00</p></div>
+                                <div class="bg-slate-50 p-4 rounded-xl border"><p class="text-xs text-slate-500">Volume</p><p class="text-3xl font-bold text-navy" id="ui-quebra-total-qtd">0</p></div>
                             </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                                <div>
-                                    <h3 class="font-bold text-navy mb-4 text-sm flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="pie-chart"></i> Representatividade por Motivo (R$)</h3>
-                                    <div class="relative min-h-[280px] w-full flex justify-center items-center">
-                                        <div class="w-full" id="chart-motivos"></div>
-                                    </div>
-                                </div>
-                                <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 h-full">
-                                    <h3 class="text-sm font-bold text-navy mb-4">Ranking de Impacto</h3>
-                                    <div class="flex flex-col gap-2" id="ranking-list"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="hidden text-center py-12" id="empty-state-quebras">
-                            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
-                                <i class="w-8 h-8" data-lucide="inbox"></i>
-                            </div>
-                            <h3 class="text-lg font-bold text-navy">Sem Lançamentos</h3>
-                            <p class="text-slate-500 text-sm mt-1">Nenhum registo de quebra encontrado para o mês selecionado. <br/>Utilize o formulário abaixo para registar perdas de chão de loja.</p>
+                            <div id="chart-motivos" class="h-64 w-full"></div>
                         </div>
                     </div>
-
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto">
-                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="plus-circle"></i> Novo Lançamento</h2>
-                        <p class="text-slate-500 text-sm mb-6">Registe as quebras operacionais (chão de loja). Estes dados são integrados na base de auditoria da Controladoria.</p>
-                        <form class="space-y-6" id="form-quebras">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Filial do Lançamento</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 disabled:bg-slate-200 disabled:text-slate-500 font-medium" id="q-filial-lancamento" required>
-                                        <option value="">A carregar filiais...</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">GTIN / Código de Barras</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-gtin" placeholder="Ex: 7891010101010" required type="text"/>
-                                </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto">
+                        <h2 class="text-xl font-bold text-navy mb-4">Novo Lançamento</h2>
+                        <form id="form-quebras" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-sm font-bold">Filial</label><select class="w-full p-3 border rounded" id="q-filial-lancamento" required></select></div>
+                                <div><label class="text-sm font-bold">GTIN</label><input class="w-full p-3 border rounded" id="q-gtin" required type="text"/></div>
+                                <div class="col-span-2"><label class="text-sm font-bold">Descrição</label><input class="w-full p-3 border rounded" id="q-desc" required type="text"/></div>
+                                <div><label class="text-sm font-bold">Qtd</label><input class="w-full p-3 border rounded" id="q-qtd" required type="number"/></div>
+                                <div><label class="text-sm font-bold">Custo</label><input class="w-full p-3 border rounded" id="q-custo" required type="number"/></div>
+                                <div class="col-span-2"><label class="text-sm font-bold">Motivo</label><select class="w-full p-3 border rounded" id="q-motivo" required><option value="Avaria">Avaria</option></select></div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">Descrição do Produto</label>
-                                <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-desc" placeholder="Ex: Leite Integral 1L" required type="text"/>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Quantidade</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-qtd" inputmode="decimal" placeholder="Ex: 2,5" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Custo Unit. (R$)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-custo" inputmode="decimal" placeholder="Ex: 4,50" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Motivo</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="q-motivo" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="Vencimento">Vencimento (Validade)</option>
-                                        <option value="Avaria">Avaria / Danificado</option>
-                                        <option value="Consumo Interno">Consumo Interno</option>
-                                        <option value="Furto Identificado">Furto Identificado</option>
-                                        <option value="Erro Administrativo">Erro Admin.</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-quebra" type="submit">
-                                    <i class="w-5 h-5" data-lucide="send"></i> Enviar para Auditoria
-                                </button>
-                                <p class="text-[10px] text-slate-400 text-center mt-3 font-medium tracking-wide">
-                                    <i class="w-3 h-3 inline text-gold" data-lucide="shield-alert"></i> Aviso: Lançamentos são definitivos e integrados ao fecho mensal.
-                                </p>
-                            </div>
-                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-quebra-success">Quebra registada com sucesso na Planilha!</p>
-                            <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-quebra-error"></p>
+                            <button class="w-full bg-navy text-white p-4 rounded font-bold" id="btn-save-quebra" type="submit">Enviar</button>
                         </form>
                     </div>
                 </div>
-<div class="hidden" id="wrapper-tab-recebimento">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto mb-8">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
-                            <div>
-                                <h2 class="text-2xl font-heading font-bold text-navy">Dashboard de Docas</h2>
-                                <p class="text-slate-500 text-sm">Análise financeira de divergências no recebimento.</p>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <button class="text-emerald hover:text-emerald-700 font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" id="btn-export-csv-docas">
-                                    <i class="w-4 h-4" data-lucide="download"></i> Excel (CSV)
-                                </button>
-                                <button class="text-slate-500 hover:text-navy font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" onclick="window.print()">
-                                    <i class="w-4 h-4" data-lucide="printer"></i> PDF
-                                </button>
-                                <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                    <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
-                                    <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-docas"></select>
-                                    <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer" id="filtro-mes-docas" type="month"/>
-                                </div>
+
+                <div class="hidden" id="wrapper-tab-recebimento">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto mb-8">
+                        <div class="flex justify-between items-center border-b pb-4 mb-4">
+                            <h2 class="text-xl font-bold text-navy">Docas</h2>
+                            <div class="flex gap-2">
+                                <select class="px-3 py-2 rounded-lg border" id="filtro-filial-docas"></select>
+                                <input class="bg-transparent text-sm" id="filtro-mes-docas" type="month"/>
                             </div>
                         </div>
-                        <div class="flex flex-col items-center justify-center py-10 text-navy hidden" id="loading-docas">
-                            <i class="w-8 h-8 animate-spin mb-2 text-gold" data-lucide="loader-2"></i>
-                            <p class="font-bold text-sm">A sincronizar com a Controladoria...</p>
-                        </div>
-                        <div class="hidden" id="docas-dashboard-content">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div class="bg-orange-50 rounded-xl p-6 border border-orange-100 relative overflow-hidden">
-                                    <div class="absolute right-0 top-0 opacity-10 text-orange-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="dollar-sign"></i>
-                                    </div>
-                                    <p class="text-xs font-bold text-orange-600 uppercase mb-1 tracking-wider">Impacto Financeiro (R$)</p>
-                                    <p class="text-4xl font-heading font-bold text-orange-700" id="ui-docas-custo">R$ 0,00</p>
-                                    <p class="text-xs text-orange-500 mt-2 font-medium">Potencial de ressarcimento/estorno</p>
-                                </div>
-                                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
-                                    <div class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="clipboard-list"></i>
-                                    </div>
-                                    <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Total de Ocorrências</p>
-                                    <p class="text-4xl font-heading font-bold text-navy" id="ui-docas-total">0</p>
-                                    <p class="text-xs text-slate-400 mt-2 font-medium">Registos efetuados no mês</p>
-                                </div>
+                        <div id="docas-dashboard-content">
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="bg-orange-50 p-4 rounded-xl border"><p class="text-xs text-orange-600">Impacto (R$)</p><p class="text-3xl font-bold text-orange-700" id="ui-docas-custo">R$ 0,00</p></div>
+                                <div class="bg-slate-50 p-4 rounded-xl border"><p class="text-xs text-slate-500">Ocorrências</p><p class="text-3xl font-bold text-navy" id="ui-docas-total">0</p></div>
                             </div>
-                            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 mb-8">
-                                <h3 class="font-bold text-navy mb-4 text-sm border-b border-slate-200 pb-2 flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="list"></i> Últimas Divergências Registradas</h3>
-                                <div class="flex flex-col gap-2 mt-4 max-h-64 overflow-y-auto pr-2" id="docas-lista-divergencias"></div>
-                            </div>
-                        </div>
-                        <div class="hidden text-center py-12" id="empty-state-docas">
-                            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
-                                <i class="w-8 h-8" data-lucide="truck"></i>
-                            </div>
-                            <h3 class="text-lg font-bold text-navy">Sem Ocorrências</h3>
-                            <p class="text-slate-500 text-sm mt-1">Nenhum registo de doca encontrado para o mês selecionado.</p>
+                            <div id="docas-lista-divergencias"></div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto">
-                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="plus-circle"></i> Nova Ocorrência no Recebimento</h2>
-                        <p class="text-slate-500 text-sm mb-6">Registe divergências no momento da entrega pelo fornecedor. Estes dados são vitais para cobrança e estorno de boletos.</p>
-                        <form class="space-y-6" id="form-recebimento">
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Filial do Lançamento</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 disabled:bg-slate-200 disabled:text-slate-500 font-medium" id="r-filial-lancamento" required>
-                                        <option value="">A carregar filiais...</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Data da Ocorrência</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="r-data" required type="date"/>
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Fornecedor (Transportadora)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="r-fornecedor" placeholder="Ex: Ambev / XPTO" required type="text"/>
-                                </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto">
+                        <h2 class="text-xl font-bold text-navy mb-4">Nova Ocorrência</h2>
+                        <form id="form-recebimento" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-sm font-bold">Filial</label><select class="w-full p-3 border rounded" id="r-filial-lancamento" required></select></div>
+                                <div><label class="text-sm font-bold">Data</label><input class="w-full p-3 border rounded" id="r-data" required type="date"/></div>
+                                <div><label class="text-sm font-bold">Qtd Div.</label><input class="w-full p-3 border rounded" id="r-qtd" required type="number"/></div>
+                                <div><label class="text-sm font-bold">Custo</label><input class="w-full p-3 border rounded" id="r-custo" required type="number"/></div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Nota Fiscal (NF-e)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="r-nf" placeholder="Ex: 123456" required type="text"/>
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Produto / Descrição</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="r-desc" placeholder="Ex: Cerveja Lata 350ml" required type="text"/>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Qtde. Divergente</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="r-qtd" inputmode="decimal" placeholder="Ex: 12" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Custo Unit. (R$)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="r-custo" inputmode="decimal" placeholder="Ex: 4,50" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Motivo da Ocorrência</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="r-motivo" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="Falta na Entrega">Falta na Entrega (Não embarcado)</option>
-                                        <option value="Avaria no Transporte">Avaria no Transporte</option>
-                                        <option value="Validade Curta">Validade Curta (Fora de Acordo)</option>
-                                        <option value="Inversão de Produto">Inversão de Produto (Entregou outro)</option>
-                                        <option value="Sem Pedido">Produto sem Pedido</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">Observações (Opcional)</label>
-                                <textarea class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors resize-none" id="r-obs" placeholder="Ex: Motorista assinou o canhoto fazendo a ressalva da falta..." rows="2"></textarea>
-                            </div>
-                            <div>
-                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-recebimento" type="submit">
-                                    <i class="w-5 h-5" data-lucide="send"></i> Enviar Registo de Docas
-                                </button>
-                            </div>
-                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-rec-success">Ocorrência de Recebimento registada com sucesso!</p>
-                            <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-rec-error"></p>
+                            <button class="w-full bg-navy text-white p-4 rounded font-bold" id="btn-save-recebimento" type="submit">Enviar Registo</button>
                         </form>
                     </div>
                 </div>
 
                 <div class="hidden" id="wrapper-tab-validade">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto mb-8">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
-                            <div>
-                                <h2 class="text-2xl font-heading font-bold text-navy">Dashboard de Validade</h2>
-                                <p class="text-slate-500 text-sm">Monitoramento e auditoria de produtos com risco de vencimento.</p>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <select class="hidden mr-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-validade"></select>
-                                <button class="text-emerald hover:text-emerald-700 font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" id="btn-export-csv-val">
-                                    <i class="w-4 h-4" data-lucide="download"></i> Excel (CSV)
-                                </button>
-                            </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto mb-8">
+                        <div class="flex justify-between items-center border-b pb-4 mb-4">
+                            <h2 class="text-xl font-bold text-navy">Validade</h2>
+                            <select class="px-3 py-2 rounded-lg border" id="filtro-filial-validade"></select>
                         </div>
-                        <div class="hidden" id="validade-dashboard-content">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div class="bg-orange-50 rounded-xl p-6 border border-orange-100 relative overflow-hidden">
-                                    <div class="absolute right-0 top-0 opacity-10 text-orange-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="alert-triangle"></i>
-                                    </div>
-                                    <p class="text-xs font-bold text-orange-600 uppercase mb-1 tracking-wider">Risco Financeiro (R$)</p>
-                                    <p class="text-4xl font-heading font-bold text-orange-700" id="ui-validade-custo">R$ 0,00</p>
-                                    <p class="text-xs text-orange-500 mt-2 font-medium">Custo dos produtos a vencer</p>
-                                </div>
-                                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
-                                    <div class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="box"></i>
-                                    </div>
-                                    <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Itens no Radar</p>
-                                    <p class="text-4xl font-heading font-bold text-navy" id="ui-validade-total">0</p>
-                                    <p class="text-xs text-slate-400 mt-2 font-medium">Quantidade de produtos mapeados</p>
-                                </div>
+                        <div id="validade-dashboard-content">
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="bg-orange-50 p-4 rounded-xl border"><p class="text-xs text-orange-600">Risco (R$)</p><p class="text-3xl font-bold text-orange-700" id="ui-validade-custo">R$ 0,00</p></div>
+                                <div class="bg-slate-50 p-4 rounded-xl border"><p class="text-xs text-slate-500">Itens no Radar</p><p class="text-3xl font-bold text-navy" id="ui-validade-total">0</p></div>
                             </div>
-                            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 mb-8">
-                                <h3 class="font-bold text-navy mb-4 text-sm border-b border-slate-200 pb-2 flex items-center gap-2"><i class="w-4 h-4 text-gold" data-lucide="target"></i> Foco Operacional (Próximos a Vencer)</h3>
-                                <div class="flex flex-col gap-2 mt-4 max-h-96 overflow-y-auto pr-2" id="validade-lista-radar"></div>
-                            </div>
-                        </div>
-                        <div class="hidden text-center py-12" id="empty-state-validade">
-                            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
-                                <i class="w-8 h-8" data-lucide="shield-check"></i>
-                            </div>
-                            <h3 class="text-lg font-bold text-navy">Nenhum Risco Detectado</h3>
-                            <p class="text-slate-500 text-sm mt-1">Não há produtos no radar de validade para esta filial.</p>
+                            <div id="validade-lista-radar"></div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto">
-                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="plus-circle"></i> Mapear Produto Próximo ao Vencimento</h2>
-                        <p class="text-slate-500 text-sm mb-6">Insira os produtos que estão no radar de perda. Você poderá auditá-los posteriormente.</p>
-                        <form class="space-y-6" id="form-validade">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Filial do Lançamento</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 disabled:bg-slate-200 disabled:text-slate-500 font-medium" id="v-filial-lancamento" required>
-                                        <option value="">A carregar filiais...</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Data de Vencimento</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="v-data" required type="date"/>
-                                </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto">
+                        <h2 class="text-xl font-bold text-navy mb-4">Mapear Produto</h2>
+                        <form id="form-validade" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-sm font-bold">Filial</label><select class="w-full p-3 border rounded" id="v-filial-lancamento" required></select></div>
+                                <div><label class="text-sm font-bold">Data Venc.</label><input class="w-full p-3 border rounded" id="v-data" required type="date"/></div>
+                                <div><label class="text-sm font-bold">GTIN</label><input class="w-full p-3 border rounded" id="v-gtin" required type="text"/></div>
+                                <div><label class="text-sm font-bold">Qtd Radar</label><input class="w-full p-3 border rounded" id="v-qtd" required type="number"/></div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Código EAN / GTIN</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="v-gtin" placeholder="Ex: 7891234567890" required type="text"/>
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Produto / Descrição</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="v-desc" placeholder="Ex: Iogurte Natural 170g" required type="text"/>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Categoria</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="v-cat" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="Laticínios">Laticínios</option>
-                                        <option value="Carnes/Açougue">Carnes/Açougue</option>
-                                        <option value="Padaria">Padaria</option>
-                                        <option value="Hortifruti">Hortifruti</option>
-                                        <option value="Mercearia">Mercearia Doce/Salgada</option>
-                                        <option value="Bebidas">Bebidas</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Quantidade no Radar</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="v-qtd" inputmode="decimal" placeholder="Ex: 24" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Custo Unit. (R$)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 transition-colors" id="v-custo" inputmode="decimal" placeholder="Ex: 3,50" required type="text"/>
-                                </div>
-                            </div>
-                            <div>
-                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-validade" type="submit">
-                                    <i class="w-5 h-5" data-lucide="bell-ring"></i> Inserir no Radar
-                                </button>
-                            </div>
-                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-val-success">Produto mapeado com sucesso!</p>
-                            <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-val-error"></p>
+                            <button class="w-full bg-navy text-white p-4 rounded font-bold" id="btn-save-validade" type="submit">Inserir Radar</button>
                         </form>
                     </div>
                 </div>
 
-                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" id="modal-auditoria">
-                    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
-                        <div class="bg-navy p-5 flex justify-between items-center text-white border-b border-white/10">
-                            <h3 class="font-bold font-heading flex items-center gap-2 text-lg"><i class="w-5 h-5 text-gold" data-lucide="clipboard-check"></i> Revisão de Validade</h3>
-                            <button class="text-slate-300 hover:text-white transition-colors" id="btn-close-modal"><i class="w-6 h-6" data-lucide="x"></i></button>
+                <div class="hidden" id="wrapper-tab-preco">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto mb-8">
+                        <div class="flex justify-between items-center border-b pb-4 mb-4">
+                            <h2 class="text-xl font-bold text-navy">Auditoria de Preços</h2>
+                            <div class="flex gap-2">
+                                <select class="px-3 py-2 rounded-lg border" id="filtro-filial-preco"></select>
+                                <input class="bg-transparent text-sm" id="filtro-mes-preco" type="month"/>
+                            </div>
                         </div>
-                        <form class="p-6 space-y-5" id="form-auditoria">
-                            <div>
-                                <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Produto Auditado</p>
-                                <p class="font-bold text-navy text-lg leading-tight" id="modal-produto">--</p>
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <div class="bg-slate-50 p-4 rounded-xl border"><p class="text-xs text-slate-500">Auditado</p><p class="text-3xl font-bold" id="ui-preco-total">0</p></div>
+                            <div class="bg-orange-50 p-4 rounded-xl border"><p class="text-xs text-orange-600">Divergências</p><p class="text-3xl font-bold text-orange-700" id="ui-preco-divergente">0</p></div>
+                            <div class="bg-red-50 p-4 rounded-xl border"><p class="text-xs text-red-600">Sem Preço</p><p class="text-3xl font-bold text-red-700" id="ui-preco-sempreco">0</p></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto">
+                        <h2 class="text-xl font-bold text-navy mb-4">Registrar Auditoria</h2>
+                        <form id="form-auditoria-preco" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-sm font-bold">Filial</label><select class="w-full p-3 border rounded" id="p-filial-lancamento" required></select></div>
+                                <div><label class="text-sm font-bold">Data</label><input class="w-full p-3 border rounded" id="p-data" required type="date"/></div>
+                                <div><label class="text-sm font-bold">GTIN</label><input class="w-full p-3 border rounded" id="p-gtin" required type="text"/></div>
+                                <div><label class="text-sm font-bold">Sem Preço?</label><select class="w-full p-3 border rounded bg-red-50 text-red-700" id="p-sem-preco" required><option value="NÃO">NÃO</option><option value="SIM">SIM</option></select></div>
                             </div>
-                            <div class="flex justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <div>
-                                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Vencimento</p>
-                                    <p class="font-bold text-red-600 flex items-center gap-1"><i class="w-3 h-3" data-lucide="calendar"></i><span id="modal-vencimento">--</span></p>
-                                </div>
-                                <div class="text-right border-l border-slate-200 pl-4">
-                                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Qtd. Anterior</p>
-                                    <p class="font-bold text-slate-700 text-lg" id="modal-qtd-anterior">--</p>
-                                </div>
-                            </div>
-                            <div class="pt-2">
-                                <label class="block text-sm font-bold text-slate-700 mb-2">Nova Quantidade Encontrada <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <input class="w-full pl-4 pr-10 py-4 rounded-xl border-2 border-slate-200 focus:border-navy focus:ring-0 outline-none text-lg font-bold text-navy transition-colors" id="modal-nova-qtd" inputmode="decimal" placeholder="Ex: 15" required type="text"/>
-                                    <i class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" data-lucide="edit-3"></i>
-                                </div>
-                                <p class="text-[11px] text-slate-500 mt-2 font-medium bg-slate-100 p-2 rounded-lg border border-slate-200">
-                                    <i class="w-3 h-3 inline text-navy" data-lucide="info"></i> Se o produto girou todo ou foi dado baixa, digite <strong class="text-navy">0</strong> para removê-lo do radar.
-                                </p>
-                            </div>
-                            <button class="w-full bg-emerald hover:bg-emerald/90 text-white font-bold py-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 mt-4 text-lg" id="btn-save-auditoria" type="submit">
-                                <i class="w-6 h-6" data-lucide="check-circle-2"></i> Atualizar Posição
-                            </button>
+                            <button class="w-full bg-navy text-white p-4 rounded font-bold" id="btn-save-preco" type="submit">Enviar</button>
                         </form>
                     </div>
                 </div>
 
-                <div class="hidden space-y-6 pt-2" id="wrapper-tab-furtos">
-                    <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-200 pb-4">
-                        <h2 class="text-xl font-bold text-navy flex items-center gap-2"><i class="w-6 h-6 text-gold" data-lucide="shield-check"></i> Painel de Furtos</h2>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button class="text-emerald hover:text-emerald-700 font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" id="btn-export-csv-furtos">
-                                <i class="w-4 h-4" data-lucide="download"></i> Excel (CSV)
-                            </button>
-                            <button class="text-slate-500 hover:text-navy font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" onclick="window.print()">
-                                <i class="w-4 h-4" data-lucide="printer"></i> PDF
-                            </button>
-                            <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
-                                <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-furtos"></select>
-                                <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer" id="filtro-mes-furtos" type="month"/>
+                <div class="hidden" id="wrapper-tab-caixa">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto mb-8">
+                        <div class="flex justify-between items-center border-b pb-4 mb-4">
+                            <h2 class="text-xl font-bold text-navy">Caixa Central</h2>
+                            <div class="flex gap-2">
+                                <select class="px-3 py-2 rounded-lg border" id="filtro-filial-caixa"></select>
+                                <input class="bg-transparent text-sm" id="filtro-mes-caixa" type="month"/>
                             </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-red-50 p-4 rounded-xl border"><p class="text-xs text-red-600">Déficit (R$)</p><p class="text-3xl font-bold text-red-700" id="ui-caixa-total-rs">R$ 0,00</p></div>
+                            <div class="bg-slate-50 p-4 rounded-xl border"><p class="text-xs text-slate-500">Ocorrências</p><p class="text-3xl font-bold text-navy" id="ui-caixa-total-ocorrencias">0</p></div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
-                            <h3 class="text-sm font-bold text-slate-500 mb-1">Total Recuperado</h3>
-                            <p class="text-2xl font-black text-emerald" id="ui-furto-total-rs">R$ 0,00</p>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
-                            <h3 class="text-sm font-bold text-slate-500 mb-1">Ocorrências</h3>
-                            <p class="text-2xl font-black text-navy" id="ui-furto-total-ocorrencias">0</p>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
-                            <h3 class="text-sm font-bold text-slate-500 mb-1">% Preventivo</h3>
-                            <p class="text-2xl font-black text-gold" id="ui-furto-preventivo">0%</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                            <h2 class="text-lg font-bold text-navy mb-4 border-b border-slate-100 pb-2 flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="clipboard-list"></i> Novo Registro de Sinistro</h2>
-                            <form class="space-y-4" id="form-furtos">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Data</label>
-                                        <input class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-navy focus:border-navy block p-2.5" id="f-data" required type="date"/>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Filial</label>
-                                        <select class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-navy focus:border-navy block p-2.5" id="f-filial"></select>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Gênero</label>
-                                        <select class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg block p-2.5" id="f-genero" required>
-                                            <option value="Homem">Homem</option>
-                                            <option value="Mulher">Mulher</option>
-                                            <option value="Outro">Outro</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Idade</label>
-                                        <input class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg block p-2.5" id="f-idade" placeholder="Ex: 25" required type="number"/>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Abordagem</label>
-                                        <select class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg block p-2.5" id="f-abordagem" required>
-                                            <option value="Preventiva">Preventiva</option>
-                                            <option value="Reativa">Reativa</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Local da Abordagem</label>
-                                        <input class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg block p-2.5" id="f-local" placeholder="Ex: Saída, Estacionamento..." required type="text"/>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Descrição Breve</label>
-                                        <input class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg block p-2.5" id="f-desc" placeholder="Ex: Ocultou na mochila" required type="text"/>
-                                    </div>
-                                </div>
-                                <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg mt-4">
-                                    <label class="block text-xs font-bold text-navy mb-2 flex items-center gap-2"><i class="w-4 h-4" data-lucide="shopping-cart"></i> Produtos Recuperados</label>
-                                    <div class="grid grid-cols-12 gap-2 mb-2">
-                                        <div class="col-span-6"><input class="w-full border border-slate-200 text-sm rounded px-2 py-1.5" id="f-prod-nome" placeholder="Produto" type="text"/></div>
-                                        <div class="col-span-2"><input class="w-full border border-slate-200 text-sm rounded px-2 py-1.5" id="f-prod-qtd" placeholder="Qtd" type="number"/></div>
-                                        <div class="col-span-3"><input class="w-full border border-slate-200 text-sm rounded px-2 py-1.5" id="f-prod-preco" placeholder="R$ Venda" step="0.01" type="number"/></div>
-                                        <div class="col-span-1 flex items-end"><button class="w-full bg-navy text-white rounded p-1.5 hover:bg-gold transition-colors flex justify-center items-center" id="btn-add-prod" type="button"><i class="w-4 h-4" data-lucide="plus"></i></button></div>
-                                    </div>
-                                    <ul class="space-y-1 max-h-32 overflow-y-auto mt-3" id="f-lista-produtos"></ul>
-                                </div>
-                                <div class="hidden p-3 bg-emerald/10 text-emerald text-sm rounded-lg font-bold border border-emerald/20 text-center" id="msg-furto-success">Registro salvo com sucesso!</div>
-                                <div class="hidden p-3 bg-red-50 text-red-600 text-sm rounded-lg font-bold border border-red-200 text-center" id="msg-furto-error"></div>
-                                <button class="w-full text-white bg-navy hover:bg-navy/90 font-bold rounded-lg text-sm px-5 py-3 text-center transition-colors flex justify-center items-center gap-2 shadow-md mt-4" id="btn-save-furto" type="submit">
-                                    <i class="w-5 h-5 text-gold" data-lucide="save"></i> Registrar Sinistro
-                                </button>
-                            </form>
-                        </div>
-                        <div class="space-y-6">
-                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                                <h3 class="text-sm font-bold text-navy mb-4">Gênero x Abordagem</h3>
-                                <div class="w-full h-64 bg-slate-50 rounded flex items-center justify-center text-slate-400 text-xs" id="chart-furtos-perfil">Gráfico será gerado aqui</div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto">
+                        <h2 class="text-xl font-bold text-red-600 mb-4">Lançar Falta no Cofre</h2>
+                        <form id="form-caixa-central" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-sm font-bold">Filial</label><select class="w-full p-3 border rounded" id="c-filial-lancamento" required></select></div>
+                                <div><label class="text-sm font-bold">Valor (R$)</label><input class="w-full p-3 border rounded text-red-700 font-bold" id="c-valor" required type="number" step="0.01"/></div>
                             </div>
-                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                                <h3 class="text-sm font-bold text-navy mb-4">Locais de Risco</h3>
-                                <div class="w-full h-64 bg-slate-50 rounded flex items-center justify-center text-slate-400 text-xs" id="chart-furtos-locais">Gráfico será gerado aqui</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="hidden space-y-6 pt-2" id="wrapper-tab-preco">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto mb-8">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
-                            <div>
-                                <h2 class="text-2xl font-heading font-bold text-navy">Painel de Auditoria de Preços</h2>
-                                <p class="text-slate-500 text-sm">Monitoramento de divergências CDC e produtos sem precificação.</p>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <button class="text-emerald hover:text-emerald-700 font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" id="btn-export-csv-preco">
-                                    <i class="w-4 h-4" data-lucide="download"></i> Excel (CSV)
-                                </button>
-                                <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                    <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
-                                    <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-preco"></select>
-                                    <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer" id="filtro-mes-preco" type="month"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                            <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
-                                <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Total Auditado</p>
-                                <p class="text-4xl font-heading font-bold text-navy" id="ui-preco-total">0</p>
-                                <p class="text-xs text-slate-400 mt-2 font-medium">Itens validados no mês</p>
-                            </div>
-                            <div class="bg-orange-50 rounded-xl p-6 border border-orange-100">
-                                <p class="text-xs font-bold text-orange-600 uppercase mb-1 tracking-wider">Divergências</p>
-                                <p class="text-4xl font-heading font-bold text-orange-700" id="ui-preco-divergente">0</p>
-                                <p class="text-xs text-orange-500 mt-2 font-medium">Gôndola vs Sistema</p>
-                            </div>
-                            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
-                                <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Sem Preço (Ausente)</p>
-                                <p class="text-4xl font-heading font-bold text-red-700" id="ui-preco-sempreco">0</p>
-                                <p class="text-xs text-red-500 mt-2 font-medium">Risco de abandono de compra</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto">
-                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="plus-circle"></i> Registrar Auditoria</h2>
-                        <p class="text-slate-500 text-sm mb-6">Lance as divergências encontradas no chão de loja para acionar a equipe de precificação.</p>
-                        <form class="space-y-6" id="form-auditoria-preco">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Filial da Auditoria</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 disabled:bg-slate-200 disabled:text-slate-500 font-medium" id="p-filial-lancamento" required>
-                                        <option value="">A carregar filiais...</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Data da Auditoria</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="p-data" required type="date"/>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">GTIN / Cód. Barras</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="p-gtin" placeholder="Ex: 7890000000000" required type="text"/>
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Descrição do Produto</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="p-desc" placeholder="Ex: Arroz Branco 5kg" required type="text"/>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-5 bg-slate-50 border border-slate-200 rounded-xl">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Preço Sistêmico (R$)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="p-sistema" inputmode="decimal" placeholder="Ex: 25,90" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Preço Gôndola (R$)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="p-gondola" inputmode="decimal" placeholder="Ex: 23,90" type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-red-600 mb-1">Produto Sem Preço?</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-red-300 focus:ring-2 focus:ring-red-500 outline-none bg-red-50 text-red-700 font-bold" id="p-sem-preco" required>
-                                        <option value="NÃO">NÃO (Etiqueta Presente)</option>
-                                        <option value="SIM">SIM (Falta Etiqueta)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-preco" type="submit">
-                                    <i class="w-5 h-5" data-lucide="send"></i> Enviar Auditoria
-                                </button>
-                            </div>
-                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-preco-success">Auditoria de preço registrada com sucesso!</p>
-                            <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-preco-error"></p>
+                            <button class="w-full bg-navy text-white p-4 rounded font-bold" id="btn-save-caixa" type="submit">Registrar Falta</button>
                         </form>
                     </div>
                 </div>
 
-                <div class="hidden space-y-6 pt-2" id="wrapper-tab-caixa">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto mb-8">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
-                            <div>
-                                <h2 class="text-2xl font-heading font-bold text-navy">Dashboard do Caixa Central</h2>
-                                <p class="text-slate-500 text-sm">Monitoramento de faltas de numerário, sangrias e tesouraria.</p>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <button class="text-emerald hover:text-emerald-700 font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50" id="btn-export-csv-caixa">
-                                    <i class="w-4 h-4" data-lucide="download"></i> Excel (CSV)
-                                </button>
-                                <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                    <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
-                                    <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-caixa"></select>
-                                    <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer" id="filtro-mes-caixa" type="month"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                            <div class="bg-red-50 rounded-xl p-6 border border-red-100 relative overflow-hidden">
-                                <div class="absolute right-0 top-0 opacity-10 text-red-500 transform translate-x-4 -translate-y-4">
-                                    <i class="w-32 h-32" data-lucide="trending-down"></i>
-                                </div>
-                                <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Déficit Financeiro (R$)</p>
-                                <p class="text-4xl font-heading font-bold text-red-700" id="ui-caixa-total-rs">R$ 0,00</p>
-                                <p class="text-xs text-red-500 mt-2 font-medium">Total de faltas no mês selecionado</p>
-                            </div>
-                            <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
-                                <div class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                    <i class="w-32 h-32" data-lucide="alert-circle"></i>
-                                </div>
-                                <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Volume de Ocorrências</p>
-                                <p class="text-4xl font-heading font-bold text-navy" id="ui-caixa-total-ocorrencias">0</p>
-                                <p class="text-xs text-slate-400 mt-2 font-medium">Quantidade de registros lançados</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto">
-                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-red-600" data-lucide="alert-octagon"></i> Lançar Falta no Cofre/Caixa</h2>
-                        <p class="text-slate-500 text-sm mb-6">Registre quebras de caixa, diferenças de sangria ou problemas de tesouraria.</p>
-                        <form class="space-y-6" id="form-caixa-central">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Filial da Ocorrência</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 disabled:bg-slate-200 disabled:text-slate-500 font-medium" id="c-filial-lancamento" required>
-                                        <option value="">A carregar filiais...</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Data da Auditoria</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="c-data" required type="date"/>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Operador / Responsável</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="c-operador" placeholder="Ex: Maria Silva (PDV 05)" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Tipo de Divergência</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" id="c-tipo" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="Diferença de Sangria">Diferença de Sangria</option>
-                                        <option value="Falta no Fechamento do PDV">Falta no Fechamento do PDV</option>
-                                        <option value="Fundo de Troco (Fixo)">Divergência no Fundo de Troco</option>
-                                        <option value="Erro de Depósito / Carro Forte">Erro de Depósito (Carro Forte)</option>
-                                        <option value="Notas Falsas">Notas Falsas</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="p-5 bg-red-50 border border-red-200 rounded-xl">
-                                    <label class="block text-sm font-bold text-red-700 mb-1">Valor Faltante (R$)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-red-300 focus:ring-2 focus:ring-red-500 outline-none bg-white font-bold text-red-700" id="c-valor" inputmode="decimal" placeholder="Ex: 150,00" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Observações / Justificativa</label>
-                                    <textarea class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 resize-none h-full" id="c-obs" placeholder="Ex: Operador alegou ter dado troco a mais..." required rows="2"></textarea>
-                                </div>
-                            </div>
-                            <div>
-                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-caixa" type="submit">
-                                    <i class="w-5 h-5" data-lucide="send"></i> Registrar Quebra de Caixa
-                                </button>
-                            </div>
-                            <p class="hidden text-emerald font-bold text-center mt-2" id="msg-caixa-success">Falta registrada com sucesso!</p>
-                            <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-caixa-error"></p>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="hidden space-y-6 pt-2" id="wrapper-tab-inv">
+                <div class="hidden space-y-6" id="wrapper-tab-inv">
                     <div class="space-y-6 max-w-5xl mx-auto" id="inv-tela-selecao">
-                        <div class="mb-6 border-b border-slate-200 pb-4 flex justify-between items-end gap-4">
-                            <div>
-                                <h2 class="text-2xl font-heading font-bold text-navy flex items-center gap-2"><i class="w-6 h-6 text-emerald" data-lucide="boxes"></i> Gestão de Inventário</h2>
-                                <p class="text-slate-500 text-sm mt-1">Crie um novo inventário ou continue a contagem de um existente.</p>
-                            </div>
-                            <button class="text-emerald hover:text-emerald-700 font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-3 py-2 rounded-lg bg-white shadow-sm hover:bg-slate-50 shrink-0" id="btn-export-csv-inv">
-                                <i class="w-4 h-4" data-lucide="download"></i> Excel (CSV)
-                            </button>
+                        <div class="flex justify-between items-center border-b pb-4">
+                            <h2 class="text-2xl font-bold text-navy">Gestão de Inventário</h2>
+                            <select class="px-3 py-2 rounded-lg border" id="filtro-filial-inv"></select>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                                <div>
-                                    <h3 class="text-lg font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="plus-circle"></i> Novo Inventário</h3>
-                                    <p class="text-xs text-slate-500 mb-6">Gera um novo ID para contagem de loja.</p>
-                                    <label class="block text-xs font-bold text-slate-700 mb-2">Selecione a Filial</label>
-                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-slate-50 disabled:bg-slate-200 mb-4 font-bold text-navy" id="inv-nova-filial"></select>
-                                    <label class="flex items-center gap-2 text-xs font-bold text-navy mb-2 cursor-pointer">
-                                        <input class="w-4 h-4 text-emerald rounded border-slate-300 focus:ring-emerald cursor-pointer" id="inv-is-dirigido" onchange="document.getElementById('inv-box-dirigido').classList.toggle('hidden')" type="checkbox"/>
-                                        Inventário Dirigido (Pré-selecionado)
-                                    </label>
-                                    <div class="hidden mb-6" id="inv-box-dirigido">
-                                        <p class="text-[10px] text-slate-500 mb-1">Cole os GTINs esperados (separados por vírgula ou linha):</p>
-                                        <textarea class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white text-xs h-20 resize-none focus:border-emerald" id="inv-lista-gtins" placeholder="Ex: 789102030, 789405060..."></textarea>
-                                    </div>
-                                </div>
-                                <button class="w-full bg-emerald hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md" onclick="iniciarNovoInventario(event)" type="button">
-                                    Gerar Número de Contagem
-                                </button>
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                                <h3 class="text-lg font-bold text-navy mb-4">Novo Inventário</h3>
+                                <select class="w-full p-3 border rounded mb-4" id="inv-nova-filial"></select>
+                                <button class="w-full bg-emerald text-white p-4 rounded font-bold" onclick="iniciarNovoInventario(event)">Gerar Contagem</button>
                             </div>
-                            <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                                <div>
-                                    <h3 class="text-lg font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="search"></i> Continuar Inventário</h3>
-                                    <p class="text-xs text-slate-500 mb-6">Acesse uma contagem em andamento.</p>
-                                    <label class="block text-xs font-bold text-slate-700 mb-2">Nº do Inventário (ID)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-slate-50 focus:ring-2 focus:ring-navy mb-6 font-bold text-navy uppercase" id="inv-id-busca" placeholder="Ex: INV-123456" type="text"/>
-                                </div>
-                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md" onclick="consultarInventario()" type="button">
-                                    Acessar Contagem
-                                </button>
+                            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                                <h3 class="text-lg font-bold text-navy mb-4">Continuar Inventário</h3>
+                                <input class="w-full p-3 border rounded mb-4 uppercase" id="inv-id-busca" placeholder="INV-123456" type="text"/>
+                                <button class="w-full bg-navy text-white p-4 rounded font-bold" onclick="consultarInventario()">Acessar Contagem</button>
                             </div>
                         </div>
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-8">
-                            <div class="p-6 border-b border-slate-100 bg-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                <div>
-                                    <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="table-properties"></i> Consulta de Inventários</h3>
-                                    <p class="text-xs text-slate-500 mt-1">Histórico de contagens abertas e encerradas.</p>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i class="w-4 h-4 text-slate-400" data-lucide="filter"></i>
-                                    <select class="px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-inv"></select>
-                                </div>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap">
-                                    <thead class="bg-slate-100 text-slate-500 uppercase text-[10px] font-bold">
-                                        <tr><th class="px-6 py-4">Nº Inventário</th><th class="px-6 py-4">Filial</th><th class="px-6 py-4">Status</th><th class="px-6 py-4 text-center">Leituras</th><th class="px-6 py-4 text-right">Ações / Relatórios</th></tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100" id="inv-tbody-consulta">
-                                        <tr><td class="px-6 py-8 text-center text-slate-400 italic" colspan="5">A carregar inventários...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="bg-white rounded-2xl shadow-sm border overflow-hidden mt-8">
+                            <table class="w-full text-left text-sm"><tbody id="inv-tbody-consulta"></tbody></table>
                         </div>
                     </div>
-
+                    
                     <div class="hidden space-y-6" id="inv-tela-bipagem">
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto">
-                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-slate-100 pb-4 gap-4">
-                                <div>
-                                    <button class="text-xs font-bold text-slate-400 hover:text-navy flex items-center gap-1 mb-2 transition-colors" onclick="voltarTelaInventario()" type="button"><i class="w-3 h-3" data-lucide="arrow-left"></i> Voltar à Seleção</button>
-                                    <h2 class="text-xl font-heading font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="scan-barcode"></i> Contagem Aberta</h2>
-                                    <div class="flex gap-3 mt-2">
-                                        <span class="px-2 py-1 bg-navy text-gold font-bold text-xs rounded" id="ui-inv-id">INV-000000</span>
-                                        <span class="px-2 py-1 bg-slate-100 text-slate-500 font-bold text-xs rounded border border-slate-200" id="ui-inv-filial">Loja</span>
-                                    </div>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white font-bold text-sm flex items-center gap-2 border border-red-200 px-4 py-2 rounded-lg transition-colors shadow-sm" onclick="encerrarInventarioAtual(event)" type="button">
-                                        <i class="w-4 h-4" data-lucide="lock"></i> Encerrar Inventário
-                                    </button>
-                                </div>
+                        <div class="bg-white rounded-2xl shadow-sm border p-6 max-w-5xl mx-auto">
+                            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                                <div><button class="text-xs font-bold text-slate-400" onclick="voltarTelaInventario()">Voltar</button><h2 class="text-xl font-bold text-emerald">Contagem Aberta</h2><span class="font-bold text-xs" id="ui-inv-id">INV-000</span> <span id="ui-inv-filial">Loja</span></div>
+                                <button class="bg-red-50 text-red-600 font-bold px-4 py-2 border rounded" onclick="encerrarInventarioAtual(event)">Encerrar Inventário</button>
                             </div>
-                            <form class="space-y-5" id="form-inventario">
-                                <input id="inv-filial-oculto" type="hidden"/>
-                                <input id="inv-id-oculto" type="hidden"/>
-                                <div>
-                                    <label class="block text-sm font-bold text-slate-700 mb-1">Lote de Contagem (Corredor/Gôndola)</label>
-                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 uppercase font-bold text-navy" id="inv-lote" placeholder="Ex: CORREDOR BEBIDAS" required type="text"/>
+                            <form id="form-inventario" class="space-y-4">
+                                <input id="inv-filial-oculto" type="hidden"/><input id="inv-id-oculto" type="hidden"/>
+                                <input class="w-full p-3 border rounded uppercase font-bold text-navy" id="inv-lote" placeholder="Lote/Corredor" required type="text"/>
+                                <div class="p-5 bg-emerald/5 border rounded-xl flex gap-4">
+                                    <input class="w-full p-3 border-2 focus:border-emerald rounded font-bold" id="inv-gtin" placeholder="GTIN" required type="text"/>
+                                    <input class="w-24 p-3 border-2 focus:border-emerald rounded font-bold text-center" id="inv-qtd" placeholder="Qtd" required type="number"/>
                                 </div>
-                                <div class="p-5 bg-emerald/5 border border-emerald/20 rounded-xl space-y-5">
-                                    <div class="flex items-center justify-between">
-                                        <label class="text-sm font-bold text-emerald flex items-center gap-2"><i class="w-4 h-4" data-lucide="zap"></i> Bipagem Contínua</label>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input class="sr-only peer" id="inv-travar-qtd" type="checkbox"/>
-                                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald"></div>
-                                            <span class="ml-3 text-xs font-bold text-slate-600 uppercase">Travar Qtd em 1</span>
-                                        </label>
-                                    </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
-                                        <div class="md:col-span-2">
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Código de Barras (GTIN) <span class="text-red-500">*</span></label>
-                                            <input autofocus class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold" id="inv-gtin" placeholder="Bipe o código aqui" required type="text"/>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Descrição (Opcional)</label>
-                                            <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="inv-desc" placeholder="Produto..." type="text"/>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Qtd <span class="text-red-500">*</span></label>
-                                            <input class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold text-center" id="inv-qtd" inputmode="decimal" placeholder="0" required type="number"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-inv" type="submit">
-                                    <i class="w-5 h-5 text-gold" data-lucide="plus-square"></i> Salvar Bipagem
-                                </button>
+                                <button class="w-full bg-navy text-white font-bold p-4 rounded" id="btn-save-inv" type="submit">Salvar Bipagem</button>
                             </form>
-                            <div class="mt-8 pt-6 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2"><i class="w-4 h-4" data-lucide="history"></i> Últimas Bipagens</h3>
-                                    <div class="max-h-60 overflow-y-auto pr-2" id="inv-historico-bipagem">
-                                        <p class="text-xs text-slate-400 italic">Nenhum item bipado ainda.</p>
-                                    </div>
-                                </div>
-                                <div class="hidden border-l border-slate-100 md:pl-8" id="box-progresso-dirigido">
-                                    <h3 class="text-xs font-bold text-navy uppercase tracking-wider mb-3 flex items-center gap-2"><i class="w-4 h-4 text-emerald" data-lucide="list-checks"></i> Progresso Dirigido</h3>
-                                    <div class="flex justify-between items-center mb-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                                        <span class="text-xs font-bold text-slate-500" id="ui-inv-progresso-text">0 / 0 Encontrados</span>
-                                        <div class="w-1/2 bg-slate-200 rounded-full h-2.5 overflow-hidden">
-                                            <div class="bg-emerald h-2.5 rounded-full transition-all duration-500" id="ui-inv-progresso-bar" style="width: 0%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="max-h-52 overflow-y-auto pr-2 space-y-1" id="inv-lista-dirigida"></div>
-                                </div>
-                            </div>
+                            <div class="mt-8 pt-6 border-t"><div id="inv-historico-bipagem"></div></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="hidden space-y-6 pt-2" id="wrapper-tab-tar">
-                    <div class="max-w-5xl mx-auto mb-2 border-b border-slate-200 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                            <h2 class="text-2xl font-heading font-bold text-navy flex items-center gap-2"><i class="w-6 h-6 text-orange-500" data-lucide="list-todo"></i> Gestão de Tarefas</h2>
-                            <p class="text-slate-500 text-sm mt-1">Acompanhe as demandas manuais e alertas sistêmicos por loja.</p>
-                        </div>
-                        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
-                            <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="filter"></i>
-                            <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-tar"></select>
-                        </div>
-                    </div>
-                    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-fit">
-                            <h2 class="text-lg font-bold text-navy mb-4 flex items-center gap-2 border-b border-slate-100 pb-2"><i class="w-5 h-5 text-orange-500" data-lucide="list-plus"></i> Nova Tarefa</h2>
-                            <form class="space-y-4" id="form-tarefas">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 mb-1">Filial Alvo</label>
-                                    <select class="w-full p-2.5 rounded-lg border border-slate-300 text-sm outline-none bg-slate-50" id="t-filial" required></select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 mb-1">O que deve ser feito?</label>
-                                    <input class="w-full p-2.5 rounded-lg border border-slate-300 text-sm outline-none bg-slate-50" id="t-titulo" placeholder="Ex: Contar estoque da Câmara 2" required type="text"/>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 mb-1">Prazo Limite</label>
-                                    <input class="w-full p-2.5 rounded-lg border border-slate-300 text-sm outline-none bg-slate-50" id="t-prazo" required type="date"/>
-                                </div>
-                                <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition-colors text-sm flex justify-center items-center gap-2" id="btn-save-tar" type="submit">
-                                    Criar Demanda
-                                </button>
-                                <p class="hidden text-emerald text-xs font-bold text-center mt-2" id="msg-tar-success">Tarefa criada!</p>
-                            </form>
-                        </div>
-                        <div class="lg:col-span-2 space-y-6">
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                                <h2 class="text-lg font-bold text-red-600 mb-4 flex items-center gap-2"><i class="w-5 h-5 animate-pulse" data-lucide="siren"></i> Alertas Automáticos (Sistema)</h2>
-                                <div class="flex flex-col gap-3 max-h-64 overflow-y-auto pr-2" id="lista-tarefas-sistema">
-                                    <p class="text-sm text-slate-400 text-center py-4">Sincronizando radares...</p>
-                                </div>
-                            </div>
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                                <h2 class="text-lg font-bold text-navy mb-4 flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="check-square"></i> Demandas Manuais Pendentes</h2>
-                                <div class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-2" id="lista-tarefas-manuais">
-                                    <p class="text-sm text-slate-400 text-center py-4">Nenhuma demanda pendente.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="hidden" id="wrapper-tab-furtos"><div class="bg-white p-6 max-w-5xl mx-auto rounded-2xl border text-center"><h2 class="text-xl font-bold text-navy">Painel de Furtos</h2><p class="text-slate-500">Módulo Ativo. Injeção dinâmica via App.js.</p></div></div>
+                <div class="hidden" id="wrapper-tab-tar"><div class="bg-white p-6 max-w-5xl mx-auto rounded-2xl border text-center"><h2 class="text-xl font-bold text-orange-500">Gestão de Tarefas</h2><p class="text-slate-500">Módulo Ativo. Injeção dinâmica via App.js.</p></div></div>
+
             </main>
         </div>
-    </div>
-<div class="w-full bg-lightbg min-h-screen" id="site-principal">
-        <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm transition-all duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-20 items-center">
-                    <a class="flex-shrink-0 flex items-center gap-2 sm:gap-3 hover:opacity-90 transition-opacity" href="/">
-                        <svg class="h-10 sm:h-12 w-auto" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                            <g transform="translate(10, 10)">
-                                <path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#0A2540"></path>
-                                <rect fill="#D4AF37" height="20" rx="2" width="10" x="16" y="56"></rect>
-                                <rect fill="#D4AF37" height="36" rx="2" width="10" x="34" y="40"></rect>
-                                <rect fill="#D4AF37" height="53" rx="2" width="10" x="52" y="23"></rect>
-                                <path d="M 10 53 L 30 73 L 70 20" fill="none" stroke="#008950" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.3"></path>
-                            </g>
-                        </svg>
-                        <div class="text-navy text-2xl sm:text-3xl font-heading flex items-center pt-1">
-                            <span class="font-extrabold tracking-tight">Proteção ao </span><span class="font-light ml-1">Lucro</span>
-                        </div>
-                    </a>
-                    <div class="hidden lg:flex space-x-6 items-center text-sm">
-                        <a class="text-slate-600 hover:text-navy font-medium transition-colors" href="/#cenario">O Cenário</a>
-                        <a class="text-slate-600 hover:text-navy font-medium transition-colors" href="/#metodologia">Metodologia</a>
-                        <a class="text-slate-600 hover:text-navy font-medium transition-colors" href="/#historia">Quem Somos</a>
-                        <a class="text-gold hover:text-navy font-bold transition-colors flex items-center gap-1 border-l border-slate-200 pl-6 ml-2" href="#" onclick="document.getElementById('site-principal').style.display='none'; document.getElementById('portal-cliente').style.display='flex'; return false;">
-                            <i class="w-4 h-4" data-lucide="lock"></i> Área do Cliente
-                        </a>
-                        <a class="bg-navy hover:bg-navyLight text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg flex items-center gap-2" href="/#contato">
-                            <i class="w-4 h-4" data-lucide="message-square"></i> Fale Connosco
-                        </a>
-                    </div>
-                    <div class="flex lg:hidden items-center">
-                        <a class="bg-navy/5 border border-navy/10 text-navy hover:bg-navy hover:text-white font-bold transition-all flex items-center gap-2 px-4 py-2 rounded-lg text-sm shadow-sm" href="#" onclick="document.getElementById('site-principal').style.display='none'; document.getElementById('portal-cliente').style.display='flex'; return false;">
-                            <i class="w-4 h-4 text-gold" data-lucide="lock"></i> Entrar
-                        </a>
-                    </div>
-                </div>
+        
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" id="modal-auditoria">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+                <div class="bg-navy p-5 flex justify-between items-center text-white"><h3 class="font-bold text-lg">Revisão de Validade</h3><button id="btn-close-modal"><i class="w-6 h-6" data-lucide="x"></i></button></div>
+                <form class="p-6 space-y-5" id="form-auditoria">
+                    <div><p class="font-bold text-navy text-lg" id="modal-produto">--</p></div>
+                    <div class="flex justify-between bg-slate-50 p-4 border rounded"><p class="text-red-600 font-bold" id="modal-vencimento">--</p><p class="text-slate-700 font-bold" id="modal-qtd-anterior">--</p></div>
+                    <input class="w-full p-4 rounded-xl border-2 text-lg font-bold" id="modal-nova-qtd" placeholder="Nova Quantidade" required type="text"/>
+                    <button class="w-full bg-emerald text-white font-bold py-4 rounded-xl" id="btn-save-auditoria" type="submit">Atualizar Posição</button>
+                </form>
             </div>
+        </div>
+    </div>
+
+    <div class="w-full bg-lightbg min-h-screen" id="site-principal">
+        <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-sm border-b shadow-sm h-20 flex justify-between items-center px-4 sm:px-6 lg:px-8">
+            <div class="text-navy text-2xl font-heading font-extrabold">LUCRO<span class="font-light">SEGURO</span></div>
+            <a class="text-gold hover:text-navy font-bold flex items-center gap-1" href="#" onclick="showView('login')"><i class="w-4 h-4" data-lucide="lock"></i> Área do Cliente</a>
         </nav>
-
-        <section class="relative bg-navy pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-            <div class="absolute inset-0 opacity-10">
-                <svg class="absolute right-0 top-0 h-full w-1/2 transform translate-x-1/3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5"></path></svg>
-            </div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                <span class="inline-block py-1 px-3 rounded-full bg-white/10 text-gold font-medium text-sm tracking-wide mb-6 border border-white/20">Consultoria Especializada em Prevenção de Perdas</span>
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-6 leading-tight">Transformando Perdas Invisíveis em <br/><span class="text-emerald">Lucro Líquido Real</span>.</h1>
-                <p class="mt-4 text-xl text-slate-300 max-w-2xl mx-auto font-light mb-10">O seu caixa está a sangrar diariamente devido a falhas invisíveis. Nós diagnosticamos a raiz do problema e cobramos apenas sobre a economia financeira comprovada.</p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a class="bg-gold hover:bg-goldLight text-navy font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2" href="#modelo"><i class="w-5 h-5" data-lucide="shield-check"></i> Conheça o nosso Modelo</a>
-                    <a class="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-medium text-lg px-8 py-4 rounded-xl backdrop-blur-sm transition-all flex items-center justify-center gap-2" href="#cenario"><i class="w-5 h-5" data-lucide="bar-chart-2"></i> Ver Dados do Varejo</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-20 bg-white" id="cenario">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-navy mb-4">Onde está o dinheiro que falta no fim do mês?</h2>
-                    <p class="text-lg text-slate-600 max-w-3xl mx-auto">O varejo sofre uma hemorragia silenciosa. Milhões são perdidos anualmente não apenas por furtos, mas principalmente por processos falhos.</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center relative overflow-hidden group hover:border-gold transition-colors">
-                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-full -z-10 group-hover:bg-gold/20 transition-colors"></div>
-                        <p class="text-5xl font-heading font-bold text-navy mb-2">R$ 34,9<span class="text-2xl">Bi</span></p>
-                        <p class="text-slate-600 font-medium">Perdidos anualmente pelo Varejo.</p>
-                    </div>
-                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center relative overflow-hidden group hover:border-gold transition-colors">
-                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-full -z-10 group-hover:bg-gold/20 transition-colors"></div>
-                        <p class="text-5xl font-heading font-bold text-navy mb-2">1,87%</p>
-                        <p class="text-slate-600 font-medium">Índice médio de perda sobre o faturamento bruto.</p>
-                    </div>
-                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center relative overflow-hidden group hover:border-gold transition-colors">
-                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-full -z-10 group-hover:bg-gold/20 transition-colors"></div>
-                        <p class="text-5xl font-heading font-bold text-navy mb-2">42,9%</p>
-                        <p class="text-slate-600 font-medium">Das quebras são estritamente operacionais.</p>
-                    </div>
-                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center relative overflow-hidden group hover:border-gold transition-colors">
-                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-full -z-10 group-hover:bg-gold/20 transition-colors"></div>
-                        <p class="text-5xl font-heading font-bold text-navy mb-2">39,7%</p>
-                        <p class="text-slate-600 font-medium">Das quebras originam-se de perecibilidade (ex: FLV).</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-20 bg-slate-50 border-y border-slate-200" id="metodologia">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col lg:flex-row gap-12 items-center">
-                    <div class="lg:w-1/3">
-                        <h2 class="text-3xl md:text-4xl font-heading font-bold text-navy mb-6">A Anatomia da Perda na Sua Loja</h2>
-                        <p class="text-lg text-slate-600 mb-6">Mapeamos os processos operacionais no chão de loja, desde as docas até à frente de caixa, monitorando KPIs específicos para estancar 4 frentes de sangramento financeiro.</p>
-                    </div>
-                    <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-4">
-                            <div class="bg-red-100 text-red-600 p-3 rounded-lg shrink-0"><i class="w-6 h-6" data-lucide="search-x"></i></div>
-                            <div>
-                                <h3 class="font-bold text-navy text-lg mb-2">Perdas Desconhecidas</h3>
-                                <p class="text-slate-600 text-sm">Furtos internos/externos, fraudes não detectadas e erros de registro descobertos apenas no inventário geral.</p>
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-4">
-                            <div class="bg-orange-100 text-orange-600 p-3 rounded-lg shrink-0"><i class="w-6 h-6" data-lucide="package-minus"></i></div>
-                            <div>
-                                <h3 class="font-bold text-navy text-lg mb-2">Perdas Conhecidas</h3>
-                                <p class="text-slate-600 text-sm">Mercadorias que a loja sabe que perdeu (avarias, produtos fora da validade, consumo interno e descartes).</p>
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-4">
-                            <div class="bg-emerald/10 text-emerald p-3 rounded-lg shrink-0"><i class="w-6 h-6" data-lucide="trending-down"></i></div>
-                            <div>
-                                <h3 class="font-bold text-navy text-lg mb-2">Perdas Financeiras</h3>
-                                <p class="text-slate-600 text-sm">Quebra de margem, erros de preço, multas, falta no caixa e venda perdida por ruptura.</p>
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-4">
-                            <div class="bg-blue-100 text-blue-600 p-3 rounded-lg shrink-0"><i class="w-6 h-6" data-lucide="file-warning"></i></div>
-                            <div>
-                                <h3 class="font-bold text-navy text-lg mb-2">Perdas Administrativas</h3>
-                                <p class="text-slate-600 text-sm">Distorções do estoque virtual, erros de entrada de notas, conversões erradas e falhas de sistema.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-20 lg:py-28 bg-navy relative overflow-hidden" id="modelo">
-            <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="text-center mb-16">
-                    <span class="text-gold font-bold tracking-wider uppercase text-sm mb-2 block">O Nosso Diferencial</span>
-                    <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mb-6">O Risco é Nosso. <br/><span class="text-emerald">O Retorno é Seu.</span></h2>
-                    <p class="text-slate-300 max-w-2xl mx-auto text-lg">Não vendemos planilhas. Vendemos resultados práticos. O nosso modelo de parceria garante que só ganhamos se o seu caixa também ganhar.</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
-                        <div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mb-6 text-gold text-2xl font-bold font-heading">1</div>
-                        <h3 class="text-xl font-bold text-white mb-3">Diagnóstico Inicial</h3>
-                        <div class="inline-block px-3 py-1 bg-emerald/20 text-emerald border border-emerald/30 rounded-full text-xs font-bold mb-4">Custo ZERO</div>
-                        <p class="text-slate-300">Um investimento do nosso tempo para aplicar o Kit Diagnóstico na sua operação e provar o nosso valor.</p>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
-                        <div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mb-6 text-gold text-2xl font-bold font-heading">2</div>
-                        <h3 class="text-xl font-bold text-white mb-3">Implementação</h3>
-                        <div class="inline-block px-3 py-1 bg-white/10 text-slate-300 border border-white/20 rounded-full text-xs font-bold mb-4">Custo Fixo Reduzido</div>
-                        <p class="text-slate-300">Cobramos um valor operacional mínimo e exclusivo para cobrir deslocações de forma 100% presencial.</p>
-                    </div>
-                    <div class="bg-gold/10 border border-gold/30 rounded-2xl p-8 backdrop-blur-sm">
-                        <div class="w-14 h-14 bg-gold rounded-full flex items-center justify-center mb-6 text-navy text-2xl font-bold font-heading">3</div>
-                        <h3 class="text-xl font-bold text-white mb-3">Taxa de Sucesso</h3>
-                        <div class="inline-block px-3 py-1 bg-gold/20 text-gold border border-gold/40 rounded-full text-xs font-bold mb-4">10% a 15% da Economia</div>
-                        <p class="text-slate-200 font-medium">Cobramos exclusivamente sobre a economia financeira comprovada que gerarmos para o seu caixa.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-20 lg:py-28 bg-white" id="historia">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    <div class="relative">
-                        <div class="absolute -inset-4 bg-navy/10 rounded-2xl transform -rotate-3 scale-105"></div>
-                        <img alt="Leandro Silva - Fundador e Especialista em Prevenção de Perdas" class="relative rounded-xl shadow-2xl w-full object-cover aspect-[4/5] object-top" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgzDi6NEP6XaGYLEyFlpOOBK_JaBnl1TqIXnbTUFjFb_kCVf4b_dfu1S7lNkb3dcgz-Vukc4HIongzVmd2pfZ1lZRdz49gFfk-tIjWEIeZWmkRekHO2fp_rbyQCHV3c3xXGn3W4KAzIGykVecvU4I36NPhJO-wWH8NmnsjgIh8c4fDEequ6mPjRMATLL8c/s1600/Foto%20Pessoal.jpeg"/>
-                        <div class="absolute -bottom-6 -right-6 bg-gold text-navy p-6 rounded-xl shadow-xl hidden md:block z-10">
-                            <p class="font-heading font-bold text-4xl mb-1">+12</p>
-                            <p class="text-sm font-bold uppercase tracking-wider">Anos de Foco em<br/>Prevenção de Perdas</p>
-                        </div>
-                    </div>
-                    <div>
-                        <h2 class="text-3xl md:text-4xl font-heading font-bold text-navy mb-6">De onde vêm os resultados que entregamos?</h2>
-                        <div class="space-y-4 text-slate-600 text-lg leading-relaxed">
-                            <p>A <strong>Proteção ao Lucro</strong> não nasceu numa sala de reuniões teórica, mas no chão de loja, lidando com problemas reais de logística, rupturas e frente de caixa.</p>
-                            <p>Fundada por <strong>Leandro Silva</strong>, profissional com formação em Gestão Comercial e MBA em Controladoria e Finanças, a empresa une a visão técnica das operações com a inteligência financeira.</p>
-                            <p>O nosso perfil é estritamente <span class="italic text-navy font-bold">'mão na massa'</span>. Utilizamos a lógica e a análise de dados para garantir que a prevenção de perdas seja um motor ativo de lucratividade.</p>
-                            <blockquote class="border-l-4 border-emerald pl-5 my-8 italic text-slate-700 bg-slate-50 p-6 rounded-r-lg font-medium text-xl shadow-sm">
-                                "Proteger o seu lucro exige mais do que câmeras de segurança. Exige compreender onde o processo falha, auditar a execução e ligar a segurança diretamente à Controladoria."
-                            </blockquote>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-20 lg:py-28 bg-lightbg relative border-t border-slate-200" id="contato">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-heading font-bold text-navy mb-4">O Próximo Passo: Vamos medir a temperatura da sua loja?</h2>
-                    <p class="text-slate-600 text-lg">Agende uma reunião estratégica para entendermos os desafios da sua operação.</p>
-                </div>
-                <div class="bg-white rounded-3xl overflow-hidden shadow-xl flex flex-col lg:flex-row border border-slate-100">
-                    <div class="lg:w-2/5 p-10 lg:p-14 bg-navy relative text-white">
-                        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                        <div class="relative z-10 h-full flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-2xl font-heading font-bold text-gold mb-8">Fale Conosco</h3>
-                                <div class="space-y-8">
-                                    <div class="flex items-start gap-4">
-                                        <div class="bg-white/10 p-3 rounded-lg text-gold shrink-0"><i class="w-6 h-6" data-lucide="user"></i></div>
-                                        <div><p class="text-sm text-slate-400 uppercase tracking-wider font-bold mb-1">Responsável</p><p class="text-lg font-medium">Leandro Silva</p></div>
-                                    </div>
-                                    <div class="flex items-start gap-4">
-                                        <div class="bg-white/10 p-3 rounded-lg text-gold shrink-0"><i class="w-6 h-6" data-lucide="phone"></i></div>
-                                        <div><p class="text-sm text-slate-400 uppercase tracking-wider font-bold mb-1">WhatsApp</p><a class="text-lg font-medium hover:text-gold transition-colors" href="https://wa.me/5541996369717" target="_blank">(41) 9 9636-9717</a></div>
-                                    </div>
-                                    <div class="flex items-start gap-4">
-                                        <div class="bg-white/10 p-3 rounded-lg text-gold shrink-0"><i class="w-6 h-6" data-lucide="mail"></i></div>
-                                        <div><p class="text-sm text-slate-400 uppercase tracking-wider font-bold mb-1">E-mail</p><a class="text-lg font-medium hover:text-gold transition-colors break-all" href="mailto:contato@lucroseguro.com.br">contato@lucroseguro.com.br</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-12 pt-8 border-t border-white/10">
-                                <a class="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-colors shadow-lg" href="https://wa.me/5541996369717" target="_blank">
-                                    <i class="w-6 h-6" data-lucide="message-circle"></i> Chamar no WhatsApp
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:w-3/5 p-10 lg:p-14">
-                        <form class="space-y-5" id="contactForm">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div><label class="block text-sm font-bold text-slate-700 mb-1">Nome Completo</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" placeholder="Seu nome" required type="text"/></div>
-                                <div><label class="block text-sm font-bold text-slate-700 mb-1">Empresa / Loja</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" placeholder="Nome do seu negócio" type="text"/></div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div><label class="block text-sm font-bold text-slate-700 mb-1">E-mail Corporativo</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" placeholder="seu@email.com" required type="email"/></div>
-                                <div><label class="block text-sm font-bold text-slate-700 mb-1">WhatsApp</label><input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50" placeholder="(00) 00000-0000" required type="tel"/></div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-1">Maior gargalo na operação hoje?</label>
-                                <textarea class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 resize-none" placeholder="Ex: Quebras no FLV, controle de docas..." required rows="4"></textarea>
-                            </div>
-                            <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" type="submit">
-                                Solicitar Contato <i class="w-5 h-5" data-lucide="send"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="bg-[#051424] border-t border-white/5 pt-16 pb-8">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center text-center md:text-left border-b border-white/10 pb-12 mb-8">
-                    <div class="flex flex-col items-center md:items-start">
-                        <div class="flex items-center gap-3 mb-4">
-                            <svg class="h-12 w-auto" viewBox="0 0 120 120"><path d="M 40 0 L 80 13.3 V 46.6 C 80 73.3 56.6 90 40 96.6 C 23.3 90 0 73.3 0 46.6 V 13.3 Z" fill="#FFFFFF"></path></svg>
-                            <div class="text-white text-3xl font-heading flex items-center pt-1"><span class="font-extrabold tracking-tight">Proteção ao </span><span class="font-light ml-1">Lucro</span></div>
-                        </div>
-                        <p class="text-slate-400 text-sm max-w-xs">Transformando Perdas Invisíveis em Lucro Líquido através de processos auditáveis e controladoria.</p>
-                    </div>
-                    <div class="flex flex-col items-center md:items-start">
-                        <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Navegação</h4>
-                        <div class="space-y-2 flex flex-col items-center md:items-start">
-                            <a class="text-slate-400 hover:text-gold transition-colors text-sm" href="/#cenario">O Cenário do Varejo</a>
-                            <a class="text-slate-400 hover:text-gold transition-colors text-sm" href="/#metodologia">A Metodologia</a>
-                            <a class="text-slate-400 hover:text-gold transition-colors text-sm" href="#" onclick="document.getElementById('site-principal').style.display='none'; document.getElementById('portal-cliente').style.display='flex'; return false;">Portal do Cliente</a>
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-center md:items-start">
-                        <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Dê o primeiro passo</h4>
-                        <p class="text-slate-400 text-sm mb-4 text-center md:text-left">Agende a aplicação do Kit Diagnóstico Gratuito na sua loja.</p>
-                        <a class="text-gold border border-gold hover:bg-gold hover:text-navy font-bold py-2 px-6 rounded-lg transition-all text-sm inline-flex items-center gap-2" href="https://wa.me/5541996369717">Falar no WhatsApp</a>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <p class="text-slate-500 text-sm">&copy; 2026 Proteção ao Lucro. Todos os direitos reservados. Sede em Curitiba, PR.</p>
-                </div>
-            </div>
-        </footer>
+        <section class="pt-32 pb-20 bg-navy text-center"><h1 class="text-4xl font-heading font-bold text-white mb-6">Transformando Perdas Invisíveis em <br/><span class="text-emerald">Lucro Líquido Real</span>.</h1></section>
     </div>
 
-    <script type="module" src="js/app.js"></script>
+</div>
+
+<script type="module" src="./js/app.js"></script>
+
 </body>
 </html>
