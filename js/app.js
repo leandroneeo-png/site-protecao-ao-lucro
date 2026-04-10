@@ -203,37 +203,45 @@ window.fetchSheetsDataComHierarquia = async () => {
     });
 
     // 1. CARREGAMENTO INSTANTÂNEO (SWR CACHE)
-    const cachedData = sessionStorage.getItem(cacheKey);
-    if (cachedData) {
-        try {
+    try {
+        const cachedData = sessionStorage.getItem(cacheKey);
+        if (cachedData) {
             const parsed = JSON.parse(cachedData);
             sheetsDataRaw = parsed.filter(i => i.tipo !== 'produto');
             produtosMestre = parsed.filter(i => i.tipo === 'produto');
             window.triggerAllRenders();
             if(loadingQ) loadingQ.classList.add('hidden');
             if(loadingMain) loadingMain.classList.add('hidden');
-        } catch(e) { console.error("Erro no Cache", e); }
-    } else {
-        if(loadingQ) loadingQ.classList.remove('hidden');
-        if(loadingMain) loadingMain.classList.remove('hidden');
-    }
+        } else {
+            if(loadingQ) loadingQ.classList.remove('hidden');
+            if(loadingMain) loadingMain.classList.remove('hidden');
+        }
+    } catch(e) { console.error("Erro no Cache", e); }
 
-    // 2. BUSCA NO BACKGROUND SILENCIOSA
+    // 2. BUSCA NO BACKGROUND BLINDADA
     try {
         const userEmailReq = auth.currentUser ? auth.currentUser.email : 'anonimo';
         const urlSegura = `${GOOGLE_SHEETS_WEBAPP_URL}?empresa=${encodeURIComponent(currentUserEmpresa)}&filial=${encodeURIComponent(currentUserFilial)}&role=${encodeURIComponent(currentUserRole)}&user=${encodeURIComponent(userEmailReq)}&t=${Date.now()}`;
         
         const res = await fetch(urlSegura);
-        const data = await res.json();
+        const textData = await res.text(); // Lê como texto primeiro para evitar crash se a Google falhar
         
-        if(data && Array.isArray(data)) {
-            sessionStorage.setItem(cacheKey, JSON.stringify(data));
-            sheetsDataRaw = data.filter(i => i.tipo !== 'produto');
-            produtosMestre = data.filter(i => i.tipo === 'produto');
-            window.triggerAllRenders(); // Atualiza subtilmente se houver dados novos
+        try {
+            const data = JSON.parse(textData);
+            if(data && Array.isArray(data)) {
+                // BLINDAGEM: Impede que o limite de memória do navegador trave o site
+                try { sessionStorage.setItem(cacheKey, JSON.stringify(data)); } catch(err) { console.warn("Cache ignorado: Banco de produtos muito grande para a memória local."); }
+                
+                sheetsDataRaw = data.filter(i => i.tipo !== 'produto');
+                produtosMestre = data.filter(i => i.tipo === 'produto');
+                window.triggerAllRenders();
+            }
+        } catch(parseErr) {
+            console.error("A API não retornou um JSON válido:", textData);
         }
+        
     } catch(e) {
-        console.error("Erro ao buscar dados do Sheets:", e);
+        console.error("Erro ao comunicar com o Google Sheets:", e);
     } finally {
         if(loadingQ) loadingQ.classList.add('hidden');
         if(loadingMain) loadingMain.classList.add('hidden');
