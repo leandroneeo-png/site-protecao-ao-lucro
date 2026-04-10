@@ -721,3 +721,67 @@ const autocompletarPorGtin = (gtin, inputsAlvo) => {
     const inputEan = document.getElementById(mapa.gtinId);
     if(inputEan) { inputEan.addEventListener('change', (e) => autocompletarPorGtin(e.target.value, mapa.alvos)); inputEan.addEventListener('blur', (e) => autocompletarPorGtin(e.target.value, mapa.alvos)); }
 });
+// ==========================================
+// 10. MOTOR DO PAINEL ADMIN (VISÃO DE CONSULTOR)
+// ==========================================
+document.getElementById('btn-switch-client')?.addEventListener('click', async () => {
+    // 1. Pega o e-mail que o consultor digitou no campo
+    const emailAlvo = document.getElementById('input-client-email')?.value.trim();
+    
+    if(!emailAlvo) {
+        alert('Por favor, informe o e-mail do cliente na Gaveta de Dados antes de ver os gráficos.');
+        return;
+    }
+
+    const btn = document.getElementById('btn-switch-client');
+    const txtOriginal = btn.innerHTML;
+    btn.innerHTML = '<i class="w-4 h-4 animate-spin" data-lucide="loader-2"></i> A carregar...';
+
+    try {
+        // 2. Vai ao Firebase descobrir a empresa e filial deste e-mail
+        const docSnap = await getDoc(doc(db, 'users_permissions', emailAlvo));
+        
+        if (docSnap.exists()) {
+            const p = docSnap.data();
+            
+            // 3. Muda as variáveis globais para a identidade do cliente
+            currentUserEmpresa = p.company_name;
+            currentUserFilial = p.unit_name;
+            currentUserRole = p.role || 'operacional';
+            
+            // Atualiza os formulários ocultos para lançarem na filial certa
+            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'].forEach(id => { 
+                const el = document.getElementById(id); 
+                if(el) { el.innerHTML = `<option value="${currentUserFilial}">${currentUserFilial}</option>`; el.value = currentUserFilial; } 
+            });
+
+            // 4. Mostra o botão dourado "Visão Consultor" para você poder voltar
+            const btnVoltarAdmin = document.getElementById('btn-switch-admin');
+            if(btnVoltarAdmin) {
+                btnVoltarAdmin.style.display = 'block';
+                btnVoltarAdmin.onclick = () => { 
+                    window.showView('admin'); 
+                    btnVoltarAdmin.style.display = 'none';
+                    document.getElementById('top-user-email').innerText = auth.currentUser.email;
+                };
+            }
+
+            // Identifica no cabeçalho que você está a espiar a conta do cliente
+            const topUser = document.getElementById('top-user-email');
+            if(topUser) topUser.innerText = emailAlvo + " (Visão Consultor)";
+            
+            // 5. Muda para a tela do cliente e força o download dos dados dele
+            window.showView('client');
+            window.fetchSheetsDataComHierarquia();
+            
+        } else {
+            alert('E-mail não encontrado na base de dados. Verifique a ortografia.');
+        }
+    } catch (error) {
+        alert('Erro ao ligar à base de dados de permissões.');
+        console.error(error);
+    } finally {
+        btn.innerHTML = txtOriginal;
+        if(window.lucide) window.lucide.createIcons();
+    }
+});
