@@ -148,7 +148,20 @@ const submitToSheets = async (form, btnId, msgSuccessId, msgErrorId, payload, bt
                 window.triggerAllRenders();
             } 
             
-            if(form) form.reset();
+// MOTOR DE PRESERVAÇÃO DA FILIAL
+            if(form) {
+                // Descobre se o formulário atual tem uma caixa de filial e memoriza o valor
+                const caixaFilial = form.querySelector('#q-filial-lancamento, #r-filial-lancamento, #v-filial-lancamento, #f-filial, #p-filial-lancamento, #c-filial-lancamento, #t-filial');
+                const filialSalva = caixaFilial ? caixaFilial.value : null;
+                
+                // Limpa todos os outros campos (GTIN, Preço, Quantidade)
+                form.reset(); 
+                
+                // Devolve a filial memorizada à caixa, evitando que o inspetor tenha de a selecionar novamente
+                if(caixaFilial && filialSalva) {
+                    caixaFilial.value = filialSalva; 
+                }
+            }
             if(msgSuccess) { msgSuccess.classList.remove('hidden'); setTimeout(() => msgSuccess.classList.add('hidden'), 5000); }
             sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
         } else {
