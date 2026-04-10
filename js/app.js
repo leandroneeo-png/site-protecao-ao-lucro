@@ -870,9 +870,24 @@ if(window.location.hash === '#login') window.showView('login'); else window.show
 // ==========================================
 // 9. MASTER DATA (AUTOCOMPLETAR GTIN)
 // ==========================================
-const autocompletarPorGtin = (gtin, inputsAlvo) => {
-    const busca = String(gtin).replace(/[^0-9]/g, ''); if(busca.length === 0) return; 
-    const produto = produtosMestre.find(p => p.gtin === busca);
+const autocompletarPorGtin = (gtin, inputsAlvo, filialId) => {
+    const busca = String(gtin).replace(/[^0-9]/g, ''); 
+    
+    // 1. Limpa os campos automaticamente se o usuário apagar o GTIN
+    if(busca.length === 0) {
+        if(inputsAlvo.desc && document.getElementById(inputsAlvo.desc)) document.getElementById(inputsAlvo.desc).value = '';
+        if(inputsAlvo.custo && document.getElementById(inputsAlvo.custo)) document.getElementById(inputsAlvo.custo).value = '';
+        if(inputsAlvo.preco && document.getElementById(inputsAlvo.preco)) document.getElementById(inputsAlvo.preco).value = '';
+        return; 
+    } 
+    
+    // 2. Descobre qual filial está selecionada no formulário atual
+    const filialSelecionada = document.getElementById(filialId)?.value || "";
+
+    // 3. Procura o produto respeitando a Filial exata. 
+    // (Bônus: Se a coluna Filial na planilha estiver vazia, o sistema entende que o produto é Global/Serve para todas as lojas).
+    const produto = produtosMestre.find(p => p.gtin === busca && (String(p.filial) === String(filialSelecionada) || !p.filial || String(p.filial).trim() === ""));
+    
     if(produto) {
         if(inputsAlvo.desc && document.getElementById(inputsAlvo.desc)) document.getElementById(inputsAlvo.desc).value = produto.descricao || '';
         if(inputsAlvo.custo && document.getElementById(inputsAlvo.custo)) document.getElementById(inputsAlvo.custo).value = produto.custo || '';
@@ -880,9 +895,14 @@ const autocompletarPorGtin = (gtin, inputsAlvo) => {
     }
 };
 
-[{ gtinId: 'inv-gtin', alvos: { desc: 'inv-desc' } }, { gtinId: 'q-gtin', alvos: { desc: 'q-desc', custo: 'q-custo' } }, { gtinId: 'p-gtin', alvos: { desc: 'p-desc', preco: 'p-sistema' } }, { gtinId: 'v-gtin', alvos: { desc: 'v-desc', custo: 'v-custo' } }].forEach(mapa => {
+// Liga o "espião" a cada campo de GTIN, ensinando-lhe onde está a caixa de filial correspondente
+[{ gtinId: 'inv-gtin', filialId: 'inv-filial-oculto', alvos: { desc: 'inv-desc' } }, { gtinId: 'q-gtin', filialId: 'q-filial-lancamento', alvos: { desc: 'q-desc', custo: 'q-custo' } }, { gtinId: 'p-gtin', filialId: 'p-filial-lancamento', alvos: { desc: 'p-desc', preco: 'p-sistema' } }, { gtinId: 'v-gtin', filialId: 'v-filial-lancamento', alvos: { desc: 'v-desc', custo: 'v-custo' } }].forEach(mapa => {
     const inputEan = document.getElementById(mapa.gtinId);
-    if(inputEan) { inputEan.addEventListener('change', (e) => autocompletarPorGtin(e.target.value, mapa.alvos)); inputEan.addEventListener('blur', (e) => autocompletarPorGtin(e.target.value, mapa.alvos)); }
+    if(inputEan) { 
+        // O evento 'input' atua a cada letra digitada ou apagada, tornando a limpeza instantânea
+        inputEan.addEventListener('input', (e) => autocompletarPorGtin(e.target.value, mapa.alvos, mapa.filialId)); 
+        inputEan.addEventListener('blur', (e) => autocompletarPorGtin(e.target.value, mapa.alvos, mapa.filialId)); 
+    }
 });
 // ==========================================
 // 10. MOTOR DO PAINEL ADMIN (VISÃO DE CONSULTOR)
