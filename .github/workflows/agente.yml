@@ -1,0 +1,47 @@
+name: Agente LucroSeguro
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  run-ai-agent:
+    runs-on: ubuntu-latest
+    # Só roda se o título da Issue tiver a palavra [Agente]
+    if: contains(github.event.issue.title, '[Agente]')
+    
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Instalar Python e Bibliotecas
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install requests
+
+      - name: Processar IA (Gemini)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: python .github/scripts/agente.py
+
+      - name: Configurar Git
+        run: |
+          git config --global user.name "Agente LucroSeguro"
+          git config --global user.email "agente@lucroseguro.com"
+
+      - name: Criar Branch e Commit Automático
+        run: |
+          git checkout -b atualizacao-agente-${{ github.event.issue.number }}
+          git add .
+          git commit -m "Agente: Resolução automatizada da Issue #${{ github.event.issue.number }}"
+          git push origin atualizacao-agente-${{ github.event.issue.number }}
+
+      - name: Criar Relatório e Enviar para Revisão (Pull Request)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELATORIO=$(cat relatorio.txt)
+          gh pr create --title "Atualização: Issue #${{ github.event.issue.number }}" --body "$RELATORIO" --base main --head atualizacao-agente-${{ github.event.issue.number }}
+          gh issue comment ${{ github.event.issue.number }} --body "O Agente finalizou o trabalho! Vá até a aba 'Pull Requests' para ler o relatório, testar a versão gerada pela Vercel e aprovar a atualização."
