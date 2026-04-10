@@ -275,7 +275,7 @@ window.renderQuebrasDashboard = () => {
         if(!rankingMap[produto]) rankingMap[produto] = 0; rankingMap[produto] += valorTotal;
     });
 
-    if(document.getElementById('ui-quebra-total-rs')) document.getElementById('ui-quebra-total-rs').innerText = 'R$ ' + totalRs.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    if(document.getElementById('ui-quebra-total-rs')) document.getElementById('ui-quebra-total-rs').innerText = 'R$ ' + totalRs.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     if(document.getElementById('ui-quebra-total-qtd')) document.getElementById('ui-quebra-total-qtd').innerText = totalQtd.toLocaleString('pt-BR');
 
     const divChart = document.querySelector("#chart-motivos"); 
@@ -285,7 +285,7 @@ window.renderQuebrasDashboard = () => {
             series: Object.values(motivosMap), labels: Object.keys(motivosMap),
             chart: { type: 'donut', height: 280, fontFamily: 'Inter, sans-serif' }, colors:['#0A2540', '#008950', '#f97316', '#eab308', '#ef4444', '#8b5cf6'], 
             dataLabels: { enabled: false }, legend: { position: 'right' },
-            tooltip: { y: { formatter: function (val) { return "R$ " + val.toLocaleString('pt-BR', {minimumFractionDigits: 2}); } } }
+            tooltip: { y: { formatter: function (val) { return "R$ " + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); } } }
         }); 
         chartMotivosInstance.render();
     }
@@ -295,7 +295,7 @@ window.renderQuebrasDashboard = () => {
         const rankingArray = Object.keys(rankingMap).map(key => ({ produto: key, valor: rankingMap[key] })).sort((a, b) => b.valor - a.valor);
         divRanking.innerHTML = '';
         rankingArray.slice(0, 5).forEach((item, index) => {
-            divRanking.innerHTML += `<div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-lg transition-colors border-b border-slate-100 last:border-0"><div class="flex items-center gap-3"><span class="text-lg font-bold text-slate-300 w-5">${index + 1}º</span><span class="font-medium text-slate-700">${item.produto}</span></div><span class="font-bold text-red-600">R$ ${item.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span></div>`;
+            divRanking.innerHTML += `<div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-lg transition-colors border-b border-slate-100 last:border-0"><div class="flex items-center gap-3"><span class="text-lg font-bold text-slate-300 w-5">${index + 1}º</span><span class="font-medium text-slate-700">${item.produto}</span></div><span class="font-bold text-red-600">R$ ${item.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>`;
         });
         if(rankingArray.length === 0) divRanking.innerHTML = '<p class="text-sm text-slate-400 italic py-2">Nenhum dado para o ranking.</p>';
     }
@@ -316,7 +316,7 @@ window.renderDocasDashboard = () => {
     dadosDocas.forEach(item => { totalDivergencias += parseLocalFloat(item.quantidade); custoDivergencias += (parseLocalFloat(item.quantidade) * parseLocalFloat(item.custo)); });
 
     if(document.getElementById('ui-docas-total')) document.getElementById('ui-docas-total').innerText = totalDivergencias.toLocaleString('pt-BR');
-    if(document.getElementById('ui-docas-custo')) document.getElementById('ui-docas-custo').innerText = 'R$ ' + custoDivergencias.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    if(document.getElementById('ui-docas-custo')) document.getElementById('ui-docas-custo').innerText = 'R$ ' + custoDivergencias.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
     if(divLista) {
         divLista.innerHTML = '';
@@ -340,7 +340,7 @@ window.renderValidadeDashboard = () => {
     dadosValidade.forEach(item => { totalItens += parseLocalFloat(item.quantidade); custoRisco += (parseLocalFloat(item.quantidade) * parseLocalFloat(item.custo)); });
 
     if(document.getElementById('ui-validade-total')) document.getElementById('ui-validade-total').innerText = totalItens.toLocaleString('pt-BR');
-    if(document.getElementById('ui-validade-custo')) document.getElementById('ui-validade-custo').innerText = 'R$ ' + custoRisco.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    if(document.getElementById('ui-validade-custo')) document.getElementById('ui-validade-custo').innerText = 'R$ ' + custoRisco.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
     if(divLista) {
         divLista.innerHTML = '';
@@ -363,7 +363,7 @@ window.renderValidadeDashboard = () => {
             const corCard = isRebaixado ? 'border-gold/50 bg-gold/5' : 'border-slate-200 bg-white';
             const corTextoCheck = isRebaixado ? 'text-gold' : 'text-slate-400';
 
-            divLista.innerHTML += `<div class="p-3 mb-2 ${corCard} border rounded-lg flex flex-col md:flex-row md:items-center gap-3 shadow-sm min-w-0 transition-all"><div class="flex items-center gap-3 flex-1 min-w-0 text-left"><div class="w-3 h-3 rounded-full shrink-0 ${corSinalizacao}"></div><div class="flex-1 min-w-0"><p class="font-bold text-navy text-sm mb-1 truncate">${item.descricao || 'Produto'}</p><div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500"><span>Vence: <strong class="text-slate-700">${dataExibicao}</strong></span><span class="text-slate-300">|</span><span>GTIN: ${item.gtin || '-'}</span><span class="text-slate-300">|</span><span>Qtd: <strong class="text-slate-700">${item.quantidade} un</strong></span><span class="text-slate-300">|</span><span>Risco: <strong class="text-red-600">R$ ${riscoItem.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong></span></div></div></div><div class="flex items-center justify-end gap-3 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-2 md:pt-0 md:pl-3 mt-2 md:mt-0"><label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold ${corTextoCheck} hover:text-gold transition-colors uppercase tracking-wider"><input type="checkbox" onchange="window.marcarRebaixaValidade('${itemEncoded}', this)" class="w-4 h-4 rounded border-slate-300 text-gold focus:ring-gold cursor-pointer" ${isRebaixado ? 'checked' : ''}> Rebaixado</label><button onclick="abrirModalAuditoria('${itemEncoded}')" class="bg-slate-50 hover:bg-slate-200 border border-slate-200 text-navy text-xs font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap shadow-sm">Auditar</button></div></div>`;
+            divLista.innerHTML += `<div class="p-3 mb-2 ${corCard} border rounded-lg flex flex-col md:flex-row md:items-center gap-3 shadow-sm min-w-0 transition-all"><div class="flex items-center gap-3 flex-1 min-w-0 text-left"><div class="w-3 h-3 rounded-full shrink-0 ${corSinalizacao}"></div><div class="flex-1 min-w-0"><p class="font-bold text-navy text-sm mb-1 truncate">${item.descricao || 'Produto'}</p><div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500"><span>Vence: <strong class="text-slate-700">${dataExibicao}</strong></span><span class="text-slate-300">|</span><span>GTIN: ${item.gtin || '-'}</span><span class="text-slate-300">|</span><span>Qtd: <strong class="text-slate-700">${item.quantidade} un</strong></span><span class="text-slate-300">|</span><span>Risco: <strong class="text-red-600">R$ ${riscoItem.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></span></div></div></div><div class="flex items-center justify-end gap-3 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-2 md:pt-0 md:pl-3 mt-2 md:mt-0"><label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold ${corTextoCheck} hover:text-gold transition-colors uppercase tracking-wider"><input type="checkbox" onchange="window.marcarRebaixaValidade('${itemEncoded}', this)" class="w-4 h-4 rounded border-slate-300 text-gold focus:ring-gold cursor-pointer" ${isRebaixado ? 'checked' : ''}> Rebaixado</label><button onclick="abrirModalAuditoria('${itemEncoded}')" class="bg-slate-50 hover:bg-slate-200 border border-slate-200 text-navy text-xs font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap shadow-sm">Auditar</button></div></div>`;
         });
     }
 };
@@ -410,7 +410,7 @@ window.renderFurtosDashboard = () => {
         const local = String(o.local).trim().toUpperCase(); if(!locaisMap[local]) locaisMap[local] = 0; locaisMap[local]++;
     });
 
-    if(document.getElementById('ui-furto-total-rs')) document.getElementById('ui-furto-total-rs').innerText = 'R$ ' + totalRs.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    if(document.getElementById('ui-furto-total-rs')) document.getElementById('ui-furto-total-rs').innerText = 'R$ ' + totalRs.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     if(document.getElementById('ui-furto-total-ocorrencias')) document.getElementById('ui-furto-total-ocorrencias').innerText = ocorrencias.length;
     if(document.getElementById('ui-furto-preventivo')) document.getElementById('ui-furto-preventivo').innerText = (ocorrencias.length > 0 ? Math.round((preventivas / ocorrencias.length) * 100) : 0) + '%';
 
@@ -447,7 +447,7 @@ window.renderCaixaDashboard = () => {
     if(filtroFilial && filtroFilial !== 'todas') dadosCaixa = dadosCaixa.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
     let totalRs = 0; dadosCaixa.forEach(item => { totalRs += parseLocalFloat(item.valor_falta); });
     if(document.getElementById('ui-caixa-total-ocorrencias')) document.getElementById('ui-caixa-total-ocorrencias').innerText = dadosCaixa.length;
-    if(document.getElementById('ui-caixa-total-rs')) document.getElementById('ui-caixa-total-rs').innerText = 'R$ ' + totalRs.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    if(document.getElementById('ui-caixa-total-rs')) document.getElementById('ui-caixa-total-rs').innerText = 'R$ ' + totalRs.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 };
 
 window.renderTarefasDashboard = () => {
@@ -713,7 +713,7 @@ document.getElementById('btn-add-prod')?.addEventListener('click', () => {
     const n = document.getElementById('f-prod-nome').value.trim(); const q = parseInt(document.getElementById('f-prod-qtd').value)||0; const p = parseFloat(document.getElementById('f-prod-preco').value.replace(',','.'))||0;
     if(!n || q <= 0 || p < 0) { alert("Preencha dados válidos."); return; }
     produtosFurto.push({ nome: n, qtd: q, preco: p }); document.getElementById('f-prod-nome').value = ''; document.getElementById('f-prod-qtd').value = ''; document.getElementById('f-prod-preco').value = '';
-    const lP = document.getElementById('f-lista-produtos'); if(lP) lP.innerHTML += `<li class="flex justify-between items-center p-2 bg-white border border-slate-200 rounded mb-1 text-xs"><span class="font-bold text-navy truncate flex-1">${n}</span><span class="text-slate-500 w-16 text-center">${q} un</span><span class="text-red-600 font-bold w-24 text-right">R$ ${(q*p).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span></li>`;
+    const lP = document.getElementById('f-lista-produtos'); if(lP) lP.innerHTML += `<li class="flex justify-between items-center p-2 bg-white border border-slate-200 rounded mb-1 text-xs"><span class="font-bold text-navy truncate flex-1">${n}</span><span class="text-slate-500 w-16 text-center">${q} un</span><span class="text-red-600 font-bold w-24 text-right">R$ ${(q*p).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></li>`;
 });
 
 document.getElementById('form-furtos')?.addEventListener('submit', async (e) => {
