@@ -808,7 +808,14 @@ onAuthStateChanged(auth, async (user) => {
                 const docSnap = await getDoc(doc(db, 'users_permissions', user.email));
                 if (docSnap.exists()) {
                     const p = docSnap.data(); currentUserEmpresa = p.company_name; currentUserFilial = p.unit_name; currentUserRole = p.role || 'operacional';
-                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = `<option value="${currentUserFilial}">${currentUserFilial}</option>`; el.value = currentUserFilial; } });
+        // Suporte a múltiplas filiais (separadas por vírgula no Firebase)
+                    const listaFiliais = currentUserFilial.split(',').map(f => f.trim());
+                    let optionsForm = ''; listaFiliais.forEach(f => optionsForm += `<option value="${f}">${f}</option>`);
+                    let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
+                    listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
+
+                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
+                    ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; } });
                     window.showView('client'); window.fetchSheetsDataComHierarquia(); 
                 } else { signOut(auth); }
             } catch(e) { signOut(auth); }
@@ -863,11 +870,26 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
             currentUserFilial = p.unit_name;
             currentUserRole = p.role || 'operacional';
             
-            // Atualiza os formulários ocultos para lançarem na filial certa
+            // =====================================================================
+            // NOVA LÓGICA: Suporte a múltiplas filiais no modo consultor
+            // =====================================================================
+            const listaFiliais = currentUserFilial.split(',').map(f => f.trim());
+            let optionsForm = ''; 
+            listaFiliais.forEach(f => optionsForm += `<option value="${f}">${f}</option>`);
+            
+            let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
+            listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
+
             ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'].forEach(id => { 
                 const el = document.getElementById(id); 
-                if(el) { el.innerHTML = `<option value="${currentUserFilial}">${currentUserFilial}</option>`; el.value = currentUserFilial; } 
+                if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } 
             });
+            
+            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'].forEach(id => { 
+                const el = document.getElementById(id); 
+                if(el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; } 
+            });
+            // =====================================================================
 
             // 4. Mostra o botão dourado "Visão Consultor" para você poder voltar
             const btnVoltarAdmin = document.getElementById('btn-switch-admin');
