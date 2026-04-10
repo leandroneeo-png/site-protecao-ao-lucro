@@ -5,7 +5,7 @@ import re
 api_key = os.environ.get("GEMINI_API_KEY")
 issue_text = os.environ.get("ISSUE_BODY")
 
-# Lê o código atual
+# Lendo arquivos atuais
 with open("js/app.js", "r", encoding="utf-8") as f:
     app_js = f.read()
 
@@ -13,64 +13,60 @@ with open("index.html", "r", encoding="utf-8") as f:
     index_html = f.read()
 
 prompt = f"""Você é o Agente Especialista LUCROSEGURO (Staff Engineer).
-O usuário pediu a seguinte alteração no sistema:
+O usuário pediu a seguinte alteração:
 {issue_text}
 
-Aqui está o código atual do app.js:
-<CODIGO_APP>
+Aqui está o app.js atual:
+<APP_ATUAL>
 {app_js}
-</CODIGO_APP>
+</APP_ATUAL>
 
-Aqui está o código atual do index.html:
-<CODIGO_INDEX>
+Aqui está o index.html atual:
+<INDEX_ATUAL>
 {index_html}
-</CODIGO_INDEX>
+</INDEX_ATUAL>
 
-SUA MISSÃO:
-1. Analisar o pedido.
-2. Modificar os códigos necessários (sempre retorne os códigos 100% completos, sem resumos ou omitir linhas).
-3. Explicar detalhadamente o que foi feito.
-
-Você DEVE responder EXATAMENTE no formato abaixo. NÃO use blocos markdown (```) dentro das tags finais, apenas o código puro:
-
+Retorne exatamente neste formato:
 <RELATORIO>
-(Escreva aqui em português o que você fez, por que fez, e como a lógica funciona)
+O que foi feito e como a lógica funciona.
 </RELATORIO>
-
 <APP_JS>
-(Cole aqui o código completo do app.js atualizado)
+(Código app.js completo e atualizado)
 </APP_JS>
-
 <INDEX_HTML>
-(Cole aqui o código completo do index.html atualizado)
+(Código index.html completo e atualizado)
 </INDEX_HTML>
 """
 
-# Montagem segura da URL para evitar auto-formatação do GitHub Web
-base_url = "[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=)"
-url = base_url + api_key
+# Endpoint limpo e sem parâmetros na string para impedir que o GitHub o transforme num hiperlink
+endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent"
 
 payload = {
     "contents": [{"parts": [{"text": prompt}]}],
     "generationConfig": {"temperature": 0.1}
 }
 
-response = requests.post(url, json=payload)
+# Passamos a chave da API separadamente através do dicionário 'params'
+response = requests.post(endpoint, params={"key": api_key}, json=payload)
 data = response.json()
-resposta_ia = data['candidates'][0]['content']['parts'][0]['text']
 
-# Extrai os dados gerados
-relatorio = re.search(r'<RELATORIO>(.*?)</RELATORIO>', resposta_ia, re.DOTALL)
-novo_app = re.search(r'<APP_JS>(.*?)</APP_JS>', resposta_ia, re.DOTALL)
-novo_index = re.search(r'<INDEX_HTML>(.*?)</INDEX_HTML>', resposta_ia, re.DOTALL)
+try:
+    resposta_ia = data['candidates'][0]['content']['parts'][0]['text']
 
-if relatorio and novo_app and novo_index:
-    with open("js/app.js", "w", encoding="utf-8") as f:
-        f.write(novo_app.group(1).strip())
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(novo_index.group(1).strip())
+    relatorio = re.search(r'<RELATORIO>(.*?)</RELATORIO>', resposta_ia, re.DOTALL)
+    novo_app = re.search(r'<APP_JS>(.*?)</APP_JS>', resposta_ia, re.DOTALL)
+    novo_index = re.search(r'<INDEX_HTML>(.*?)</INDEX_HTML>', resposta_ia, re.DOTALL)
+
+    if relatorio and novo_app and novo_index:
+        with open("js/app.js", "w", encoding="utf-8") as f:
+            f.write(novo_app.group(1).strip())
+        with open("index.html", "w", encoding="utf-8") as f:
+            f.write(novo_index.group(1).strip())
+        with open("relatorio.txt", "w", encoding="utf-8") as f:
+            f.write(relatorio.group(1).strip())
+    else:
+        with open("relatorio.txt", "w", encoding="utf-8") as f:
+            f.write("Erro: O Agente não conseguiu gerar os códigos completos no formato correto.")
+except Exception as e:
     with open("relatorio.txt", "w", encoding="utf-8") as f:
-        f.write(relatorio.group(1).strip())
-else:
-    with open("relatorio.txt", "w", encoding="utf-8") as f:
-        f.write("Erro: A Inteligência Artificial não conseguiu extrair o código completo. Tente novamente.")
+        f.write(f"Erro de processamento da API: {str(e)}")
