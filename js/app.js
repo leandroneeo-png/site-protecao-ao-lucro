@@ -917,6 +917,15 @@ window.exportarInventarioId = (idInv) => {
 // ==========================================
 // 6. LISTENERS DE SUBMISSÃO E FORMS GERAIS
 // ==========================================
+// EXPORTAÇÕES GLOBAIS (EXCEL/CSV)
+document.getElementById('btn-export-csv')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('quebra', 'Quebras'); });
+document.getElementById('btn-export-csv-docas')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('recebimento', 'Docas'); });
+document.getElementById('btn-export-csv-val')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('validade', 'Validades'); });
+document.getElementById('btn-export-csv-preco')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('auditoria_preco', 'Auditoria_Precos'); });
+document.getElementById('btn-export-csv-caixa')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('caixa_central', 'Caixa_Central'); });
+document.getElementById('btn-export-csv-furtos')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('furto', 'Furtos_Evitados'); });
+document.getElementById('btn-export-csv-inv')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('inventario', 'Inventario_Completo'); });
+
 document.getElementById('form-quebras')?.addEventListener('submit', (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
     const fil = document.getElementById('q-filial-lancamento')?.value || currentUserFilial; 
