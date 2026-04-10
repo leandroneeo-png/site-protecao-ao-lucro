@@ -46,10 +46,13 @@ Você DEVE responder EXATAMENTE no formato abaixo. NÃO use blocos markdown (```
 </INDEX_HTML>
 """
 
-url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + api_key
+# Montagem segura da URL para evitar auto-formatação do GitHub Web
+base_url = "[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=)"
+url = base_url + api_key
+
 payload = {
     "contents": [{"parts": [{"text": prompt}]}],
-    "generationConfig": {"temperature": 0.1} # Alta precisão lógica
+    "generationConfig": {"temperature": 0.1}
 }
 
 response = requests.post(url, json=payload)
@@ -70,4 +73,4 @@ if relatorio and novo_app and novo_index:
         f.write(relatorio.group(1).strip())
 else:
     with open("relatorio.txt", "w", encoding="utf-8") as f:
-        f.write("Erro: A Inteligência Artificial não conseguiu processar o arquivo completo. Tente dividir o seu pedido na Issue em etapas menores.")
+        f.write("Erro: A Inteligência Artificial não conseguiu extrair o código completo. Tente novamente.")
