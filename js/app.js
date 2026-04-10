@@ -815,7 +815,15 @@ onAuthStateChanged(auth, async (user) => {
                     listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
                     ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
-                    ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; } });
+['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'].forEach(id => { 
+                        const el = document.getElementById(id); 
+                        if(el) { 
+                            el.innerHTML = optionsFiltro; 
+                            el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; 
+                            // Ordem visual: Mostra o filtro se tiver mais que 1 loja, oculta se for só 1
+                            if (listaFiliais.length > 1) { el.classList.remove('hidden'); } else { el.classList.add('hidden'); }
+                        } 
+                    });
                     window.showView('client'); window.fetchSheetsDataComHierarquia(); 
                 } else { signOut(auth); }
             } catch(e) { signOut(auth); }
