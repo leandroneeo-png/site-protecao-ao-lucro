@@ -482,8 +482,104 @@
                     </div>
                 </div>
 
-                <div class="hidden" id="wrapper-tab-furtos"><div class="bg-white p-6 max-w-5xl mx-auto rounded-2xl border text-center"><h2 class="text-xl font-bold text-navy">Painel de Furtos</h2><p class="text-slate-500">Módulo Ativo. Injeção dinâmica via App.js.</p></div></div>
-                <div class="hidden" id="wrapper-tab-tar"><div class="bg-white p-6 max-w-5xl mx-auto rounded-2xl border text-center"><h2 class="text-xl font-bold text-orange-500">Gestão de Tarefas</h2><p class="text-slate-500">Módulo Ativo. Injeção dinâmica via App.js.</p></div></div>
+           <div class="hidden space-y-6 pt-2" id="wrapper-tab-furtos">
+                    <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-200 pb-4">
+                        <h2 class="text-xl font-bold text-navy flex items-center gap-2"><i class="w-6 h-6 text-gold" data-lucide="shield-check"></i> Painel de Furtos</h2>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
+                                <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-furtos"></select>
+                                <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer" id="filtro-mes-furtos" type="month"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                            <h3 class="text-sm font-bold text-slate-500 mb-1">Total Recuperado</h3>
+                            <p class="text-2xl font-black text-emerald" id="ui-furto-total-rs">R$ 0,00</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                            <h3 class="text-sm font-bold text-slate-500 mb-1">Ocorrências</h3>
+                            <p class="text-2xl font-black text-navy" id="ui-furto-total-ocorrencias">0</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                            <h3 class="text-sm font-bold text-slate-500 mb-1">% Preventivo</h3>
+                            <p class="text-2xl font-black text-gold" id="ui-furto-preventivo">0%</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                            <h2 class="text-lg font-bold text-navy mb-4 border-b border-slate-100 pb-2 flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="clipboard-list"></i> Novo Registro de Sinistro</h2>
+                            <form class="space-y-4" id="form-furtos">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Data</label><input class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-navy p-2.5" id="f-data" required type="date"/></div>
+                                    <div><label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Filial</label><select class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-navy p-2.5" id="f-filial"></select></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4">
+                                    <div><label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Gênero</label><select class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg p-2.5" id="f-genero" required><option value="Homem">Homem</option><option value="Mulher">Mulher</option><option value="Outro">Outro</option></select></div>
+                                    <div><label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Idade</label><input class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg p-2.5" id="f-idade" placeholder="Ex: 25" required type="number"/></div>
+                                    <div><label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Abordagem</label><select class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg p-2.5" id="f-abordagem" required><option value="Preventiva">Preventiva</option><option value="Reativa">Reativa</option></select></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Local da Abordagem</label><input class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg p-2.5" id="f-local" placeholder="Ex: Saída..." required type="text"/></div>
+                                    <div><label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Descrição Breve</label><input class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg p-2.5" id="f-desc" placeholder="Ex: Ocultou na mochila" required type="text"/></div>
+                                </div>
+                                <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg mt-4">
+                                    <label class="block text-xs font-bold text-navy mb-2 flex items-center gap-2"><i class="w-4 h-4" data-lucide="shopping-cart"></i> Produtos Recuperados</label>
+                                    <div class="grid grid-cols-12 gap-2 mb-2">
+                                        <div class="col-span-6"><input class="w-full border border-slate-200 text-sm rounded px-2 py-1.5" id="f-prod-nome" placeholder="Produto" type="text"/></div>
+                                        <div class="col-span-2"><input class="w-full border border-slate-200 text-sm rounded px-2 py-1.5" id="f-prod-qtd" placeholder="Qtd" type="number"/></div>
+                                        <div class="col-span-3"><input class="w-full border border-slate-200 text-sm rounded px-2 py-1.5" id="f-prod-preco" placeholder="R$ Venda" step="0.01" type="number"/></div>
+                                        <div class="col-span-1 flex items-end"><button class="w-full bg-navy text-white rounded p-1.5 hover:bg-gold transition-colors flex justify-center items-center" id="btn-add-prod" type="button"><i class="w-4 h-4" data-lucide="plus"></i></button></div>
+                                    </div>
+                                    <ul class="space-y-1 max-h-32 overflow-y-auto mt-3" id="f-lista-produtos"></ul>
+                                </div>
+                                <div class="hidden p-3 bg-emerald/10 text-emerald text-sm rounded-lg font-bold border border-emerald/20 text-center" id="msg-furto-success">Registro salvo!</div>
+                                <div class="hidden p-3 bg-red-50 text-red-600 text-sm rounded-lg font-bold border border-red-200 text-center" id="msg-furto-error"></div>
+                                <button class="w-full text-white bg-navy hover:bg-navy/90 font-bold rounded-lg text-sm px-5 py-3 transition-colors flex justify-center items-center gap-2 shadow-md mt-4" id="btn-save-furto" type="submit"><i class="w-5 h-5 text-gold" data-lucide="save"></i> Registrar Sinistro</button>
+                            </form>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm"><h3 class="text-sm font-bold text-navy mb-4">Gênero x Abordagem</h3><div class="w-full h-64" id="chart-furtos-perfil"></div></div>
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm"><h3 class="text-sm font-bold text-navy mb-4">Locais de Risco</h3><div class="w-full h-64" id="chart-furtos-locais"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden space-y-6 pt-2" id="wrapper-tab-tar">
+                    <div class="max-w-5xl mx-auto mb-2 border-b border-slate-200 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-2xl font-heading font-bold text-navy flex items-center gap-2"><i class="w-6 h-6 text-orange-500" data-lucide="list-todo"></i> Gestão de Tarefas</h2>
+                            <p class="text-slate-500 text-sm mt-1">Acompanhe as demandas manuais e alertas sistêmicos por loja.</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                            <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="filter"></i>
+                            <select class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-tar"></select>
+                        </div>
+                    </div>
+                    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-fit">
+                            <h2 class="text-lg font-bold text-navy mb-4 flex items-center gap-2 border-b border-slate-100 pb-2"><i class="w-5 h-5 text-orange-500" data-lucide="list-plus"></i> Nova Tarefa</h2>
+                            <form class="space-y-4" id="form-tarefas">
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Filial Alvo</label><select class="w-full p-2.5 rounded-lg border border-slate-300 text-sm bg-slate-50" id="t-filial" required></select></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">O que deve ser feito?</label><input class="w-full p-2.5 rounded-lg border border-slate-300 text-sm bg-slate-50" id="t-titulo" placeholder="Ex: Contar estoque" required type="text"/></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Prazo Limite</label><input class="w-full p-2.5 rounded-lg border border-slate-300 text-sm bg-slate-50" id="t-prazo" required type="date"/></div>
+                                <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg text-sm" id="btn-save-tar" type="submit">Criar Demanda</button>
+                                <p class="hidden text-emerald text-xs font-bold text-center mt-2" id="msg-tar-success">Tarefa criada!</p>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                                <h2 class="text-lg font-bold text-red-600 mb-4 flex items-center gap-2"><i class="w-5 h-5 animate-pulse" data-lucide="siren"></i> Alertas Automáticos (Sistema)</h2>
+                                <div class="flex flex-col gap-3 max-h-64 overflow-y-auto pr-2" id="lista-tarefas-sistema"><p class="text-sm text-slate-400 text-center py-4">Sincronizando...</p></div>
+                            </div>
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                                <h2 class="text-lg font-bold text-navy mb-4 flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="check-square"></i> Demandas Pendentes</h2>
+                                <div class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-2" id="lista-tarefas-manuais"><p class="text-sm text-slate-400 text-center py-4">Sincronizando...</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </main>
         </div>
