@@ -933,7 +933,7 @@ document.getElementById('form-gestao-clientes')?.addEventListener('submit', asyn
     const txtError = document.getElementById('txt-gc-error');
     const txtOriginal = btnSubmit.innerHTML;
 
-    // Feedback visual de carregamento
+    // Feedback visual
     btnSubmit.innerHTML = '<i class="w-5 h-5 animate-spin" data-lucide="loader-2"></i> Salvando...';
     btnSubmit.disabled = true;
     if(msgSuccess) msgSuccess.classList.add('hidden');
@@ -941,34 +941,51 @@ document.getElementById('form-gestao-clientes')?.addEventListener('submit', asyn
 
     // Captura os dados digitados
     const email = document.getElementById('gc-email').value.trim().toLowerCase();
+    const senha = document.getElementById('gc-senha').value; // <-- Captura da Senha adicionada
     const empresa = document.getElementById('gc-empresa').value.trim();
     const filiaisRaw = document.getElementById('gc-filial').value;
     const role = document.getElementById('gc-role').value;
 
-    // MÁGICA DAS VÍRGULAS: Corta o texto pelas vírgulas, remove espaços em branco e junta novamente de forma limpa
     const filiaisLimpatas = filiaisRaw.split(',')
                                       .map(f => f.trim())
                                       .filter(f => f.length > 0)
                                       .join(', ');
 
     try {
-        // Grava as permissões formatadas diretamente no Firebase
+        // PASSO 1: Criar no Authentication (Usando App Secundário para não derrubar o Admin)
+        const appNome = "SecondaryApp_" + Date.now();
+        const secondaryApp = initializeApp(firebaseConfig, appNome);
+        const secondaryAuth = getAuth(secondaryApp);
+        
+        // Cria a conta do cliente efetivamente
+        await createUserWithEmailAndPassword(secondaryAuth, email, senha);
+        // Desloga a conta nova do fundo para não interferir com a tela atual
+        await signOut(secondaryAuth); 
+
+        // PASSO 2: Grava as permissões e filiais no Firestore Database
         await setDoc(doc(db, "users_permissions", email), {
             email: email,
             company_name: empresa,
-            unit_name: filiaisLimpatas, // Aqui entra o texto "Fazendinha, Paranaguá"
+            unit_name: filiaisLimpatas,
             role: role,
             segment: "varejo",
             updatedAt: serverTimestamp()
         });
 
         if(msgSuccess) msgSuccess.classList.remove('hidden');
-        e.target.reset(); // Limpa o formulário para o próximo registo
+        e.target.reset(); // Limpa o formulário
         
     } catch (error) {
         console.error("Erro ao vincular usuário:", error);
         if(msgError) {
-            txtError.innerText = "Erro ao gravar no banco de dados.";
+            // Tradutor de erros para o painel
+            if(error.code === 'auth/email-already-in-use') {
+                txtError.innerText = "Este e-mail já está registado no sistema.";
+            } else if(error.code === 'auth/weak-password') {
+                txtError.innerText = "A senha deve ter pelo menos 6 caracteres.";
+            } else {
+                txtError.innerText = "Erro ao gravar. Verifique os dados.";
+            }
             msgError.classList.remove('hidden');
         }
     } finally {
