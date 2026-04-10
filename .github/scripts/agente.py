@@ -38,8 +38,8 @@ O que foi feito e como a lógica funciona.
 </INDEX_HTML>
 """
 
-# Endpoint atualizado com o sufixo '-latest' para garantir o acesso global no tier gratuito
-endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
+# Endpoint atualizado EXATAMENTE para o modelo da sua conta (Gemini 3.1 Pro Preview)
+endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent"
 
 payload = {
     "contents": [{"parts": [{"text": prompt}]}],
