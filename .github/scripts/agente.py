@@ -38,8 +38,8 @@ O que foi feito e como a lógica funciona.
 </INDEX_HTML>
 """
 
-# Endpoint atualizado EXATAMENTE para o modelo da sua conta (Gemini 3.1 Pro Preview)
-endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent"
+# Endpoint apontado para o modelo 2.0-flash (Cota Gratuita Massiva Liberada para Scripts)
+endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
 payload = {
     "contents": [{"parts": [{"text": prompt}]}],
