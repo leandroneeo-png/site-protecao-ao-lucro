@@ -654,6 +654,27 @@ window.unselectAllTabs = () => {
         document.getElementById(map[id])?.classList.remove('hidden');
     });
 });
+// Navegação das Abas do Painel Admin (Consultor)
+const btnAdminUsers = document.getElementById('btn-admin-tab-users');
+const btnAdminKpi = document.getElementById('btn-admin-tab-kpi');
+const wrapAdminUsers = document.getElementById('admin-wrapper-tab-users');
+const wrapAdminKpi = document.getElementById('admin-wrapper-tab-kpi');
+
+if(btnAdminUsers && btnAdminKpi) {
+    btnAdminUsers.addEventListener('click', () => {
+        btnAdminUsers.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md";
+        btnAdminKpi.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md";
+        wrapAdminUsers.classList.remove('hidden');
+        wrapAdminKpi.classList.add('hidden');
+    });
+
+    btnAdminKpi.addEventListener('click', () => {
+        btnAdminKpi.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md";
+        btnAdminUsers.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md";
+        wrapAdminKpi.classList.remove('hidden');
+        wrapAdminUsers.classList.add('hidden');
+    });
+}
 
 // ==========================================
 // 8. AUTENTICAÇÃO E HIERARQUIA
