@@ -38,8 +38,9 @@ O que foi feito e como a lógica funciona.
 </INDEX_HTML>
 """
 
-# Endpoint atualizado para o modelo Flash (estável e liberado no tier gratuito)
-endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+# Endpoint atualizado com o sufixo '-latest' para garantir o acesso global no tier gratuito
+endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
+
 payload = {
     "contents": [{"parts": [{"text": prompt}]}],
     "generationConfig": {"temperature": 0.1}
