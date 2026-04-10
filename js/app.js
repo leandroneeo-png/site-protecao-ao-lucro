@@ -750,8 +750,21 @@ document.getElementById('form-tarefas')?.addEventListener('submit', async (e) =>
 
 document.getElementById('form-auditoria')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser || !itemEmAuditoria) return;
-    const payload = { tipo: "atualizar_validade", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: currentUserFilial, gtin: itemEmAuditoria.gtin, descricao: itemEmAuditoria.descricao, data_validade: itemEmAuditoria.data_validade, quantidade: document.getElementById('modal-nova-qtd').value.replace(',', '.') };
-    await submitToSheets(null, 'btn-save-auditoria', '', '', payload, 'Atualizar Posição'); document.getElementById('modal-auditoria').classList.add('hidden');
+    
+    // CORREÇÃO: Usar a filial exata do item auditado (itemEmAuditoria.filial) em vez da lista global
+    const payload = { 
+        tipo: "atualizar_validade", 
+        email: auth.currentUser.email, 
+        empresa: currentUserEmpresa, 
+        filial: itemEmAuditoria.filial, 
+        gtin: itemEmAuditoria.gtin, 
+        descricao: itemEmAuditoria.descricao, 
+        data_validade: itemEmAuditoria.data_validade, 
+        quantidade: document.getElementById('modal-nova-qtd').value.replace(',', '.') 
+    };
+    
+    await submitToSheets(null, 'btn-save-auditoria', '', '', payload, 'Atualizar Posição'); 
+    document.getElementById('modal-auditoria').classList.add('hidden');
 });
 
 // ==========================================
