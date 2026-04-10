@@ -977,3 +977,69 @@ document.getElementById('form-gestao-clientes')?.addEventListener('submit', asyn
         if(window.lucide) window.lucide.createIcons();
     }
 });
+// ==========================================
+// 12. MOTOR DE GESTÃO DE EMPRESAS E LISTA SUSPENSA
+// ==========================================
+
+// Função para buscar as empresas no Firebase e preencher o select
+window.carregarEmpresas = async () => {
+    const selectEmpresa = document.getElementById('gc-empresa');
+    if(!selectEmpresa) return;
+
+    try {
+        const querySnapshot = await getDocs(collection(db, "empresas"));
+        let options = '<option value="">Selecione a Empresa Matriz...</option>';
+        
+        querySnapshot.forEach((docSnap) => {
+            // Usa o ID do documento como o nome da empresa
+            options += `<option value="${docSnap.id}">${docSnap.id}</option>`;
+        });
+        
+        selectEmpresa.innerHTML = options;
+    } catch (error) {
+        console.error("Erro ao carregar empresas do Firebase:", error);
+        selectEmpresa.innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+};
+
+// Dispara a busca das empresas automaticamente quando você (Admin) fizer o login
+onAuthStateChanged(auth, (user) => {
+    if(user && (user.email === 'leandro@lucroseguro.com.br' || user.email.includes('leandro'))) {
+        window.carregarEmpresas();
+    }
+});
+
+// Faz o botão "Criar Empresa" funcionar e atualizar a lista instantaneamente
+document.getElementById('form-nova-empresa')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nomeEmpresa = document.getElementById('ne-nome').value.trim();
+    const btn = document.getElementById('btn-save-empresa');
+    const msgSuccess = document.getElementById('msg-ne-success');
+    
+    if(!nomeEmpresa) return;
+    const txtOriginal = btn.innerHTML;
+    btn.innerHTML = '<i class="w-5 h-5 animate-spin" data-lucide="loader-2"></i> Criando...';
+
+    try {
+        // Grava a nova empresa na coleção 'empresas' do Firebase
+        await setDoc(doc(db, "empresas", nomeEmpresa), {
+            nome: nomeEmpresa,
+            createdAt: serverTimestamp()
+        });
+        
+        if(msgSuccess) {
+            msgSuccess.classList.remove('hidden');
+            setTimeout(() => msgSuccess.classList.add('hidden'), 5000);
+        }
+        e.target.reset(); // Limpa o formulário
+        
+        // Recarrega a lista de empresas para que ela apareça na hora no Vincular Usuário
+        window.carregarEmpresas();
+        
+    } catch(error) {
+        alert("Erro ao criar empresa: " + error.message);
+    } finally {
+        btn.innerHTML = txtOriginal;
+        if(window.lucide) window.lucide.createIcons();
+    }
+});
