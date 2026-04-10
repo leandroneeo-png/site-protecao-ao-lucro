@@ -595,8 +595,32 @@ document.getElementById('form-validade')?.addEventListener('submit', (e) => {
 
 document.getElementById('form-auditoria-preco')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser) return; 
-    const payload = { tipo: "auditoria_preco", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: document.getElementById('p-filial-lancamento')?.value, data_auditoria: document.getElementById('p-data')?.value, gtin: document.getElementById('p-gtin')?.value||"", descricao: document.getElementById('p-desc')?.value||"", preco_sistema: document.getElementById('p-sistema')?.value||"", preco_gondola: document.getElementById('p-gondola')?.value||"", sem_preco: document.getElementById('p-sem-preco')?.value||"NÃO" };
+    
+    // 1. Memoriza a data atual antes de o formulário ser limpo
+    const inputData = document.getElementById('p-data');
+    const dataSalva = inputData ? inputData.value : "";
+
+    const payload = { 
+        tipo: "auditoria_preco", 
+        email: auth.currentUser.email, 
+        empresa: currentUserEmpresa, 
+        filial: document.getElementById('p-filial-lancamento')?.value, 
+        data_auditoria: document.getElementById('p-data')?.value, 
+        gtin: document.getElementById('p-gtin')?.value||"", 
+        descricao: document.getElementById('p-desc')?.value||"", 
+        preco_sistema: document.getElementById('p-sistema')?.value||"", 
+        preco_gondola: document.getElementById('p-gondola')?.value||"", 
+        sem_preco: document.getElementById('p-sem-preco')?.value||"NÃO" 
+    };
+    
     await submitToSheets(e.target, 'btn-save-preco', 'msg-preco-success', 'msg-preco-error', payload, 'Enviar Auditoria');
+
+    // 2. Restaura a data salva e atira o cursor diretamente para o campo GTIN
+    if (inputData) inputData.value = dataSalva;
+    setTimeout(() => {
+        const inputGtin = document.getElementById('p-gtin');
+        if (inputGtin) inputGtin.focus();
+    }, 100);
 });
 
 document.getElementById('form-caixa-central')?.addEventListener('submit', (e) => {
