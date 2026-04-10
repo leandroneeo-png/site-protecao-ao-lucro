@@ -46,7 +46,7 @@ Você DEVE responder EXATAMENTE no formato abaixo. NÃO use blocos markdown (```
 </INDEX_HTML>
 """
 
-url = f"[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=){api_key}"
+url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + api_key
 payload = {
     "contents": [{"parts": [{"text": prompt}]}],
     "generationConfig": {"temperature": 0.1} # Alta precisão lógica
