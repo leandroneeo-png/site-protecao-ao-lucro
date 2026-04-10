@@ -921,3 +921,59 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
         if(window.lucide) window.lucide.createIcons();
     }
 });
+// ==========================================
+// 11. CADASTRO DE CLIENTES E MÚLTIPLAS LOJAS (ADMIN)
+// ==========================================
+document.getElementById('form-gestao-clientes')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btnSubmit = document.getElementById('btn-save-gc');
+    const msgSuccess = document.getElementById('msg-gc-success');
+    const msgError = document.getElementById('msg-gc-error');
+    const txtError = document.getElementById('txt-gc-error');
+    const txtOriginal = btnSubmit.innerHTML;
+
+    // Feedback visual de carregamento
+    btnSubmit.innerHTML = '<i class="w-5 h-5 animate-spin" data-lucide="loader-2"></i> Salvando...';
+    btnSubmit.disabled = true;
+    if(msgSuccess) msgSuccess.classList.add('hidden');
+    if(msgError) msgError.classList.add('hidden');
+
+    // Captura os dados digitados
+    const email = document.getElementById('gc-email').value.trim().toLowerCase();
+    const empresa = document.getElementById('gc-empresa').value.trim();
+    const filiaisRaw = document.getElementById('gc-filial').value;
+    const role = document.getElementById('gc-role').value;
+
+    // MÁGICA DAS VÍRGULAS: Corta o texto pelas vírgulas, remove espaços em branco e junta novamente de forma limpa
+    const filiaisLimpatas = filiaisRaw.split(',')
+                                      .map(f => f.trim())
+                                      .filter(f => f.length > 0)
+                                      .join(', ');
+
+    try {
+        // Grava as permissões formatadas diretamente no Firebase
+        await setDoc(doc(db, "users_permissions", email), {
+            email: email,
+            company_name: empresa,
+            unit_name: filiaisLimpatas, // Aqui entra o texto "Fazendinha, Paranaguá"
+            role: role,
+            segment: "varejo",
+            updatedAt: serverTimestamp()
+        });
+
+        if(msgSuccess) msgSuccess.classList.remove('hidden');
+        e.target.reset(); // Limpa o formulário para o próximo registo
+        
+    } catch (error) {
+        console.error("Erro ao vincular usuário:", error);
+        if(msgError) {
+            txtError.innerText = "Erro ao gravar no banco de dados.";
+            msgError.classList.remove('hidden');
+        }
+    } finally {
+        btnSubmit.innerHTML = txtOriginal;
+        btnSubmit.disabled = false;
+        if(window.lucide) window.lucide.createIcons();
+    }
+});
