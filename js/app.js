@@ -285,6 +285,28 @@ window.renderQuebrasDashboard = () => {
         chartMotivosInstance = new ApexCharts(divChart, options); 
         chartMotivosInstance.render();
     }
+
+    // Renderização do Ranking de Impacto (O loop que faltava entra aqui)
+    const divRanking = document.getElementById('ranking-list');
+    if(divRanking) {
+        const rankingArray = Object.keys(rankingMap).map(key => ({ produto: key, valor: rankingMap[key] })).sort((a, b) => b.valor - a.valor);
+        divRanking.innerHTML = '';
+        
+        rankingArray.slice(0, 5).forEach((item, index) => {
+            divRanking.innerHTML += `
+            <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-lg transition-colors border-b border-slate-100 last:border-0">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg font-bold text-slate-300 w-5">${index + 1}º</span>
+                    <span class="font-medium text-slate-700">${item.produto}</span>
+                </div>
+                <span class="font-bold text-red-600">R$ ${item.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+            </div>`;
+        });
+        
+        if(rankingArray.length === 0) {
+            divRanking.innerHTML = '<p class="text-sm text-slate-400 italic py-2">Nenhum dado para o ranking.</p>';
+        }
+    }
 };
 
 window.renderDocasDashboard = () => {
