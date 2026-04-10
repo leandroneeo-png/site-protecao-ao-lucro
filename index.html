@@ -30,32 +30,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-    <style>
-        .logo-text-bold { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: -1px; }
-        .logo-text-light { font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 0px; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        @media print {
-            nav, header, footer, #client-tabs, #form-kpi, #form-quebras, #form-recebimento, #form-validade, #form-auditoria-preco, #form-caixa-central, #form-furtos, #form-inventario, button, .btn-logout, #contato { 
-                display: none !important; 
-            }
-            body { background-color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            #view-client { background-color: white !important; }
-            .shadow-sm, .shadow-md, .shadow-xl { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
-            canvas { max-height: 250px !important; }
-            .grid { page-break-inside: avoid; }
-            #portal-cliente { display: block !important; }
-        }
-
-        .estado-hub #loading-data, .estado-hub #empty-state-client, .estado-hub #dashboard-content { display: none !important; }
-        .estado-varejo #container-segmentos { display: none !important; }
-        .estado-varejo #btn-voltar-hub { display: flex !important; }
-        .estado-industria #container-segmentos { display: none !important; }
-        .estado-industria #btn-voltar-hub { display: flex !important; }
-    </style>
+<link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="font-sans text-slate-800 antialiased selection:bg-gold selection:text-navy min-h-screen flex flex-col">
 
