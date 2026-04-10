@@ -18,14 +18,14 @@ const db = getFirestore(app);
 const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxmr0Y-4fq5OigxSxSMaAqnXTDiM7ekaL9EA7j1Bzf-zyQ311qoE7elqAoIYgoFT_EhJg/exec"; 
 
 let chartMotivosInstance = null; let chartFurtosPerfilInstance = null; let chartFurtosLocaisInstance = null;
-let sheetsDataRaw = []; let produtosMestre = []; let itemEmAuditoria = null; let produtosFurto = []; 
+let sheetsDataRaw = []; let produtosMestre = []; let itemEmAuditoria = null; let produtosFurto =[]; 
 let currentUserEmpresa = ""; let currentUserFilial = ""; let currentUserRole = "operacional";
 
 if(window.lucide) lucide.createIcons();
 
+// PREENCHIMENTO AUTOMÁTICO DE DATAS
 const autoFillDates = () => {
-    const h = new Date(); const dF = h.getFullYear() + '-' + String(h.getMonth() + 1).padStart(2, '0') + '-' + String(h.getDate()).padStart(2, '0');
-    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data'].forEach(id => { const c = document.getElementById(id); if(c) c.value = dF; });
+    const h = new Date(); const dF = h.getFullYear() + '-' + String(h.getMonth() + 1).padStart(2, '0') + '-' + String(h.getDate()).padStart(2, '0');['p-data', 'f-data', 'c-data', 't-prazo', 'r-data'].forEach(id => { const c = document.getElementById(id); if(c) c.value = dF; });
 };
 autoFillDates();
 
@@ -77,7 +77,7 @@ const submitToSheets = async (form, btnId, msgSuccessId, msgErrorId, payload, bt
 window.fetchSheetsDataComHierarquia = async () => {
     const loadingQ = document.getElementById('loading-quebras'); const loadingMain = document.getElementById('loading-data');
     if(loadingQ) loadingQ.classList.remove('hidden'); if(loadingMain) loadingMain.classList.remove('hidden');
-    sheetsDataRaw = []; 
+    sheetsDataRaw =[]; 
     try {
         const userEmailReq = auth.currentUser ? auth.currentUser.email : 'anonimo';
         const urlSegura = `${GOOGLE_SHEETS_WEBAPP_URL}?empresa=${encodeURIComponent(currentUserEmpresa)}&filial=${encodeURIComponent(currentUserFilial)}&role=${encodeURIComponent(currentUserRole)}&user=${encodeURIComponent(userEmailReq)}&t=${Date.now()}`;
@@ -85,8 +85,7 @@ window.fetchSheetsDataComHierarquia = async () => {
         if(data && Array.isArray(data)) { sheetsDataRaw = data.filter(i => i.tipo !== 'produto'); produtosMestre = data.filter(i => i.tipo === 'produto'); }
     } catch(e) { console.error(e); } 
     finally {
-        const hoje = new Date(); const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-        ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar'].forEach(id => {
+        const hoje = new Date(); const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar'].forEach(id => {
             const fM = document.getElementById(`filtro-mes-${id}`); const fF = document.getElementById(`filtro-filial-${id}`);
             if(fM && !fM.value) fM.value = mesAtual;
             const triggerRender = () => {
@@ -121,7 +120,7 @@ window.renderQuebrasDashboard = () => {
     const divChart = document.querySelector("#chart-motivos"); 
     if(divChart && typeof ApexCharts !== 'undefined') {
         if(chartMotivosInstance) chartMotivosInstance.destroy(); 
-        chartMotivosInstance = new ApexCharts(divChart, { series: Object.values(motivosMap), labels: Object.keys(motivosMap), chart: { type: 'donut', height: 280, fontFamily: 'Inter, sans-serif' }, colors:['#0A2540', '#008950', '#f97316', '#eab308', '#ef4444', '#8b5cf6'], dataLabels: { enabled: false }, legend: { position: 'right' } });
+        chartMotivosInstance = new ApexCharts(divChart, { series: Object.values(motivosMap), labels: Object.keys(motivosMap), chart: { type: 'donut', height: 280, fontFamily: 'Inter, sans-serif' }, colors:['#0A2540', '#008950', '#f97316', '#eab308', '#ef4444', '#8b5cf6'], dataLabels: { enabled: false }, legend: { position: 'right' }, tooltip: { y: { formatter: function (val) { return "R$ " + val.toLocaleString('pt-BR', {minimumFractionDigits: 2}); } } } });
         chartMotivosInstance.render();
     }
 };
@@ -161,11 +160,85 @@ window.renderValidadeDashboard = () => {
     const divLista = document.getElementById('validade-lista-radar'); 
     if(divLista) {
         divLista.innerHTML = '';
-        dados.forEach(i => { 
+        
+        const dadosOrdenados = [...dados].sort((a, b) => {
+            const dataA = String(a.data_validade).split('/').reverse().join('');
+            const dataB = String(b.data_validade).split('/').reverse().join('');
+            return dataA.localeCompare(dataB);
+        });
+
+        dadosOrdenados.forEach(i => { 
             const r = parseLocalFloat(i.quantidade) * parseLocalFloat(i.custo);
             const enc = encodeURIComponent(JSON.stringify(i));
-            divLista.innerHTML += `<div class="p-3 mb-2 border-slate-200 bg-white border rounded-lg flex justify-between items-center"><div class="flex-1"><p class="font-bold text-navy text-sm">${i.descricao}</p><p class="text-[11px] text-slate-500">Vence: ${i.data_validade} | Qtd: ${i.quantidade} un</p></div><div class="flex items-center gap-3"><span class="text-xs font-bold text-red-600">R$ ${r.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span><button onclick="abrirModalAuditoria('${enc}')" class="bg-slate-50 text-navy text-xs font-bold px-3 py-1.5 border rounded">Auditar</button></div></div>`;
+            
+            let dataVencimento;
+            let partesData = String(i.data_validade).split('/');
+            if (partesData.length === 3) { dataVencimento = new Date(partesData[2], partesData[1] - 1, partesData[0]); } 
+            else { dataVencimento = new Date(i.data_validade + 'T00:00:00'); }
+            
+            let hoje = new Date(); hoje.setHours(0,0,0,0);
+            let diffTempo = dataVencimento.getTime() - hoje.getTime();
+            let diasRestantes = Math.ceil(diffTempo / (1000 * 3600 * 24));
+
+            let corSinalizacao = "bg-emerald"; 
+            if (diasRestantes < 0) corSinalizacao = "bg-red-600 animate-pulse"; 
+            else if (diasRestantes <= 15) corSinalizacao = "bg-yellow-500"; 
+
+            const isRebaixado = i.rebaixado === 'SIM';
+            const corCard = isRebaixado ? 'border-gold/50 bg-gold/5' : 'border-slate-200 bg-white';
+            const corTextoCheck = isRebaixado ? 'text-gold' : 'text-slate-400';
+
+            divLista.innerHTML += `
+                <div class="p-3 mb-2 ${corCard} border rounded-lg flex flex-col md:flex-row md:items-center gap-3 shadow-sm min-w-0 transition-all">
+                    <div class="flex items-center gap-3 flex-1 min-w-0 text-left">
+                        <div class="w-3 h-3 rounded-full shrink-0 ${corSinalizacao}"></div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold text-navy text-sm mb-1 truncate">${i.descricao || 'Produto'}</p>
+                            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
+                                <span>Vence: <strong class="text-slate-700">${i.data_validade}</strong></span>
+                                <span class="text-slate-300">|</span>
+                                <span>Qtd: <strong class="text-slate-700">${i.quantidade} un</strong></span>
+                                <span class="text-slate-300">|</span>
+                                <span>Risco: <strong class="text-red-600">R$ ${r.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-end gap-3 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-2 md:pt-0 md:pl-3 mt-2 md:mt-0">
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold ${corTextoCheck} hover:text-gold transition-colors uppercase tracking-wider">
+                            <input type="checkbox" onchange="window.marcarRebaixaValidade('${enc}', this)" class="w-4 h-4 rounded border-slate-300 text-gold focus:ring-gold cursor-pointer" ${isRebaixado ? 'checked' : ''}>
+                            Rebaixado
+                        </label>
+                        <button onclick="window.abrirModalAuditoria('${enc}')" class="bg-slate-50 hover:bg-slate-200 border border-slate-200 text-navy text-xs font-bold px-4 py-2 rounded-lg transition-colors whitespace-nowrap shadow-sm">
+                            Auditar
+                        </button>
+                    </div>
+                </div>
+            `;
         });
+    }
+};
+
+window.marcarRebaixaValidade = async (itemEncoded, checkboxEl) => {
+    const item = JSON.parse(decodeURIComponent(itemEncoded));
+    const statusRebaixa = checkboxEl.checked ? "SIM" : "NÃO";
+
+    checkboxEl.disabled = true;
+    const parentDiv = checkboxEl.closest('.p-3.mb-2');
+    if (parentDiv) parentDiv.style.opacity = '0.5';
+
+    const payload = { tipo: "atualizar_rebaixa_validade", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: item.filial, gtin: item.gtin, data_validade: item.data_validade, rebaixado: statusRebaixa };
+
+    try {
+        await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
+        const idx = sheetsDataRaw.findIndex(i => i.tipo === 'validade' && String(i.gtin) === String(item.gtin) && i.data_validade === item.data_validade && i.filial === item.filial);
+        if(idx > -1) sheetsDataRaw[idx].rebaixado = statusRebaixa;
+        window.renderValidadeDashboard();
+    } catch(e) {
+        alert("Erro ao rebaixar validade.");
+        checkboxEl.checked = !checkboxEl.checked; 
+    } finally {
+        checkboxEl.disabled = false;
+        if (parentDiv) parentDiv.style.opacity = '1';
     }
 };
 
@@ -179,6 +252,14 @@ window.abrirModalAuditoria = (json) => {
 };
 
 document.getElementById('btn-close-modal')?.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('modal-auditoria').classList.add('hidden'); });
+
+document.getElementById('form-auditoria')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!auth.currentUser || !itemEmAuditoria) return;
+    const payload = { tipo: "atualizar_validade", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: currentUserFilial, gtin: itemEmAuditoria.gtin, descricao: itemEmAuditoria.descricao, data_validade: itemEmAuditoria.data_validade, quantidade: document.getElementById('modal-nova-qtd').value.replace(',', '.') };
+    await submitToSheets(null, 'btn-save-auditoria', '', '', payload, 'Atualizar Posição');
+    document.getElementById('modal-auditoria').classList.add('hidden');
+});
 
 window.renderFurtosDashboard = () => {
     const fM = document.getElementById('filtro-mes-furtos')?.value; const fF = document.getElementById('filtro-filial-furtos')?.value;
@@ -255,7 +336,7 @@ window.renderTarefasDashboard = () => {
     vals.forEach(v => {
         let pD = String(v.data_validade).split('/'); let dV = pD.length === 3 ? new Date(pD[2], pD[1] - 1, pD[0]) : new Date(v.data_validade + 'T00:00:00');
         let d = Math.ceil((dV.getTime() - h.getTime()) / (1000 * 3600 * 24));
-        if(d <= 15 && d >= 0) hS += `<div class="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between"><div class="flex items-center gap-3"><i class="w-5 h-5 text-red-600" data-lucide="alert-triangle"></i><div><p class="text-sm font-bold text-red-800">Risco: ${v.descricao}</p><p class="text-xs text-red-600">Vence em ${d} dias | ${v.filial}</p></div></div><button onclick="abrirModalAuditoria('${encodeURIComponent(JSON.stringify(v))}')" class="bg-red-600 text-white text-xs px-3 py-1.5 rounded">Auditar</button></div>`;
+        if(d <= 15 && d >= 0) hS += `<div class="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between"><div class="flex items-center gap-3"><i class="w-5 h-5 text-red-600" data-lucide="alert-triangle"></i><div><p class="text-sm font-bold text-red-800">Risco: ${v.descricao}</p><p class="text-xs text-red-600">Vence em ${d} dias | ${v.filial}</p></div></div><button onclick="window.abrirModalAuditoria('${encodeURIComponent(JSON.stringify(v))}')" class="bg-red-600 text-white text-xs px-3 py-1.5 rounded">Auditar</button></div>`;
     });
 
     let tars = sheetsDataRaw.filter(i => i.tipo === 'tarefa' && i.status === 'PENDENTE' && (currentUserRole === 'admin' || i.filial === currentUserFilial));
@@ -296,7 +377,7 @@ window.renderListaInventarios = () => {
     let h = '';
     arr.forEach(i => {
         const badge = i.fechado ? `<span class="bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px] font-bold uppercase">Fechado</span>` : `<span class="bg-emerald/10 text-emerald px-2 py-1 rounded text-[10px] font-bold uppercase">Aberto</span>`;
-        const btnC = !i.fechado ? `<button onclick="abrirTelaBipagem('${i.id}', '${i.filial}')" class="text-xs bg-navy text-white px-3 py-1.5 rounded">Contar</button>` : '';
+        const btnC = !i.fechado ? `<button onclick="window.abrirTelaBipagem('${i.id}', '${i.filial}')" class="text-xs bg-navy text-white px-3 py-1.5 rounded">Contar</button>` : '';
         h += `<tr class="border-b"><td class="px-6 py-4 font-bold">${i.id}</td><td class="px-6 py-4">${i.filial}</td><td class="px-6 py-4">${badge}</td><td class="px-6 py-4 text-center">${i.qtdL}</td><td class="px-6 py-4 text-right space-x-2">${btnC}</td></tr>`;
     });
     tb.innerHTML = h;
@@ -329,7 +410,7 @@ window.consultarInventario = () => {
 window.encerrarInventarioAtual = async (e) => {
     const id = document.getElementById('inv-id-oculto').value; const fil = document.getElementById('inv-filial-oculto').value;
     if(!confirm(`Encerrar inventário ${id}?`)) return;
-    const p = { tipo: "fechar_inventario", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: fil, id_inventario: id, nao_encontrados: [] };
+    const p = { tipo: "fechar_inventario", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: fil, id_inventario: id, nao_encontrados:[] };
     try { await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(p) }); sheetsDataRaw.push({ tipo: 'inventario', id_inventario: id, status: 'FECHADO', gtin: 'FECHAMENTO' }); window.voltarTelaInventario(); } catch(err) { alert('Erro ao encerrar.'); }
 };
 
@@ -348,7 +429,6 @@ window.renderHistoricoBipagem = (id) => {
     if(bips.length === 0) { dH.innerHTML = '<p class="text-xs text-slate-400">Nenhum item bipado.</p>'; } 
     else { let h = ''; bips.slice(0, 15).forEach(i => { h += `<div class="flex justify-between items-center p-2 bg-slate-50 border border-slate-100 rounded mb-1"><div class="flex flex-col"><span class="text-xs font-bold text-navy">${i.gtin}</span></div><span class="text-sm font-black text-emerald">${i.quantidade} un</span></div>`; }); dH.innerHTML = h; }
 };
-
 
 // LISTENERS DE FORMULÁRIOS RESTANTES
 document.getElementById('form-quebras')?.addEventListener('submit', (e) => {
@@ -384,7 +464,7 @@ document.getElementById('btn-add-prod')?.addEventListener('click', () => {
 document.getElementById('form-furtos')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser || produtosFurto.length === 0) return; const fil = document.getElementById('f-filial')?.value || currentUserFilial;
     await submitToSheets(e.target, 'btn-save-furto', '', '', { tipo: "furto", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: fil, data_ocorrencia: document.getElementById('f-data')?.value||"", genero: document.getElementById('f-genero')?.value||"", abordagem: document.getElementById('f-abordagem')?.value||"", local: document.getElementById('f-local')?.value||"", produtos: produtosFurto }, 'Registrar Sinistro');
-    produtosFurto = []; const lP = document.getElementById('f-lista-produtos'); if(lP) lP.innerHTML = '';
+    produtosFurto =[]; const lP = document.getElementById('f-lista-produtos'); if(lP) lP.innerHTML = '';
 });
 
 document.getElementById('form-tarefas')?.addEventListener('submit', async (e) => {
@@ -393,10 +473,38 @@ document.getElementById('form-tarefas')?.addEventListener('submit', async (e) =>
 });
 
 // ==========================================
-// 8. VIEWS E NAVEGAÇÃO GERAL
+// MASTER DATA (AUTOCOMPLETAR GTIN)
 // ==========================================
-window.showView = (vN) => {
-    ['portal-cliente', 'site-principal', 'auth-view', 'view-admin', 'view-client'].forEach(id => { const el = document.getElementById(id); if(el) { el.classList.add('hidden'); el.classList.remove('flex'); } });
+const autocompletarPorGtin = (gtin, inputsAlvo) => {
+    const busca = String(gtin).replace(/[^0-9]/g, ''); if(busca.length === 0) return; 
+    const produto = produtosMestre.find(p => p.gtin === busca);
+    if(produto) {
+        if(inputsAlvo.desc && document.getElementById(inputsAlvo.desc)) document.getElementById(inputsAlvo.desc).value = produto.descricao || '';
+        if(inputsAlvo.custo && document.getElementById(inputsAlvo.custo)) document.getElementById(inputsAlvo.custo).value = produto.custo || '';
+        if(inputsAlvo.preco && document.getElementById(inputsAlvo.preco)) document.getElementById(inputsAlvo.preco).value = produto.preco || '';
+    }
+};
+
+const mapeamentoGtin =[
+    { gtinId: 'inv-gtin', alvos: { desc: 'inv-desc' } },
+    { gtinId: 'q-gtin', alvos: { desc: 'q-desc', custo: 'q-custo' } },
+    { gtinId: 'p-gtin', alvos: { desc: 'p-desc', preco: 'p-sistema' } },
+    { gtinId: 'v-gtin', alvos: { desc: 'v-desc', custo: 'v-custo' } }
+];
+
+mapeamentoGtin.forEach(mapa => {
+    const inputEan = document.getElementById(mapa.gtinId);
+    if(inputEan) {
+        inputEan.addEventListener('change', (e) => autocompletarPorGtin(e.target.value, mapa.alvos));
+        inputEan.addEventListener('blur', (e) => autocompletarPorGtin(e.target.value, mapa.alvos));
+    }
+});
+
+
+// ==========================================
+// VIEWS E NAVEGAÇÃO GERAL E ADMIN
+// ==========================================
+window.showView = (vN) => {['portal-cliente', 'site-principal', 'auth-view', 'view-admin', 'view-client'].forEach(id => { const el = document.getElementById(id); if(el) { el.classList.add('hidden'); el.classList.remove('flex'); } });
     if(vN === 'site-principal') { document.getElementById('site-principal')?.classList.remove('hidden'); } 
     else {
         document.getElementById('portal-cliente')?.classList.remove('hidden'); document.getElementById('portal-cliente')?.classList.add('flex');
@@ -414,14 +522,10 @@ window.mudarEstadoSegmento = (est) => {
     else if (est === 'varejo') { if(cS) cS.classList.add('hidden'); if(mI) mI.classList.add('hidden'); if(mV) mV.classList.remove('hidden'); document.getElementById('btn-tab-dash')?.click(); } 
 };
 
-window.unselectAllTabs = () => {
-    ['btn-tab-dash', 'btn-tab-form', 'btn-tab-rec', 'btn-tab-val', 'btn-tab-furtos', 'btn-tab-preco', 'btn-tab-caixa', 'btn-tab-inv', 'btn-tab-tar'].forEach(id => { 
+window.unselectAllTabs = () => {['btn-tab-dash', 'btn-tab-form', 'btn-tab-rec', 'btn-tab-val', 'btn-tab-furtos', 'btn-tab-preco', 'btn-tab-caixa', 'btn-tab-inv', 'btn-tab-tar'].forEach(id => { 
         const el = document.getElementById(id); if(el) { el.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center shadow-sm"; }
-    });
-    ['wrapper-tab-dash', 'wrapper-tab-form', 'wrapper-tab-recebimento', 'wrapper-tab-validade', 'wrapper-tab-furtos', 'wrapper-tab-preco', 'wrapper-tab-caixa', 'wrapper-tab-inv', 'wrapper-tab-tar'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
-};
-
-['btn-tab-dash', 'btn-tab-form', 'btn-tab-rec', 'btn-tab-val', 'btn-tab-furtos', 'btn-tab-preco', 'btn-tab-caixa', 'btn-tab-inv', 'btn-tab-tar'].forEach(id => {
+    });['wrapper-tab-dash', 'wrapper-tab-form', 'wrapper-tab-recebimento', 'wrapper-tab-validade', 'wrapper-tab-furtos', 'wrapper-tab-preco', 'wrapper-tab-caixa', 'wrapper-tab-inv', 'wrapper-tab-tar'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
+};['btn-tab-dash', 'btn-tab-form', 'btn-tab-rec', 'btn-tab-val', 'btn-tab-furtos', 'btn-tab-preco', 'btn-tab-caixa', 'btn-tab-inv', 'btn-tab-tar'].forEach(id => {
     const b = document.getElementById(id);
     if(b) {
         b.addEventListener('click', () => {
@@ -432,26 +536,73 @@ window.unselectAllTabs = () => {
     }
 });
 
+// ABAS DO ADMIN
+const btnUsers = document.getElementById('btn-admin-tab-users');
+const btnKpi = document.getElementById('btn-admin-tab-kpi');
+if(btnUsers && btnKpi) {
+    btnUsers.addEventListener('click', () => { document.getElementById('admin-wrapper-tab-users').classList.remove('hidden'); document.getElementById('admin-wrapper-tab-kpi').classList.add('hidden'); });
+    btnKpi.addEventListener('click', () => { document.getElementById('admin-wrapper-tab-kpi').classList.remove('hidden'); document.getElementById('admin-wrapper-tab-users').classList.add('hidden'); });
+}
+
+document.getElementById('btn-switch-client')?.addEventListener('click', async () => {
+    const emailCli = document.getElementById('input-client-email')?.value.trim().toLowerCase();
+    if(!emailCli) { alert("Digite o e-mail do cliente na aba KPI."); return; }
+    try {
+        const dS = await getDoc(doc(db, 'users_permissions', emailCli));
+        if(!dS.exists()) { alert("Cliente não encontrado."); return; }
+        const p = dS.data(); currentUserEmpresa = p.company_name; currentUserRole = 'admin'; currentUserFilial = p.unit_name || 'Matriz';
+        const qS = await getDocs(collection(db, 'users_permissions'));
+        const lF = new Set(); qS.forEach(d => { const dta = d.data(); if(dta.company_name === currentUserEmpresa && dta.unit_name) lF.add(dta.unit_name); });['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'].forEach(id => {
+            const el = document.getElementById(id); if(el) { el.innerHTML=''; Array.from(lF).sort().forEach(f => el.innerHTML+=`<option value="${f}">${f}</option>`); el.value = currentUserFilial; el.disabled = false; }
+        });['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'].forEach(id => {
+            const el = document.getElementById(id); if(el) { el.innerHTML='<option value="todas">Todas</option>'; Array.from(lF).sort().forEach(f => el.innerHTML+=`<option value="${f}">${f}</option>`); el.classList.remove('hidden'); }
+        });
+        if(document.getElementById('separator-admin')) document.getElementById('separator-admin').innerText = `${currentUserEmpresa} | Visão Consultor`;
+        window.showView('client'); window.fetchSheetsDataComHierarquia();
+    } catch(e) { alert("Erro ao carregar cliente."); }
+});
+
+document.getElementById('btn-switch-admin')?.addEventListener('click', () => window.showView('admin'));
+
 const lF = document.getElementById('login-form');
 if(lF) { lF.addEventListener('submit', async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value); } catch (er) { alert("Credenciais inválidas."); } }); }
 document.querySelectorAll('.btn-logout').forEach(b => b.addEventListener('click', () => signOut(auth)));
 
 window.loadEmpresasAdmin = async () => {
     const sel = document.getElementById('gc-empresa'); if(!sel) return; sel.innerHTML = '<option value="">A carregar...</option>';
-    try { const snap = await getDocs(query(collection(db, 'empresas'))); let opt = '<option value="">Selecione...</option>'; const emp = []; snap.forEach(d => emp.push(d.data().nome)); emp.sort().forEach(e => opt += `<option value="${e}">${e}</option>`); sel.innerHTML = opt; } catch(e) {}
+    try { const snap = await getDocs(query(collection(db, 'empresas'))); let opt = '<option value="">Selecione...</option>'; const emp =[]; snap.forEach(d => emp.push(d.data().nome)); emp.sort().forEach(e => opt += `<option value="${e}">${e}</option>`); sel.innerHTML = opt; } catch(e) {}
 };
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         if (document.getElementById('top-user-email')) document.getElementById('top-user-email').innerText = user.email;
-        if (user.email === 'leandro@lucroseguro.com.br' || user.email.includes('leandro')) { window.showView('admin'); window.loadEmpresasAdmin(); } 
+        if (user.email === 'leandro@lucroseguro.com.br' || user.email.includes('leandro')) { 
+            window.showView('admin'); window.loadEmpresasAdmin(); 
+            if(document.getElementById('btn-switch-admin')) document.getElementById('btn-switch-admin').style.display = 'flex';
+        } 
         else {
+            if(document.getElementById('btn-switch-admin')) document.getElementById('btn-switch-admin').style.display = 'none';
             try {
                 const docSnap = await getDoc(doc(db, 'users_permissions', user.email));
                 if (docSnap.exists()) {
                     const p = docSnap.data(); currentUserEmpresa = p.company_name; currentUserFilial = p.unit_name; currentUserRole = p.role || 'operacional';
-                    const selectsLançamento = ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'];
-                    selectsLançamento.forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = `<option value="${currentUserFilial}">${currentUserFilial}</option>`; el.value = currentUserFilial; } });
+                    
+                    const selectsLançamento =['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'];
+                    const selectsDashboard =['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'];
+                    
+                    if(currentUserRole === 'admin') {
+                        const qS = await getDocs(collection(db, 'users_permissions')); const lF = new Set();
+                        qS.forEach(d => { const dta = d.data(); if(dta.company_name === currentUserEmpresa && dta.unit_name) lF.add(dta.unit_name); });
+                        
+                        selectsLançamento.forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML=''; Array.from(lF).sort().forEach(f => el.innerHTML+=`<option value="${f}">${f}</option>`); el.value = currentUserFilial; el.disabled = false; } });
+                        selectsDashboard.forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML='<option value="todas">Todas</option>'; Array.from(lF).sort().forEach(f => el.innerHTML+=`<option value="${f}">${f}</option>`); el.classList.remove('hidden'); } });
+                    } else {
+                        selectsLançamento.forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = `<option value="${currentUserFilial}">${currentUserFilial}</option>`; el.value = currentUserFilial; el.disabled = true; } });
+                        selectsDashboard.forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
+                    }
+
+                    if(document.getElementById('separator-admin')) document.getElementById('separator-admin').innerText = currentUserEmpresa + (currentUserRole === 'admin' ? ' | Visão Geral' : ' | ' + currentUserFilial);
+                    
                     window.showView('client'); window.fetchSheetsDataComHierarquia(); 
                 } else { alert("Acesso Negado."); signOut(auth); }
             } catch(e) { alert("Erro de hierarquia."); signOut(auth); }
