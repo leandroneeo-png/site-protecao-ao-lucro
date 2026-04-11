@@ -376,6 +376,20 @@ window.abrirModalAuditoria = (itemJson) => {
     document.getElementById('modal-nova-qtd').value = ''; 
     document.getElementById('modal-auditoria').classList.remove('hidden');
 };
+// Função para fechar o Modal de Auditoria
+window.fecharModalAuditoria = () => { 
+    const modal = document.getElementById('modal-auditoria');
+    if(modal) modal.classList.add('hidden');
+    itemEmAuditoria = null; // Limpa a memória por segurança
+};
+
+// Bónus UX: Fechar o modal se o inspetor clicar fora da caixa branca (no fundo escuro)
+const modalAuditoriaBg = document.getElementById('modal-auditoria');
+if(modalAuditoriaBg) {
+    modalAuditoriaBg.addEventListener('click', (e) => {
+        if(e.target === modalAuditoriaBg) window.fecharModalAuditoria();
+    });
+}
 
 window.marcarRebaixaValidade = async (itemEncoded, checkboxEl) => {
     const item = JSON.parse(decodeURIComponent(itemEncoded)); const statusRebaixa = checkboxEl.checked ? "SIM" : "NÃO";
