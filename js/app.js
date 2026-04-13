@@ -781,6 +781,24 @@ document.getElementById('form-auditoria')?.addEventListener('submit', async (e) 
     document.getElementById('modal-auditoria').classList.add('hidden');
 });
 
+document.getElementById('form-ind-refugo')?.addEventListener('submit', async (e) => {
+    e.preventDefault(); if (!auth.currentUser) return;
+    const payload = { 
+        tipo: "ind_refugo", 
+        email: auth.currentUser.email, 
+        empresa: currentUserEmpresa, 
+        filial: document.getElementById('ir-filial').value, 
+        data_refugo: document.getElementById('ir-data').value, 
+        turno: document.getElementById('ir-turno').value, 
+        maquina: document.getElementById('ir-maquina').value, 
+        material: document.getElementById('ir-material').value, 
+        quantidade: document.getElementById('ir-qtd').value, 
+        unidade: document.getElementById('ir-un').value, 
+        motivo: document.getElementById('ir-motivo').value 
+    };
+    await submitToSheets(e.target, 'btn-save-refugo', 'msg-ref-success', '', payload, 'Registrar Perda Industrial');
+});
+
 // ==========================================
 // 7. VIEWS E NAVEGAÇÃO GERAL
 // ==========================================
@@ -926,7 +944,7 @@ onAuthStateChanged(auth, async (user) => {
                     let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
                     listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
+                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
 ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'].forEach(id => { 
                         const el = document.getElementById(id); 
                         if(el) { 
@@ -1020,7 +1038,7 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
             let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
             listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial'].forEach(id => { 
+            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } 
             });
