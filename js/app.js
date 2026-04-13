@@ -796,6 +796,31 @@ window.showView = (vN) => {
     window.scrollTo(0, 0);
 };
 
+// Motor de limpeza das abas de Varejo
+window.unselectAllTabs = () => {
+    ['btn-tab-dash', 'btn-tab-form', 'btn-tab-rec', 'btn-tab-val', 'btn-tab-furtos', 'btn-tab-preco', 'btn-tab-caixa', 'btn-tab-inv', 'btn-tab-tar'].forEach(id => { 
+        const el = document.getElementById(id); 
+        if(el) el.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center shadow-sm hover:shadow-md hover:border-navy hover:text-navy transition-all gap-1"; 
+    });
+    ['wrapper-tab-dash', 'wrapper-tab-form', 'wrapper-tab-recebimento', 'wrapper-tab-validade', 'wrapper-tab-furtos', 'wrapper-tab-preco', 'wrapper-tab-caixa', 'wrapper-tab-inv', 'wrapper-tab-tar'].forEach(id => { 
+        const el = document.getElementById(id); 
+        if(el) el.classList.add('hidden'); 
+    });
+};
+
+// Motor de limpeza das abas da Indústria (Novos IDs)
+window.unselectAllIndTabs = () => {
+    ['btn-tab-dash-ind', 'btn-tab-prod', 'btn-tab-mp', 'btn-tab-qualidade', 'btn-tab-inv-ind'].forEach(id => { 
+        const el = document.getElementById(id); 
+        if(el) el.className = "w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md"; 
+    });
+    ['wrapper-tab-dash-ind', 'wrapper-tab-prod', 'wrapper-tab-mp', 'wrapper-tab-qualidade', 'wrapper-tab-inv-ind'].forEach(id => { 
+        const el = document.getElementById(id); 
+        if(el) el.classList.add('hidden'); 
+    });
+};
+
+// Gerenciador de Segmentos (Varejo / Indústria / Hub)
 window.mudarEstadoSegmento = (est) => {
     const vc = document.getElementById('view-client'); 
     if(vc) { 
@@ -812,7 +837,7 @@ window.mudarEstadoSegmento = (est) => {
         if(mI) mI.classList.add('hidden'); 
         if(cS) cS.classList.remove('hidden'); 
         window.unselectAllTabs(); 
-        window.unselectAllIndTabs(); // Limpa indústria também
+        window.unselectAllIndTabs();
     } 
     else if (est === 'varejo') { 
         if(cS) cS.classList.add('hidden'); 
@@ -824,21 +849,34 @@ window.mudarEstadoSegmento = (est) => {
         if(cS) cS.classList.add('hidden'); 
         if(mV) mV.classList.add('hidden'); 
         if(mI) mI.classList.remove('hidden'); 
-        // Inicia na aba de Refugo por padrão
-        document.getElementById('btn-tab-ind-refugo')?.click(); 
+        document.getElementById('btn-tab-dash-ind')?.click(); 
     }
 };
 
-window.unselectAllTabs = () => {
-    ['btn-tab-dash', 'btn-tab-form', 'btn-tab-rec', 'btn-tab-val', 'btn-tab-furtos', 'btn-tab-preco', 'btn-tab-caixa', 'btn-tab-inv', 'btn-tab-tar'].forEach(id => { const el = document.getElementById(id); if(el) el.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 rounded-xl p-3 flex flex-col items-center shadow-sm hover:shadow-md hover:border-navy hover:text-navy transition-all gap-1"; });
-    ['wrapper-tab-dash', 'wrapper-tab-form', 'wrapper-tab-recebimento', 'wrapper-tab-validade', 'wrapper-tab-furtos', 'wrapper-tab-preco', 'wrapper-tab-caixa', 'wrapper-tab-inv', 'wrapper-tab-tar'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
-};
-
+// Eventos de clique para os botões do Varejo
 ['btn-tab-dash', 'btn-tab-form', 'btn-tab-rec', 'btn-tab-val', 'btn-tab-furtos', 'btn-tab-preco', 'btn-tab-caixa', 'btn-tab-inv', 'btn-tab-tar'].forEach(id => {
     const b = document.getElementById(id);
     if(b) b.addEventListener('click', () => {
-        window.unselectAllTabs(); b.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center shadow-md transition-all gap-1";
+        window.unselectAllTabs(); 
+        b.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center shadow-md transition-all gap-1";
         const map = {'btn-tab-dash':'wrapper-tab-dash', 'btn-tab-form':'wrapper-tab-form', 'btn-tab-rec':'wrapper-tab-recebimento', 'btn-tab-val':'wrapper-tab-validade', 'btn-tab-furtos':'wrapper-tab-furtos', 'btn-tab-preco':'wrapper-tab-preco', 'btn-tab-caixa':'wrapper-tab-caixa', 'btn-tab-inv':'wrapper-tab-inv', 'btn-tab-tar':'wrapper-tab-tar'};
+        document.getElementById(map[id])?.classList.remove('hidden');
+    });
+});
+
+// Eventos de clique para os botões da Indústria
+['btn-tab-dash-ind', 'btn-tab-prod', 'btn-tab-mp', 'btn-tab-qualidade', 'btn-tab-inv-ind'].forEach(id => {
+    const b = document.getElementById(id);
+    if(b) b.addEventListener('click', () => {
+        window.unselectAllIndTabs(); 
+        b.className = "w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md";
+        const map = {
+            'btn-tab-dash-ind': 'wrapper-tab-dash-ind', 
+            'btn-tab-prod': 'wrapper-tab-prod', 
+            'btn-tab-mp': 'wrapper-tab-mp', 
+            'btn-tab-qualidade': 'wrapper-tab-qualidade',
+            'btn-tab-inv-ind': 'wrapper-tab-inv-ind'
+        };
         document.getElementById(map[id])?.classList.remove('hidden');
     });
 });
