@@ -45,7 +45,7 @@ if(window.lucide) lucide.createIcons();
 const autoFillDates = () => {
     const hoje = new Date();
     const dataFormatada = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
-    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data'].forEach(id => {
+    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data', 'ir-data'].forEach(id => {
         const campo = document.getElementById(id);
         if (campo) campo.value = dataFormatada;
     });
@@ -85,7 +85,7 @@ window.exportDataToCSV = (tipo, filename) => {
 
 // Centralizador de renderização para uso na memória (Instantâneo)
 window.triggerAllRenders = () => {
-    try { window.renderQuebrasDashboard(); } catch(e) {}
+    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {}
     try { window.renderPrecoDashboard(); } catch(e) {}
     try { window.renderDocasDashboard(); } catch(e) {}
     try { window.renderValidadeDashboard(); } catch(e) {}
@@ -183,7 +183,7 @@ window.fetchSheetsDataComHierarquia = async () => {
     // Configuração dos filtros iniciais
     const hoje = new Date();
     const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar'].forEach(id => {
+    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo'].forEach(id => {
         const filtroMes = document.getElementById(`filtro-mes-${id}`);
         const filtroFilial = document.getElementById(`filtro-filial-${id}`);
         if(filtroMes && !filtroMes.value) filtroMes.value = mesAtual;
@@ -196,7 +196,7 @@ window.fetchSheetsDataComHierarquia = async () => {
             if(id==='preco') window.renderPrecoDashboard();
             if(id==='caixa') window.renderCaixaDashboard();
             if(id==='inv') window.renderListaInventarios();
-            if(id==='tar') window.renderTarefasDashboard();
+            if(id==='tar') window.renderTarefasDashboard(); if(id==='refugo') window.renderRefugoDashboard();
         };
         if(filtroMes) filtroMes.onchange = trg;
         if(filtroFilial) filtroFilial.onchange = trg;
@@ -656,6 +656,48 @@ window.exportarInventarioId = (idInv) => {
     const csvContent = "\uFEFF" + rows.join("\n"); const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", `Inventario_${idInv}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
 };
+window.renderRefugoDashboard = () => {
+    const content = document.getElementById('refugo-dashboard-content');
+    const empty = document.getElementById('empty-state-refugo');
+    const filtroMes = document.getElementById('filtro-mes-refugo')?.value;
+    const filtroFilial = document.getElementById('filtro-filial-refugo')?.value;
+    
+    if(!filtroMes) return;
+
+    let dados = sheetsDataRaw.filter(i => i.tipo === 'ind_refugo' && i.data_refugo && extrairAnoMes(i.data_refugo) === filtroMes);
+    if(filtroFilial && filtroFilial !== 'todas') dados = dados.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+
+    if(dados.length === 0) { if(content) content.classList.add('hidden'); if(empty) empty.classList.remove('hidden'); return; }
+    
+    if(empty) empty.classList.add('hidden'); if(content) content.classList.remove('hidden');
+    
+    let totalQtd = 0; const motivosMap = {}; const maquinasMap = {};
+    dados.forEach(item => { 
+        const qtd = parseLocalFloat(item.quantidade); 
+        const motivo = item.motivo || 'Outros'; 
+        const maquina = item.maquina || 'Não Informada';
+        
+        totalQtd += qtd; 
+        if(!motivosMap[motivo]) motivosMap[motivo] = 0; motivosMap[motivo] += qtd; 
+        if(!maquinasMap[maquina]) maquinasMap[maquina] = 0; maquinasMap[maquina] += qtd;
+    });
+
+    if(document.getElementById('ui-refugo-total-qtd')) document.getElementById('ui-refugo-total-qtd').innerText = totalQtd.toLocaleString('pt-BR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+    if(document.getElementById('ui-refugo-total-ocorrencias')) document.getElementById('ui-refugo-total-ocorrencias').innerText = dados.length;
+
+    const divMotivos = document.getElementById('refugo-lista-motivos');
+    if(divMotivos) {
+        const arr = Object.keys(motivosMap).map(k => ({ nome: k, val: motivosMap[k] })).sort((a, b) => b.val - a.val).slice(0, 5);
+        divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-red-600">${item.val.toLocaleString('pt-BR', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span></div>`).join('');
+    }
+    
+    const divMaquinas = document.getElementById('refugo-lista-maquinas');
+    if(divMaquinas) {
+        const arr = Object.keys(maquinasMap).map(k => ({ nome: k, val: maquinasMap[k] })).sort((a, b) => b.val - a.val).slice(0, 5);
+        divMaquinas.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-navy">${item.val.toLocaleString('pt-BR', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span></div>`).join('');
+    }
+    if(window.lucide) window.lucide.createIcons();
+};
 
 // ==========================================
 // 6. LISTENERS DE SUBMISSÃO E FORMS GERAIS
@@ -667,6 +709,7 @@ document.getElementById('btn-export-csv-preco')?.addEventListener('click', (e) =
 document.getElementById('btn-export-csv-caixa')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('caixa_central', 'Caixa_Central'); });
 document.getElementById('btn-export-csv-furtos')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('furto', 'Furtos_Evitados'); });
 document.getElementById('btn-export-csv-inv')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('inventario', 'Inventario_Completo'); });
+document.getElementById('btn-export-csv-refugo')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('ind_refugo', 'Refugo_Sucata'); });
 
 document.getElementById('form-quebras')?.addEventListener('submit', (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
@@ -945,7 +988,7 @@ onAuthStateChanged(auth, async (user) => {
                     listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
                     ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
-['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'].forEach(id => { 
+['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo'].forEach(id => { 
                         const el = document.getElementById(id); 
                         if(el) { 
                             el.innerHTML = optionsFiltro; 
@@ -1043,7 +1086,7 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
                 if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } 
             });
             
-            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar'].forEach(id => { 
+            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; } 
             });
