@@ -812,6 +812,7 @@ window.mudarEstadoSegmento = (est) => {
         if(mI) mI.classList.add('hidden'); 
         if(cS) cS.classList.remove('hidden'); 
         window.unselectAllTabs(); 
+        window.unselectAllIndTabs(); // Limpa indústria também
     } 
     else if (est === 'varejo') { 
         if(cS) cS.classList.add('hidden'); 
@@ -819,14 +820,12 @@ window.mudarEstadoSegmento = (est) => {
         if(mV) mV.classList.remove('hidden'); 
         document.getElementById('btn-tab-dash')?.click(); 
     }
-    // NOVA ROTA: INDÚSTRIA
     else if (est === 'industria') {
         if(cS) cS.classList.add('hidden'); 
         if(mV) mV.classList.add('hidden'); 
         if(mI) mI.classList.remove('hidden'); 
-        
-        // Simula o clique na primeira aba do painel industrial (que vamos criar)
-        document.getElementById('btn-tab-ind-dash')?.click(); 
+        // Inicia na aba de Refugo por padrão
+        document.getElementById('btn-tab-ind-refugo')?.click(); 
     }
 };
 
