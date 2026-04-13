@@ -1254,13 +1254,19 @@ document.getElementById('form-nova-empresa')?.addEventListener('submit', async (
         // Recarrega a lista de empresas para que ela apareça na hora no Vincular Usuário
         window.carregarEmpresas();
         
-    } catch(error) {
+} catch(error) {
         alert("Erro ao criar empresa: " + error.message);
     } finally {
         btn.innerHTML = txtOriginal;
         if(window.lucide) window.lucide.createIcons();
     }
-    // Botão de Exportação CSV
+}); // <-- AQUI É O FECHAMENTO CORRETO DO FORM NOVA EMPRESA. O QUE VEM ABAIXO ESTÁ LIVRE!
+
+// ==========================================
+// 13. MÓDULO INDÚSTRIA: PARADAS (OEE)
+// ==========================================
+
+// Botão de Exportação CSV
 document.getElementById('btn-export-csv-paradas')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('ind_paradas', 'Paradas_Maquina'); });
 
 // Gravação de Paradas
@@ -1316,4 +1322,3 @@ window.renderParadasDashboard = () => {
     }
     if(window.lucide) window.lucide.createIcons();
 };
-});
