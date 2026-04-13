@@ -45,7 +45,7 @@ if(window.lucide) lucide.createIcons();
 const autoFillDates = () => {
     const hoje = new Date();
     const dataFormatada = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
-    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data', 'ir-data'].forEach(id => {
+    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data', 'ir-data', 'ip-data'].forEach(id => {
         const campo = document.getElementById(id);
         if (campo) campo.value = dataFormatada;
     });
@@ -85,7 +85,7 @@ window.exportDataToCSV = (tipo, filename) => {
 
 // Centralizador de renderização para uso na memória (Instantâneo)
 window.triggerAllRenders = () => {
-    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {}
+    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {} try { window.renderParadasDashboard(); } catch(e) {}
     try { window.renderPrecoDashboard(); } catch(e) {}
     try { window.renderDocasDashboard(); } catch(e) {}
     try { window.renderValidadeDashboard(); } catch(e) {}
@@ -183,7 +183,7 @@ window.fetchSheetsDataComHierarquia = async () => {
     // Configuração dos filtros iniciais
     const hoje = new Date();
     const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo'].forEach(id => {
+    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas'].forEach(id => {
         const filtroMes = document.getElementById(`filtro-mes-${id}`);
         const filtroFilial = document.getElementById(`filtro-filial-${id}`);
         if(filtroMes && !filtroMes.value) filtroMes.value = mesAtual;
@@ -196,7 +196,7 @@ window.fetchSheetsDataComHierarquia = async () => {
             if(id==='preco') window.renderPrecoDashboard();
             if(id==='caixa') window.renderCaixaDashboard();
             if(id==='inv') window.renderListaInventarios();
-            if(id==='tar') window.renderTarefasDashboard(); if(id==='refugo') window.renderRefugoDashboard();
+            if(id==='tar') window.renderTarefasDashboard(); if(id==='refugo') window.renderRefugoDashboard(); if(id==='paradas') window.renderParadasDashboard();
         };
         if(filtroMes) filtroMes.onchange = trg;
         if(filtroFilial) filtroFilial.onchange = trg;
@@ -987,8 +987,8 @@ onAuthStateChanged(auth, async (user) => {
                     let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
                     listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
-['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo'].forEach(id => { 
+                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
+['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas'].forEach(id => { 
                         const el = document.getElementById(id); 
                         if(el) { 
                             el.innerHTML = optionsFiltro; 
@@ -1081,12 +1081,12 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
             let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
             listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial'].forEach(id => { 
+            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } 
             });
             
-            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo'].forEach(id => { 
+            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; } 
             });
@@ -1260,4 +1260,60 @@ document.getElementById('form-nova-empresa')?.addEventListener('submit', async (
         btn.innerHTML = txtOriginal;
         if(window.lucide) window.lucide.createIcons();
     }
+    // Botão de Exportação CSV
+document.getElementById('btn-export-csv-paradas')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('ind_paradas', 'Paradas_Maquina'); });
+
+// Gravação de Paradas
+document.getElementById('form-ind-paradas')?.addEventListener('submit', async (e) => {
+    e.preventDefault(); if (!auth.currentUser) return;
+    const payload = { 
+        tipo: "ind_paradas", 
+        email: auth.currentUser.email, 
+        empresa: currentUserEmpresa, 
+        filial: document.getElementById('ip-filial').value, 
+        data_parada: document.getElementById('ip-data').value, 
+        turno: document.getElementById('ip-turno').value, 
+        maquina: document.getElementById('ip-maquina').value, 
+        motivo: document.getElementById('ip-motivo').value, 
+        tempo: document.getElementById('ip-tempo').value, 
+        observacoes: document.getElementById('ip-obs').value 
+    };
+    await submitToSheets(e.target, 'btn-save-paradas', 'msg-paradas-success', '', payload, 'Registrar Tempo Inativo');
+});
+
+// Renderização do Dashboard de Paradas
+window.renderParadasDashboard = () => {
+    const content = document.getElementById('paradas-dashboard-content');
+    const empty = document.getElementById('empty-state-paradas');
+    const filtroMes = document.getElementById('filtro-mes-paradas')?.value;
+    const filtroFilial = document.getElementById('filtro-filial-paradas')?.value;
+    
+    if(!filtroMes) return;
+
+    let dados = sheetsDataRaw.filter(i => i.tipo === 'ind_paradas' && i.data_parada && extrairAnoMes(i.data_parada) === filtroMes);
+    if(filtroFilial && filtroFilial !== 'todas') dados = dados.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+
+    if(dados.length === 0) { if(content) content.classList.add('hidden'); if(empty) empty.classList.remove('hidden'); return; }
+    
+    if(empty) empty.classList.add('hidden'); if(content) content.classList.remove('hidden');
+    
+    let totalTempo = 0; const motivosMap = {};
+    dados.forEach(item => { 
+        const tempo = parseLocalFloat(item.tempo); 
+        const motivo = item.motivo || 'Outros'; 
+        
+        totalTempo += tempo; 
+        if(!motivosMap[motivo]) motivosMap[motivo] = 0; motivosMap[motivo] += tempo; 
+    });
+
+    if(document.getElementById('ui-paradas-total-min')) document.getElementById('ui-paradas-total-min').innerHTML = `${totalTempo}<span class="text-xl font-medium text-red-500 ml-1">Minutos</span>`;
+    if(document.getElementById('ui-paradas-total-ocorrencias')) document.getElementById('ui-paradas-total-ocorrencias').innerText = dados.length;
+
+    const divMotivos = document.getElementById('paradas-lista-motivos');
+    if(divMotivos) {
+        const arr = Object.keys(motivosMap).map(k => ({ nome: k, val: motivosMap[k] })).sort((a, b) => b.val - a.val).slice(0, 5);
+        divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-red-600">${item.val} min</span></div>`).join('');
+    }
+    if(window.lucide) window.lucide.createIcons();
+};
 });
