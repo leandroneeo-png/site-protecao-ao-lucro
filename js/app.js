@@ -1272,7 +1272,7 @@ document.getElementById('btn-export-csv-paradas')?.addEventListener('click', (e)
 // Gravação de Paradas
 document.getElementById('form-ind-paradas')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
-    const payload = { 
+const payload = { 
         tipo: "ind_paradas", 
         email: auth.currentUser.email, 
         empresa: currentUserEmpresa, 
@@ -1282,6 +1282,7 @@ document.getElementById('form-ind-paradas')?.addEventListener('submit', async (e
         maquina: document.getElementById('ip-maquina').value, 
         motivo: document.getElementById('ip-motivo').value, 
         tempo: document.getElementById('ip-tempo').value, 
+        custo_hora: document.getElementById('ip-custo').value, 
         observacoes: document.getElementById('ip-obs').value 
     };
     await submitToSheets(e.target, 'btn-save-paradas', 'msg-paradas-success', '', payload, 'Registrar Tempo Inativo');
@@ -1303,22 +1304,32 @@ window.renderParadasDashboard = () => {
     
     if(empty) empty.classList.add('hidden'); if(content) content.classList.remove('hidden');
     
-    let totalTempo = 0; const motivosMap = {};
+let totalTempo = 0; let totalRs = 0; const motivosMap = {};
     dados.forEach(item => { 
         const tempo = parseLocalFloat(item.tempo); 
+        const custoHora = parseLocalFloat(item.custo_hora) || 0;
+        
+        // Regra de OEE Financeiro: (Minutos / 60) * Custo da Hora
+        const impactoFinanceiro = (tempo / 60) * custoHora;
+        
         const motivo = item.motivo || 'Outros'; 
         
         totalTempo += tempo; 
-        if(!motivosMap[motivo]) motivosMap[motivo] = 0; motivosMap[motivo] += tempo; 
+        totalRs += impactoFinanceiro;
+        
+        // Agora o gráfico de motivos ranqueia pelo DINHEIRO perdido, não apenas minutos
+        if(!motivosMap[motivo]) motivosMap[motivo] = 0; 
+        motivosMap[motivo] += impactoFinanceiro; 
     });
 
-    if(document.getElementById('ui-paradas-total-min')) document.getElementById('ui-paradas-total-min').innerHTML = `${totalTempo}<span class="text-xl font-medium text-red-500 ml-1">Minutos</span>`;
+    if(document.getElementById('ui-paradas-total-rs')) document.getElementById('ui-paradas-total-rs').innerText = 'R$ ' + totalRs.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    if(document.getElementById('ui-paradas-total-min')) document.getElementById('ui-paradas-total-min').innerHTML = `${totalTempo}<span class="text-lg font-medium text-orange-500 ml-1">Min</span>`;
     if(document.getElementById('ui-paradas-total-ocorrencias')) document.getElementById('ui-paradas-total-ocorrencias').innerText = dados.length;
 
     const divMotivos = document.getElementById('paradas-lista-motivos');
     if(divMotivos) {
         const arr = Object.keys(motivosMap).map(k => ({ nome: k, val: motivosMap[k] })).sort((a, b) => b.val - a.val).slice(0, 5);
-        divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-red-600">${item.val} min</span></div>`).join('');
+        divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-red-600">R$ ${item.val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>`).join('');
     }
     if(window.lucide) window.lucide.createIcons();
 };
