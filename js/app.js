@@ -797,10 +797,37 @@ window.showView = (vN) => {
 };
 
 window.mudarEstadoSegmento = (est) => {
-    const vc = document.getElementById('view-client'); if(vc) { vc.classList.remove('estado-hub', 'estado-varejo', 'estado-industria'); vc.classList.add('estado-' + est); }
-    const cS = document.getElementById('container-segmentos'); const mV = document.getElementById('menu-abas'); const mI = document.getElementById('menu-abas-industria');
-    if (est === 'hub') { if(mV) mV.classList.add('hidden'); if(mI) mI.classList.add('hidden'); if(cS) cS.classList.remove('hidden'); window.unselectAllTabs(); } 
-    else if (est === 'varejo') { if(cS) cS.classList.add('hidden'); if(mI) mI.classList.add('hidden'); if(mV) mV.classList.remove('hidden'); document.getElementById('btn-tab-dash')?.click(); } 
+    const vc = document.getElementById('view-client'); 
+    if(vc) { 
+        vc.classList.remove('estado-hub', 'estado-varejo', 'estado-industria'); 
+        vc.classList.add('estado-' + est); 
+    }
+    
+    const cS = document.getElementById('container-segmentos'); 
+    const mV = document.getElementById('menu-abas'); 
+    const mI = document.getElementById('menu-abas-industria');
+
+    if (est === 'hub') { 
+        if(mV) mV.classList.add('hidden'); 
+        if(mI) mI.classList.add('hidden'); 
+        if(cS) cS.classList.remove('hidden'); 
+        window.unselectAllTabs(); 
+    } 
+    else if (est === 'varejo') { 
+        if(cS) cS.classList.add('hidden'); 
+        if(mI) mI.classList.add('hidden'); 
+        if(mV) mV.classList.remove('hidden'); 
+        document.getElementById('btn-tab-dash')?.click(); 
+    }
+    // NOVA ROTA: INDÚSTRIA
+    else if (est === 'industria') {
+        if(cS) cS.classList.add('hidden'); 
+        if(mV) mV.classList.add('hidden'); 
+        if(mI) mI.classList.remove('hidden'); 
+        
+        // Simula o clique na primeira aba do painel industrial (que vamos criar)
+        document.getElementById('btn-tab-ind-dash')?.click(); 
+    }
 };
 
 window.unselectAllTabs = () => {
