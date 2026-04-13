@@ -812,7 +812,7 @@ window.unselectAllTabs = () => {
 window.unselectAllIndTabs = () => {
     ['btn-tab-dash-ind', 'btn-tab-prod', 'btn-tab-mp', 'btn-tab-qualidade', 'btn-tab-inv-ind'].forEach(id => { 
         const el = document.getElementById(id); 
-        if(el) el.className = "w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md"; 
+        if(el) el.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md"; 
     });
     ['wrapper-tab-dash-ind', 'wrapper-tab-prod', 'wrapper-tab-mp', 'wrapper-tab-qualidade', 'wrapper-tab-inv-ind'].forEach(id => { 
         const el = document.getElementById(id); 
@@ -869,7 +869,7 @@ window.mudarEstadoSegmento = (est) => {
     const b = document.getElementById(id);
     if(b) b.addEventListener('click', () => {
         window.unselectAllIndTabs(); 
-        b.className = "w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md";
+        b.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md";
         const map = {
             'btn-tab-dash-ind': 'wrapper-tab-dash-ind', 
             'btn-tab-prod': 'wrapper-tab-prod', 
