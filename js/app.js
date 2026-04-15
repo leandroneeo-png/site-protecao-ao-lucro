@@ -85,7 +85,7 @@ window.exportDataToCSV = (tipo, filename) => {
 
 // Centralizador de renderização para uso na memória (Instantâneo)
 window.triggerAllRenders = () => {
-    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {} try { window.renderParadasDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {} try { window.renderAlmoxarifadoDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {} try { window.renderAlmoxarifadoDashboard(); } catch(e) {}
+    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {} try { window.renderParadasDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {} try { window.renderAlmoxarifadoDashboard(); } catch(e) {} try { window.renderListaInventariosInd(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {} try { window.renderAlmoxarifadoDashboard(); } catch(e) {} try { window.renderListaInventariosInd(); } catch(e) {}
     try { window.renderPrecoDashboard(); } catch(e) {}
     try { window.renderDocasDashboard(); } catch(e) {}
     try { window.renderValidadeDashboard(); } catch(e) {}
@@ -183,7 +183,7 @@ window.fetchSheetsDataComHierarquia = async () => {
     // Configuração dos filtros iniciais
     const hoje = new Date();
     const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas', 'qualidade', 'almoxarifado'].forEach(id => {
+    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas', 'qualidade', 'almoxarifado', 'contagem-ind'].forEach(id => {
         const filtroMes = document.getElementById(`filtro-mes-${id}`);
         const filtroFilial = document.getElementById(`filtro-filial-${id}`);
         if(filtroMes && !filtroMes.value) filtroMes.value = mesAtual;
@@ -871,11 +871,11 @@ window.unselectAllTabs = () => {
 
 // Motor de limpeza das abas da Indústria (Novos IDs)
 window.unselectAllIndTabs = () => {
-    ['btn-tab-dash-ind', 'btn-tab-prod', 'btn-tab-mp', 'btn-tab-qualidade', 'btn-tab-inv-ind'].forEach(id => { 
+    ['btn-tab-dash-ind', 'btn-tab-prod', 'btn-tab-mp', 'btn-tab-qualidade', 'btn-tab-inv-ind', 'btn-tab-contagem-ind'].forEach(id => { 
         const el = document.getElementById(id); 
         if(el) el.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md"; 
     });
-    ['wrapper-tab-dash-ind', 'wrapper-tab-prod', 'wrapper-tab-mp', 'wrapper-tab-qualidade', 'wrapper-tab-inv-ind'].forEach(id => { 
+    ['wrapper-tab-dash-ind', 'wrapper-tab-prod', 'wrapper-tab-mp', 'wrapper-tab-qualidade', 'wrapper-tab-inv-ind', 'wrapper-tab-contagem-ind'].forEach(id => { 
         const el = document.getElementById(id); 
         if(el) el.classList.add('hidden'); 
     });
@@ -926,7 +926,7 @@ window.mudarEstadoSegmento = (est) => {
 });
 
 // Eventos de clique para os botões da Indústria
-['btn-tab-dash-ind', 'btn-tab-prod', 'btn-tab-mp', 'btn-tab-qualidade', 'btn-tab-inv-ind'].forEach(id => {
+['btn-tab-dash-ind', 'btn-tab-prod', 'btn-tab-mp', 'btn-tab-qualidade', 'btn-tab-inv-ind', 'btn-tab-contagem-ind'].forEach(id => {
     const b = document.getElementById(id);
     if(b) b.addEventListener('click', () => {
         window.unselectAllIndTabs(); 
@@ -987,8 +987,8 @@ onAuthStateChanged(auth, async (user) => {
                     let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
                     listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
-['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado'].forEach(id => { 
+                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial', 'inv-ind-nova-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
+['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado', 'filtro-filial-contagem-ind'].forEach(id => { 
                         const el = document.getElementById(id); 
                         if(el) { 
                             el.innerHTML = optionsFiltro; 
@@ -1081,12 +1081,12 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
             let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
             listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial'].forEach(id => { 
+            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial', 'inv-ind-nova-filial'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } 
             });
             
-            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado'].forEach(id => { 
+            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado', 'filtro-filial-contagem-ind'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; } 
             });
@@ -1482,4 +1482,108 @@ window.renderAlmoxarifadoDashboard = () => {
         divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-orange-600">R$ ${item.val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>`).join('');
     }
     if(window.lucide) window.lucide.createIcons();
+};
+// ==========================================
+// 16. MÓDULO INDÚSTRIA: INVENTÁRIO (BIPAGEM FABRIL)
+// ==========================================
+
+window.renderListaInventariosInd = () => {
+    const tbody = document.getElementById('inv-ind-tbody-consulta'); if(!tbody) return;
+    const filtroFilial = document.getElementById('filtro-filial-contagem-ind')?.value;
+    let inventarios = sheetsDataRaw.filter(i => i.tipo === 'ind_inventario' && (currentUserRole === 'admin' || i.filial === currentUserFilial));
+    if (filtroFilial && filtroFilial !== 'todas') inventarios = inventarios.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+    
+    const mapInv = {};
+    inventarios.forEach(i => {
+        if(!i.id_inventario) return;
+        if(!mapInv[i.id_inventario]) mapInv[i.id_inventario] = { id: i.id_inventario, filial: i.filial, qtdLeituras: 0, fechado: false };
+        if(i.status === 'FECHADO' || i.gtin === 'FECHAMENTO') mapInv[i.id_inventario].fechado = true; else mapInv[i.id_inventario].qtdLeituras++;
+    });
+
+    const listaArr = Object.values(mapInv).sort((a,b) => { if (a.fechado !== b.fechado) return a.fechado ? 1 : -1; return b.id.localeCompare(a.id); });
+    if(listaArr.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400 italic">Nenhum inventário fabril localizado.</td></tr>'; return; }
+
+    let html = '';
+    listaArr.forEach(inv => {
+        const statusBadge = inv.fechado ? `<span class="bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px] font-bold tracking-wider uppercase border border-slate-200"><i class="w-3 h-3 inline pb-0.5" data-lucide="lock"></i> Fechado</span>` : `<span class="bg-emerald/10 text-emerald px-2 py-1 rounded text-[10px] font-bold tracking-wider uppercase border border-emerald/20"><i class="w-3 h-3 inline pb-0.5" data-lucide="unlock"></i> Aberto</span>`;
+        const btnContinuar = !inv.fechado ? `<button type="button" onclick="window.abrirTelaBipagemInd('${inv.id}', '${inv.filial}')" class="text-xs bg-navy text-white hover:bg-navyLight px-3 py-1.5 rounded shadow-sm inline-flex items-center gap-1"><i class="w-3 h-3" data-lucide="scan-barcode"></i> Contar</button>` : '';
+        const btnExportar = `<button type="button" onclick="window.exportarInventarioIdInd('${inv.id}')" class="text-xs bg-white text-emerald border border-slate-200 px-3 py-1.5 rounded shadow-sm inline-flex items-center gap-1"><i class="w-3 h-3" data-lucide="file-spreadsheet"></i> Relatório</button>`;
+        html += `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100"><td class="px-6 py-4 font-bold text-navy">${inv.id}</td><td class="px-6 py-4 text-slate-600 text-xs">${inv.filial}</td><td class="px-6 py-4">${statusBadge}</td><td class="px-6 py-4 text-center font-medium text-slate-700">${inv.qtdLeituras}</td><td class="px-6 py-4 text-right space-x-2">${btnContinuar} ${btnExportar}</td></tr>`;
+    });
+    tbody.innerHTML = html; if(window.lucide) lucide.createIcons();
+};
+
+window.abrirTelaBipagemInd = (idInv, filial) => { document.getElementById('inv-ind-tela-selecao').classList.add('hidden'); document.getElementById('inv-ind-tela-bipagem').classList.remove('hidden'); document.getElementById('ui-inv-ind-id').innerText = idInv; document.getElementById('ui-inv-ind-filial').innerText = filial; document.getElementById('inv-ind-id-oculto').value = idInv; document.getElementById('inv-ind-filial-oculto').value = filial; setTimeout(() => document.getElementById('inv-ind-lote').focus(), 100); window.renderHistoricoBipagemInd(idInv); };
+window.voltarTelaInventarioInd = () => { document.getElementById('inv-ind-tela-bipagem').classList.add('hidden'); document.getElementById('inv-ind-tela-selecao').classList.remove('hidden'); window.renderListaInventariosInd(); };
+
+window.iniciarNovoInventarioInd = (event) => {
+    const filial = document.getElementById('inv-ind-nova-filial').value; if(!filial) { alert('Selecione a filial.'); return; }
+    const novoId = 'INVI-' + Math.floor(100000 + Math.random() * 900000); // INVI = Inventário Indústria
+    window.abrirTelaBipagemInd(novoId, filial);
+};
+
+window.consultarInventarioInd = () => {
+    let busca = document.getElementById('inv-ind-id-busca').value.trim().toUpperCase(); if(!busca) return; if(!busca.startsWith('INVI-')) busca = 'INVI-' + busca;
+    const inventarios = sheetsDataRaw.filter(i => i.tipo === 'ind_inventario' && i.id_inventario === busca);
+    if(inventarios.length === 0) { alert('Não encontrado.'); return; }
+    if(inventarios.some(i => i.status === 'FECHADO')) { alert('Inventário encerrado.'); return; }
+    window.abrirTelaBipagemInd(busca, inventarios[0].filial);
+};
+
+window.encerrarInventarioAtualInd = async (event) => {
+    const idInv = document.getElementById('inv-ind-id-oculto').value; const filial = document.getElementById('inv-ind-filial-oculto').value;
+    if(!confirm(`Deseja encerrar o ${idInv}?`)) return;
+    const btn = event.currentTarget; const txtOriginal = btn.innerHTML; btn.innerHTML = '<i class="w-4 h-4 animate-spin" data-lucide="loader-2"></i> Fechando...';
+    const payload = { tipo: "fechar_ind_inventario", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: filial, id_inventario: idInv };
+    
+    sheetsDataRaw.push({ tipo: 'ind_inventario', id_inventario: idInv, status: 'FECHADO', gtin: 'FECHAMENTO', filial: filial });
+    window.voltarTelaInventarioInd();
+    try { await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) }); sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre])); } 
+    catch(err) { alert('Erro ao fechar.'); } finally { btn.innerHTML = txtOriginal; }
+};
+
+document.getElementById('form-inventario-ind')?.addEventListener('submit', async (e) => {
+    e.preventDefault(); if (!auth.currentUser) return;
+    const idInv = document.getElementById('inv-ind-id-oculto').value; const filial = document.getElementById('inv-ind-filial-oculto').value; 
+    const inputLote = document.getElementById('inv-ind-lote'); const inputGtin = document.getElementById('inv-ind-gtin'); const inputQtd = document.getElementById('inv-ind-qtd');
+    const lote = inputLote.value.trim().toUpperCase();
+    
+    const payload = { tipo: "ind_inventario", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: filial, lote: lote, gtin: inputGtin.value, descricao: document.getElementById('inv-ind-desc')?.value || "", quantidade: inputQtd.value, id_inventario: idInv, status: "ABERTO" };
+    submitToSheets(null, 'btn-save-inv-ind', '', '', payload, '<i data-lucide="plus-square" class="w-5 h-5 text-gold"></i> Salvar Bipagem Fabril');
+    
+    inputGtin.value = ''; document.getElementById('inv-ind-desc').value = ''; 
+    setTimeout(() => { inputGtin.focus(); }, 50); window.renderHistoricoBipagemInd(idInv);
+});
+
+window.renderHistoricoBipagemInd = (idInv) => {
+    const divHist = document.getElementById('inv-ind-historico-bipagem'); if(!divHist) return;
+    const items = sheetsDataRaw.filter(i => i.tipo === 'ind_inventario' && i.id_inventario === idInv && i.gtin !== 'FECHAMENTO').reverse();
+    if(items.length === 0) { divHist.innerHTML = '<p class="text-xs text-slate-400 italic">Nenhum item bipado.</p>'; } else { 
+        let html = ''; 
+        items.slice(0, 15).forEach(i => { 
+            const itemEnc = encodeURIComponent(JSON.stringify(i)); const isEstorno = parseFloat(i.quantidade) < 0;
+            const btnExcluir = isEstorno ? '' : `<button type="button" onclick="window.estornarBipagemInd('${itemEnc}')" class="text-red-400 hover:text-red-600 p-1.5 rounded transition-colors"><i class="w-4 h-4" data-lucide="trash-2"></i></button>`;
+            const corQtd = isEstorno ? 'text-red-600 bg-red-50 border-red-200' : 'text-emerald bg-emerald/10 border-emerald/20';
+            const textNome = isEstorno ? 'text-red-600 line-through' : 'text-navy';
+            html += `<div class="flex justify-between items-center p-2 bg-slate-50 border border-slate-100 rounded mb-1"><div class="flex flex-col flex-1 min-w-0 pr-2"><span class="text-xs font-bold ${textNome} truncate">${i.descricao || i.gtin}</span><span class="text-[10px] text-slate-400">Lote: ${i.lote} | EAN/Ref: ${i.gtin}</span></div><div class="flex items-center gap-2 shrink-0"><span class="text-sm font-black px-2 py-1 rounded border ${corQtd}">${i.quantidade}</span>${btnExcluir}</div></div>`; 
+        }); 
+        divHist.innerHTML = html; if(window.lucide) window.lucide.createIcons();
+    }
+};
+
+window.estornarBipagemInd = async (itemEncoded) => {
+    if(!confirm("Deseja cancelar esta leitura fabril?")) return;
+    const item = JSON.parse(decodeURIComponent(itemEncoded));
+    const payload = { ...item, quantidade: -Math.abs(parseFloat(item.quantidade)), descricao: "[ESTORNO] " + (item.descricao || "Produto") };
+    sheetsDataRaw.push(payload); window.renderHistoricoBipagemInd(item.id_inventario);
+    try { await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) }); sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre])); } catch(e) {}
+};
+
+window.exportarInventarioIdInd = (idInv) => {
+    const dataToExport = sheetsDataRaw.filter(i => i.tipo === 'ind_inventario' && i.id_inventario === idInv);
+    if(dataToExport.length === 0) { alert("Sem dados."); return; }
+    const rows = []; rows.push(["Data do Registo", "Lote/Area", "GTIN/Ref", "Descrição", "Quantidade", "Status"].join(";"));
+    dataToExport.forEach(item => { if (item.gtin === 'FECHAMENTO') return; rows.push([`"${item.data_registro || ''}"`, `"${item.lote || 'Sem Lote'}"`, `"${item.gtin || ''}"`, `"${item.descricao || 'Produto'}"`, `${item.quantidade || 0}`, `"Contado"`].join(";")); });
+    const csvContent = "\uFEFF" + rows.join("\n"); const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", `Inventario_Fabril_${idInv}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
 };
