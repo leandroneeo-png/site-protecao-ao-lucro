@@ -45,7 +45,7 @@ if(window.lucide) lucide.createIcons();
 const autoFillDates = () => {
     const hoje = new Date();
     const dataFormatada = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
-    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data', 'ir-data', 'ip-data'].forEach(id => {
+    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data', 'ir-data', 'ip-data', 'iq-data'].forEach(id => {
         const campo = document.getElementById(id);
         if (campo) campo.value = dataFormatada;
     });
@@ -85,7 +85,7 @@ window.exportDataToCSV = (tipo, filename) => {
 
 // Centralizador de renderização para uso na memória (Instantâneo)
 window.triggerAllRenders = () => {
-    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {} try { window.renderParadasDashboard(); } catch(e) {}
+    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {} try { window.renderParadasDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {}
     try { window.renderPrecoDashboard(); } catch(e) {}
     try { window.renderDocasDashboard(); } catch(e) {}
     try { window.renderValidadeDashboard(); } catch(e) {}
@@ -183,7 +183,7 @@ window.fetchSheetsDataComHierarquia = async () => {
     // Configuração dos filtros iniciais
     const hoje = new Date();
     const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas'].forEach(id => {
+    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas', 'qualidade'].forEach(id => {
         const filtroMes = document.getElementById(`filtro-mes-${id}`);
         const filtroFilial = document.getElementById(`filtro-filial-${id}`);
         if(filtroMes && !filtroMes.value) filtroMes.value = mesAtual;
@@ -987,8 +987,8 @@ onAuthStateChanged(auth, async (user) => {
                     let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
                     listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
-['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas'].forEach(id => { 
+                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
+['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade'].forEach(id => { 
                         const el = document.getElementById(id); 
                         if(el) { 
                             el.innerHTML = optionsFiltro; 
@@ -1081,12 +1081,12 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
             let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
             listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial'].forEach(id => { 
+            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } 
             });
             
-            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas'].forEach(id => { 
+            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; } 
             });
@@ -1327,6 +1327,79 @@ let totalTempo = 0; let totalRs = 0; const motivosMap = {};
     if(document.getElementById('ui-paradas-total-ocorrencias')) document.getElementById('ui-paradas-total-ocorrencias').innerText = dados.length;
 
     const divMotivos = document.getElementById('paradas-lista-motivos');
+    if(divMotivos) {
+        const arr = Object.keys(motivosMap).map(k => ({ nome: k, val: motivosMap[k] })).sort((a, b) => b.val - a.val).slice(0, 5);
+        divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-red-600">R$ ${item.val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>`).join('');
+    }
+    if(window.lucide) window.lucide.createIcons();
+};
+// ==========================================
+// 14. MÓDULO INDÚSTRIA: CONTROLE DE QUALIDADE
+// ==========================================
+
+// Botão de Exportação CSV
+document.getElementById('btn-export-csv-qualidade')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('ind_qualidade', 'Controle_Qualidade'); });
+
+// Gravação de Qualidade
+document.getElementById('form-ind-qualidade')?.addEventListener('submit', async (e) => {
+    e.preventDefault(); if (!auth.currentUser) return;
+    const payload = { 
+        tipo: "ind_qualidade", 
+        email: auth.currentUser.email, 
+        empresa: currentUserEmpresa, 
+        filial: document.getElementById('iq-filial').value, 
+        data_qualidade: document.getElementById('iq-data').value, 
+        turno: document.getElementById('iq-turno').value, 
+        lote: document.getElementById('iq-lote').value, 
+        produto: document.getElementById('iq-produto').value, 
+        motivo: document.getElementById('iq-motivo').value, 
+        qtd: document.getElementById('iq-qtd').value, 
+        horas: document.getElementById('iq-horas').value, 
+        custo_hora: document.getElementById('iq-custo-hora').value, 
+        custo_extra: document.getElementById('iq-custo-extra').value || "0"
+    };
+    await submitToSheets(e.target, 'btn-save-qualidade', 'msg-qualidade-success', '', payload, 'Registrar Custo de Retrabalho');
+});
+
+// Renderização do Dashboard de Qualidade
+window.renderQualidadeDashboard = () => {
+    const content = document.getElementById('qualidade-dashboard-content');
+    const empty = document.getElementById('empty-state-qualidade');
+    const filtroMes = document.getElementById('filtro-mes-qualidade')?.value;
+    const filtroFilial = document.getElementById('filtro-filial-qualidade')?.value;
+    
+    if(!filtroMes) return;
+
+    let dados = sheetsDataRaw.filter(i => i.tipo === 'ind_qualidade' && i.data_qualidade && extrairAnoMes(i.data_qualidade) === filtroMes);
+    if(filtroFilial && filtroFilial !== 'todas') dados = dados.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+
+    if(dados.length === 0) { if(content) content.classList.add('hidden'); if(empty) empty.classList.remove('hidden'); return; }
+    
+    if(empty) empty.classList.add('hidden'); if(content) content.classList.remove('hidden');
+    
+    let totalCusto = 0; let totalQtd = 0; const motivosMap = {};
+    dados.forEach(item => { 
+        const qtd = parseLocalFloat(item.qtd);
+        const horas = parseLocalFloat(item.horas); 
+        const custoHora = parseLocalFloat(item.custo_hora);
+        const custoExtra = parseLocalFloat(item.custo_extra);
+        
+        // Matemática da Controladoria: Horas * Custo da Hora + Gastos Materiais
+        const impactoFinanceiro = (horas * custoHora) + custoExtra;
+        const motivo = item.motivo || 'Outros'; 
+        
+        totalQtd += qtd; 
+        totalCusto += impactoFinanceiro;
+        
+        if(!motivosMap[motivo]) motivosMap[motivo] = 0; 
+        motivosMap[motivo] += impactoFinanceiro; 
+    });
+
+    if(document.getElementById('ui-qualidade-total-rs')) document.getElementById('ui-qualidade-total-rs').innerText = 'R$ ' + totalCusto.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    if(document.getElementById('ui-qualidade-total-qtd')) document.getElementById('ui-qualidade-total-qtd').innerText = totalQtd.toLocaleString('pt-BR');
+    if(document.getElementById('ui-qualidade-total-ocorrencias')) document.getElementById('ui-qualidade-total-ocorrencias').innerText = dados.length;
+
+    const divMotivos = document.getElementById('qualidade-lista-motivos');
     if(divMotivos) {
         const arr = Object.keys(motivosMap).map(k => ({ nome: k, val: motivosMap[k] })).sort((a, b) => b.val - a.val).slice(0, 5);
         divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-red-600">R$ ${item.val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>`).join('');
