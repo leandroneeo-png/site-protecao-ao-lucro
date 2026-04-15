@@ -931,12 +931,13 @@ window.mudarEstadoSegmento = (est) => {
     if(b) b.addEventListener('click', () => {
         window.unselectAllIndTabs(); 
         b.className = "w-[30%] sm:w-[22%] md:w-[15%] lg:w-[10%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md";
-        const map = {
+const map = {
             'btn-tab-dash-ind': 'wrapper-tab-dash-ind', 
             'btn-tab-prod': 'wrapper-tab-prod', 
             'btn-tab-mp': 'wrapper-tab-mp', 
             'btn-tab-qualidade': 'wrapper-tab-qualidade',
-            'btn-tab-inv-ind': 'wrapper-tab-inv-ind'
+            'btn-tab-inv-ind': 'wrapper-tab-inv-ind',
+            'btn-tab-contagem-ind': 'wrapper-tab-contagem-ind'
         };
         document.getElementById(map[id])?.classList.remove('hidden');
     });
