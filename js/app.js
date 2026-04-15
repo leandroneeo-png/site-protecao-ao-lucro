@@ -45,7 +45,7 @@ if(window.lucide) lucide.createIcons();
 const autoFillDates = () => {
     const hoje = new Date();
     const dataFormatada = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
-    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data', 'ir-data', 'ip-data', 'iq-data'].forEach(id => {
+    ['p-data', 'f-data', 'c-data', 't-prazo', 'r-data', 'ir-data', 'ip-data', 'iq-data', 'ia-data'].forEach(id => {
         const campo = document.getElementById(id);
         if (campo) campo.value = dataFormatada;
     });
@@ -85,7 +85,7 @@ window.exportDataToCSV = (tipo, filename) => {
 
 // Centralizador de renderização para uso na memória (Instantâneo)
 window.triggerAllRenders = () => {
-    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {} try { window.renderParadasDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {}
+    try { window.renderQuebrasDashboard(); } catch(e) {} try { window.renderRefugoDashboard(); } catch(e) {} try { window.renderParadasDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {} try { window.renderAlmoxarifadoDashboard(); } catch(e) {} try { window.renderQualidadeDashboard(); } catch(e) {} try { window.renderAlmoxarifadoDashboard(); } catch(e) {}
     try { window.renderPrecoDashboard(); } catch(e) {}
     try { window.renderDocasDashboard(); } catch(e) {}
     try { window.renderValidadeDashboard(); } catch(e) {}
@@ -183,7 +183,7 @@ window.fetchSheetsDataComHierarquia = async () => {
     // Configuração dos filtros iniciais
     const hoje = new Date();
     const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas', 'qualidade'].forEach(id => {
+    ['quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas', 'qualidade', 'almoxarifado'].forEach(id => {
         const filtroMes = document.getElementById(`filtro-mes-${id}`);
         const filtroFilial = document.getElementById(`filtro-filial-${id}`);
         if(filtroMes && !filtroMes.value) filtroMes.value = mesAtual;
@@ -987,8 +987,8 @@ onAuthStateChanged(auth, async (user) => {
                     let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
                     listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
-['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade'].forEach(id => { 
+                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
+['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado'].forEach(id => { 
                         const el = document.getElementById(id); 
                         if(el) { 
                             el.innerHTML = optionsFiltro; 
@@ -1081,12 +1081,12 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
             let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
             listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial'].forEach(id => { 
+            ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } 
             });
             
-            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade'].forEach(id => { 
+            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; } 
             });
@@ -1403,6 +1403,83 @@ window.renderQualidadeDashboard = () => {
     if(divMotivos) {
         const arr = Object.keys(motivosMap).map(k => ({ nome: k, val: motivosMap[k] })).sort((a, b) => b.val - a.val).slice(0, 5);
         divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-red-600">R$ ${item.val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>`).join('');
+    }
+    if(window.lucide) window.lucide.createIcons();
+};
+// ==========================================
+// 15. MÓDULO INDÚSTRIA: ALMOXARIFADO
+// ==========================================
+
+// Botão de Exportação CSV
+document.getElementById('btn-export-csv-almoxarifado')?.addEventListener('click', (e) => { e.preventDefault(); window.exportDataToCSV('ind_almoxarifado', 'Almoxarifado_Auditoria'); });
+
+// Gravação
+document.getElementById('form-ind-almoxarifado')?.addEventListener('submit', async (e) => {
+    e.preventDefault(); if (!auth.currentUser) return;
+    
+    // Calcula a divergência na hora: Físico menos Sistema
+    const qtdSistema = parseLocalFloat(document.getElementById('ia-sistema').value);
+    const qtdFisica = parseLocalFloat(document.getElementById('ia-fisico').value);
+    const divergencia = qtdFisica - qtdSistema;
+    const custoUnit = parseLocalFloat(document.getElementById('ia-custo').value);
+    
+    // Impacto financeiro absoluto
+    const impacto = Math.abs(divergencia) * custoUnit;
+
+    const payload = { 
+        tipo: "ind_almoxarifado", 
+        email: auth.currentUser.email, 
+        empresa: currentUserEmpresa, 
+        filial: document.getElementById('ia-filial').value, 
+        data_auditoria: document.getElementById('ia-data').value, 
+        turno: document.getElementById('ia-turno').value, 
+        material: document.getElementById('ia-material').value, 
+        qtd_sistema: qtdSistema, 
+        qtd_fisica: qtdFisica, 
+        divergencia: divergencia, 
+        custo_unit: custoUnit, 
+        impacto: impacto,
+        motivo: document.getElementById('ia-motivo').value
+    };
+    await submitToSheets(e.target, 'btn-save-almoxarifado', 'msg-almoxarifado-success', '', payload, 'Registrar Auditoria no Estoque');
+});
+
+// Renderização do Dashboard
+window.renderAlmoxarifadoDashboard = () => {
+    const content = document.getElementById('almoxarifado-dashboard-content');
+    const empty = document.getElementById('empty-state-almoxarifado');
+    const filtroMes = document.getElementById('filtro-mes-almoxarifado')?.value;
+    const filtroFilial = document.getElementById('filtro-filial-almoxarifado')?.value;
+    
+    if(!filtroMes) return;
+
+    let dados = sheetsDataRaw.filter(i => i.tipo === 'ind_almoxarifado' && i.data_auditoria && extrairAnoMes(i.data_auditoria) === filtroMes);
+    if(filtroFilial && filtroFilial !== 'todas') dados = dados.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+
+    if(dados.length === 0) { if(content) content.classList.add('hidden'); if(empty) empty.classList.remove('hidden'); return; }
+    if(empty) empty.classList.add('hidden'); if(content) content.classList.remove('hidden');
+    
+    let totalImpacto = 0; let totalErros = 0; const motivosMap = {};
+    dados.forEach(item => { 
+        const impacto = parseLocalFloat(item.impacto);
+        const div = parseLocalFloat(item.divergencia);
+        const motivo = item.motivo || 'Outros'; 
+        
+        totalImpacto += impacto;
+        if(div !== 0) totalErros++;
+        
+        if(!motivosMap[motivo]) motivosMap[motivo] = 0; 
+        motivosMap[motivo] += impacto; 
+    });
+
+    if(document.getElementById('ui-almox-total-rs')) document.getElementById('ui-almox-total-rs').innerText = 'R$ ' + totalImpacto.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    if(document.getElementById('ui-almox-total-itens')) document.getElementById('ui-almox-total-itens').innerText = dados.length;
+    if(document.getElementById('ui-almox-total-erros')) document.getElementById('ui-almox-total-erros').innerText = totalErros;
+
+    const divMotivos = document.getElementById('almox-lista-motivos');
+    if(divMotivos) {
+        const arr = Object.keys(motivosMap).map(k => ({ nome: k, val: motivosMap[k] })).sort((a, b) => b.val - a.val).slice(0, 5);
+        divMotivos.innerHTML = arr.map((item, i) => `<div class="flex justify-between items-center p-2 border-b border-slate-100 last:border-0"><span class="text-sm font-medium text-slate-700">${i+1}. ${item.nome}</span><span class="font-bold text-orange-600">R$ ${item.val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>`).join('');
     }
     if(window.lucide) window.lucide.createIcons();
 };
