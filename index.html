@@ -392,6 +392,10 @@
                         <i class="w-6 h-6 mb-1 text-emerald" data-lucide="boxes"></i>
                         <span class="text-[10px] font-bold uppercase tracking-wider text-center">Inventário PA</span>
                     </button>
+    <button class="w-[30%] sm:w-[22%] md:w-[18%] lg:w-[12%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-tab-contagem-ind">
+                        <i class="w-6 h-6 mb-1 text-emerald" data-lucide="barcode"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-center">Bipagem (Contagem)</span>
+                    </button>
                 </div>
 
                 <div class="max-w-7xl mx-auto px-4 md:px-8 py-8" id="container-segmentos">
@@ -1332,6 +1336,129 @@
                                     </div>
                                     <div class="max-h-52 overflow-y-auto pr-2 space-y-1" id="inv-lista-dirigida">
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden space-y-6 pt-2" id="wrapper-tab-contagem-ind">
+                    
+                    <div class="space-y-6 max-w-5xl mx-auto" id="inv-ind-tela-selecao">
+                        <div class="mb-6 border-b border-slate-200 pb-4 flex justify-between items-end gap-4">
+                            <div>
+                                <h2 class="text-2xl font-heading font-bold text-navy flex items-center gap-2"><i class="w-6 h-6 text-emerald" data-lucide="barcode"></i> Contagem Fabril e PA</h2>
+                                <p class="text-slate-500 text-sm mt-1">Inventarie Produtos Acabados, Insumos e Matérias-Primas com bipagem cega.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <h3 class="text-lg font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="plus-circle"></i> Nova Contagem</h3>
+                                    <p class="text-xs text-slate-500 mb-6">Gera um novo ID para iniciar o inventário.</p>
+                                    <label class="block text-xs font-bold text-slate-700 mb-2">Selecione a Filial</label>
+                                    <select class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-slate-50 font-bold text-navy mb-6" id="inv-ind-nova-filial"></select>
+                                </div>
+                                <button class="w-full bg-emerald hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md" onclick="iniciarNovoInventarioInd(event)" type="button">
+                                    Gerar Número de Contagem
+                                </button>
+                            </div>
+                            
+                            <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <h3 class="text-lg font-bold text-navy mb-2 flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="search"></i> Continuar Contagem</h3>
+                                    <p class="text-xs text-slate-500 mb-6">Acesse uma contagem fabril em andamento.</p>
+                                    <label class="block text-xs font-bold text-slate-700 mb-2">Nº do Inventário (ID)</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-slate-50 focus:ring-2 focus:ring-navy mb-6 font-bold text-navy uppercase" id="inv-ind-id-busca" placeholder="Ex: INVI-123456" type="text"/>
+                                </div>
+                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md" onclick="consultarInventarioInd()" type="button">
+                                    Acessar Contagem
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-8">
+                            <div class="p-6 border-b border-slate-100 bg-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <div>
+                                    <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-gold" data-lucide="table-properties"></i> Histórico de Inventários Fabris</h3>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="w-4 h-4 text-slate-400" data-lucide="filter"></i>
+                                    <select class="px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy" id="filtro-filial-contagem-ind"></select>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap">
+                                    <thead class="bg-slate-100 text-slate-500 uppercase text-[10px] font-bold">
+                                        <tr>
+                                            <th class="px-6 py-4">Nº Inventário</th>
+                                            <th class="px-6 py-4">Filial</th>
+                                            <th class="px-6 py-4">Status</th>
+                                            <th class="px-6 py-4 text-center">Leituras</th>
+                                            <th class="px-6 py-4 text-right">Ações / Relatórios</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100" id="inv-ind-tbody-consulta">
+                                        <tr><td class="px-6 py-8 text-center text-slate-400 italic" colspan="5">A carregar inventários...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hidden space-y-6" id="inv-ind-tela-bipagem">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-5xl mx-auto">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-slate-100 pb-4 gap-4">
+                                <div>
+                                    <button class="text-xs font-bold text-slate-400 hover:text-navy flex items-center gap-1 mb-2 transition-colors" onclick="voltarTelaInventarioInd()" type="button"><i class="w-3 h-3" data-lucide="arrow-left"></i> Voltar à Seleção</button>
+                                    <h2 class="text-xl font-heading font-bold text-navy flex items-center gap-2"><i class="w-5 h-5 text-emerald" data-lucide="scan-barcode"></i> Contagem Aberta (Indústria)</h2>
+                                    <div class="flex gap-3 mt-2">
+                                        <span class="px-2 py-1 bg-navy text-gold font-bold text-xs rounded" id="ui-inv-ind-id">--</span>
+                                        <span class="px-2 py-1 bg-slate-100 text-slate-500 font-bold text-xs rounded border border-slate-200" id="ui-inv-ind-filial">--</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white font-bold text-sm flex items-center gap-2 border border-red-200 px-4 py-2 rounded-lg transition-colors shadow-sm" onclick="encerrarInventarioAtualInd(event)" type="button">
+                                        <i class="w-4 h-4" data-lucide="lock"></i> Encerrar Inventário
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <form class="space-y-5" id="form-inventario-ind">
+                                <input id="inv-ind-filial-oculto" type="hidden"/>
+                                <input id="inv-ind-id-oculto" type="hidden"/>
+
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-1">Lote / Área / Galpão</label>
+                                    <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50 uppercase font-bold text-navy" id="inv-ind-lote" placeholder="Ex: SETOR DE RESINAS" required type="text"/>
+                                </div>
+                                
+                                <div class="p-5 bg-emerald/5 border border-emerald/20 rounded-xl space-y-5">
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                                        <div class="md:col-span-2">
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Cód. Barras (Matéria-Prima ou PA) <span class="text-red-500">*</span></label>
+                                            <input class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold" id="inv-ind-gtin" placeholder="Bipe o código aqui" required type="text"/>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Descrição</label>
+                                            <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="inv-ind-desc" placeholder="Produto..." type="text"/>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Qtd Contada <span class="text-red-500">*</span></label>
+                                            <input class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold text-center" id="inv-ind-qtd" inputmode="decimal" placeholder="Ex: 5" required type="number" step="0.01"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2" id="btn-save-inv-ind" type="submit">
+                                    <i class="w-5 h-5 text-gold" data-lucide="plus-square"></i> Salvar Bipagem Fabril
+                                </button>
+                            </form>
+                            
+                            <div class="mt-8 pt-6 border-t border-slate-100">
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2"><i class="w-4 h-4" data-lucide="history"></i> Últimas Leituras (Neste Lote)</h3>
+                                <div class="max-h-60 overflow-y-auto pr-2" id="inv-ind-historico-bipagem">
+                                     <p class="text-xs text-slate-400 italic">Nenhum item bipado ainda.</p>
                                 </div>
                             </div>
                         </div>
