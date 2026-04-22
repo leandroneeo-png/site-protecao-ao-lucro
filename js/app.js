@@ -822,6 +822,7 @@ document.getElementById('form-auditoria')?.addEventListener('submit', async (e) 
     
     await submitToSheets(null, 'btn-save-auditoria', '', '', payload, 'Atualizar Posição'); 
     document.getElementById('modal-auditoria').classList.add('hidden');
+    });
 
 document.getElementById('form-ind-refugo')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
@@ -944,10 +945,10 @@ const map = {
 // Navegação das Abas do Painel Admin (Consultor)
 const btnAdminUsers = document.getElementById('btn-admin-tab-users');
 const btnAdminKpi = document.getElementById('btn-admin-tab-kpi');
+const btnAdminDiag = document.getElementById('btn-admin-tab-diag');
 const wrapAdminUsers = document.getElementById('admin-wrapper-tab-users');
 const wrapAdminKpi = document.getElementById('admin-wrapper-tab-kpi');
-
-const btnAdminUsers = document.getElementById('btn-admin-tab-users');
+const wrapAdminDiag = document.getElementById('admin-wrapper-tab-diag');
 const btnAdminKpi = document.getElementById('btn-admin-tab-kpi');
 const btnAdminDiag = document.getElementById('btn-admin-tab-diag');
 const wrapAdminUsers = document.getElementById('admin-wrapper-tab-users');
