@@ -948,21 +948,23 @@ const btnAdminKpi = document.getElementById('btn-admin-tab-kpi');
 const wrapAdminUsers = document.getElementById('admin-wrapper-tab-users');
 const wrapAdminKpi = document.getElementById('admin-wrapper-tab-kpi');
 
-if(btnAdminUsers && btnAdminKpi) {
-    btnAdminUsers.addEventListener('click', () => {
-        btnAdminUsers.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md";
-        btnAdminKpi.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md";
-        wrapAdminUsers.classList.remove('hidden');
-        wrapAdminKpi.classList.add('hidden');
-    });
+const btnAdminUsers = document.getElementById('btn-admin-tab-users');
+const btnAdminKpi = document.getElementById('btn-admin-tab-kpi');
+const btnAdminDiag = document.getElementById('btn-admin-tab-diag');
+const wrapAdminUsers = document.getElementById('admin-wrapper-tab-users');
+const wrapAdminKpi = document.getElementById('admin-wrapper-tab-kpi');
+const wrapAdminDiag = document.getElementById('admin-wrapper-tab-diag');
 
-    btnAdminKpi.addEventListener('click', () => {
-        btnAdminKpi.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md";
-        btnAdminUsers.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md";
-        wrapAdminKpi.classList.remove('hidden');
-        wrapAdminUsers.classList.add('hidden');
+const unselectAdmin = () => {
+    [btnAdminUsers, btnAdminKpi, btnAdminDiag].forEach(b => {
+        if(b) b.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md";
     });
-}
+    [wrapAdminUsers, wrapAdminKpi, wrapAdminDiag].forEach(w => w?.classList.add('hidden'));
+};
+
+btnAdminUsers?.addEventListener('click', () => { unselectAdmin(); btnAdminUsers.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md"; wrapAdminUsers.classList.remove('hidden'); });
+btnAdminKpi?.addEventListener('click', () => { unselectAdmin(); btnAdminKpi.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md"; wrapAdminKpi.classList.remove('hidden'); });
+btnAdminDiag?.addEventListener('click', () => { unselectAdmin(); btnAdminDiag.className = "w-[45%] sm:w-[30%] md:w-[20%] bg-navy text-white border border-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-md"; wrapAdminDiag.classList.remove('hidden'); });
 
 // ==========================================
 // 8. AUTENTICAÇÃO E HIERARQUIA
@@ -1587,4 +1589,48 @@ window.exportarInventarioIdInd = (idInv) => {
     dataToExport.forEach(item => { if (item.gtin === 'FECHAMENTO') return; rows.push([`"${item.data_registro || ''}"`, `"${item.lote || 'Sem Lote'}"`, `"${item.gtin || ''}"`, `"${item.descricao || 'Produto'}"`, `${item.quantidade || 0}`, `"Contado"`].join(";")); });
     const csvContent = "\uFEFF" + rows.join("\n"); const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", `Inventario_Fabril_${idInv}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
+};
+// ==========================================
+// 17. MOTOR DE DIAGNÓSTICO E ROI (BASE EXCEL)
+// ==========================================
+window.calcularDiagnostico = () => {
+    const fat = parseFloat(document.getElementById('diag-faturamento').value) || 0;
+    const cmv = parseFloat(document.getElementById('diag-cmv').value) || 0;
+    const estoque = parseFloat(document.getElementById('diag-estoque').value) || 0;
+    const perdaPerc = (parseFloat(document.getElementById('diag-perda-perc').value) || 0) / 100;
+
+    if (fat === 0) return;
+
+    // Fórmulas baseadas na planilha "Cálculo Perdas e ROI"
+    const perdaMensal = fat * perdaPerc;
+    const perdaDia = perdaMensal / 30;
+    const giro = estoque > 0 ? cmv / estoque : 0;
+    const cobertura = cmv > 0 ? estoque / (cmv / 30) : 0;
+
+    // Atualiza KPIs
+    document.getElementById('res-perda-total').innerText = perdaMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    document.getElementById('res-perda-dia').innerText = perdaDia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    document.getElementById('res-giro').innerText = giro.toFixed(2) + 'x';
+    document.getElementById('res-cobertura').innerText = Math.round(cobertura) + ' dias';
+
+    // Estimativa por Origem (Pesos baseados na aba ROI da sua planilha)
+    const origens = [
+        { nome: "Perdas no Recebimento", perc: 0.20, causa: "Conferência / Caixas Falsas" },
+        { nome: "Perdas em Perecíveis", perc: 0.32, causa: "Validade / Temperatura" },
+        { nome: "Perdas Frente de Caixa", perc: 0.16, causa: "Erro Preço / Cancelamento" },
+        { nome: "Perdas por Ruptura", perc: 0.20, causa: "Gôndola Vazia / Falta de Estoque" },
+        { nome: "Perdas por Segurança", perc: 0.12, causa: "Furto Interno / Externo" }
+    ];
+
+    const tbody = document.getElementById('diag-table-body');
+    tbody.innerHTML = origens.map(o => `
+        <tr class="hover:bg-slate-50 transition-colors">
+            <td class="px-4 py-3">
+                <p class="font-bold text-navy">${o.nome}</p>
+                <p class="text-[9px] text-slate-400 uppercase">${o.causa}</p>
+            </td>
+            <td class="px-4 py-3 text-center font-medium text-slate-500">${(o.perc * 100).toFixed(0)}%</td>
+            <td class="px-4 py-3 text-right font-bold text-navy">${(perdaMensal * o.perc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        </tr>
+    `).join('');
 };
