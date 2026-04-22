@@ -822,7 +822,6 @@ document.getElementById('form-auditoria')?.addEventListener('submit', async (e) 
     
     await submitToSheets(null, 'btn-save-auditoria', '', '', payload, 'Atualizar Posição'); 
     document.getElementById('modal-auditoria').classList.add('hidden');
-});
 
 document.getElementById('form-ind-refugo')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
