@@ -1596,25 +1596,36 @@ window.calcularDiagnostico = () => {
 
     if (fat === 0) return;
 
-    // Fórmulas baseadas na planilha "Cálculo Perdas e ROI"
+    // Fórmulas baseadas na folha "Cálculo Perdas e ROI"
     const perdaMensal = fat * perdaPerc;
     const perdaDia = perdaMensal / 30;
     const giro = estoque > 0 ? cmv / estoque : 0;
     const cobertura = cmv > 0 ? estoque / (cmv / 30) : 0;
 
-    // Atualiza KPIs
-    document.getElementById('res-perda-total').innerText = perdaMensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    document.getElementById('res-perda-dia').innerText = perdaDia.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    document.getElementById('res-giro').innerText = giro.toFixed(2) + 'x';
-    document.getElementById('res-cobertura').innerText = Math.round(cobertura) + ' dias';
+    // Formatação de moeda no padrão brasileiro: R$ 1.500,00
+    const formatBRL = (valor) => {
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    };
 
-    // Estimativa por Origem (Pesos baseados na aba ROI da sua planilha)
+    // Lógica de Status (Benchmarks reais do Varejo)
+    const statusPerda = perdaPerc <= 0.0151 ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded uppercase">✅ BOM</span>' : '<span class="inline-block mt-1 text-red-400 font-bold text-[10px] bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded uppercase">⚠️ ALTO</span>';
+    
+    const statusGiro = (giro >= 6 && giro <= 12) ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded uppercase">✅ BOM</span>' : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded uppercase">⚠️ ATENÇÃO</span>';
+    
+    const statusCobertura = (cobertura >= 30 && cobertura <= 45) ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded uppercase">✅ BOM</span>' : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded uppercase">⚠️ ATENÇÃO</span>';
+
+    // Atualiza os Cards de KPIs
+    document.getElementById('res-perda-total').innerHTML = `${formatBRL(perdaMensal)} <br/>${statusPerda}`;
+    document.getElementById('res-giro').innerHTML = `${giro.toFixed(2)}x <br/>${statusGiro}`;
+    document.getElementById('res-cobertura').innerHTML = `${Math.round(cobertura)} dias <br/>${statusCobertura}`;
+    document.getElementById('res-perda-dia').innerText = formatBRL(perdaDia);
+
+    // Estimativa por Origem (Pesos exatos da planilha)
     const origens = [
-        { nome: "Perdas no Recebimento", perc: 0.20, causa: "Conferência / Caixas Falsas" },
-        { nome: "Perdas em Perecíveis", perc: 0.32, causa: "Validade / Temperatura" },
-        { nome: "Perdas Frente de Caixa", perc: 0.16, causa: "Erro Preço / Cancelamento" },
-        { nome: "Perdas por Ruptura", perc: 0.20, causa: "Gôndola Vazia / Falta de Estoque" },
-        { nome: "Perdas por Segurança", perc: 0.12, causa: "Furto Interno / Externo" }
+        { nome: "Perdas Desconhecidas", perc: 0.4613, causa: "Furtos e Fraudes", modulo: "Módulo 2" },
+        { nome: "Perdas Conhecidas", perc: 0.3328, causa: "Validade e Avaria", modulo: "Módulo 1" },
+        { nome: "Perdas Administrativas", perc: 0.1857, causa: "Erros de Processo", modulo: "Módulo 3" },
+        { nome: "Perdas Financeiras", perc: 0.0202, causa: "Preço e Caixa", modulo: "Módulo 4" }
     ];
 
     const tbody = document.getElementById('diag-table-body');
@@ -1622,10 +1633,10 @@ window.calcularDiagnostico = () => {
         <tr class="hover:bg-slate-50 transition-colors">
             <td class="px-4 py-3">
                 <p class="font-bold text-navy">${o.nome}</p>
-                <p class="text-[9px] text-slate-400 uppercase">${o.causa}</p>
+                <p class="text-[9px] text-slate-400 uppercase font-medium">${o.causa} <span class="text-gold">| ${o.modulo}</span></p>
             </td>
-            <td class="px-4 py-3 text-center font-medium text-slate-500">${(o.perc * 100).toFixed(0)}%</td>
-            <td class="px-4 py-3 text-right font-bold text-navy">${(perdaMensal * o.perc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+            <td class="px-4 py-3 text-center font-bold text-slate-500 bg-slate-50/50">${(o.perc * 100).toFixed(2)}%</td>
+            <td class="px-4 py-3 text-right font-black text-navy">${formatBRL(perdaMensal * o.perc)}</td>
         </tr>
     `).join('');
 };
