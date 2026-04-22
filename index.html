@@ -134,6 +134,10 @@
                         <i class="w-6 h-6 mb-1" data-lucide="target"></i>
                         <span class="text-[10px] font-bold uppercase tracking-wider text-center">Resultados KPI</span>
                     </button>
+                    <button class="w-[45%] sm:w-[30%] md:w-[20%] bg-white text-slate-500 border border-slate-200 hover:border-navy hover:text-navy rounded-xl p-3 flex flex-col items-center justify-center gap-1 transition-all shadow-sm hover:shadow-md" id="btn-admin-tab-diag">
+    <i class="w-6 h-6 mb-1 text-emerald" data-lucide="calculator"></i>
+    <span class="text-[10px] font-bold uppercase tracking-wider text-center">Diagnóstico ROI</span>
+</button>
                 </div>
 
 <div class="space-y-8" id="admin-wrapper-tab-users">
@@ -285,6 +289,76 @@
                                 <tbody class="divide-y divide-slate-100" id="admin-history-tbody">
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden space-y-8" id="admin-wrapper-tab-diag">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2">
+                            <i class="w-5 h-5 text-emerald" data-lucide="activity"></i> Simulador de Perdas e ROI
+                        </h2>
+                        <p class="text-slate-500 text-sm mb-6">Insira os dados financeiros reais do cliente para projetar o impacto da consultoria.</p>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div class="space-y-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Dados Básicos do Cliente</h3>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Faturamento Mensal Bruto (R$)</label>
+                                    <input class="w-full p-2.5 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy font-bold text-navy" id="diag-faturamento" oninput="window.calcularDiagnostico()" placeholder="Ex: 2000000" type="number"/>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Compra Mensal / CMV (R$)</label>
+                                    <input class="w-full p-2.5 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy font-bold text-navy" id="diag-cmv" oninput="window.calcularDiagnostico()" placeholder="Ex: 700000" type="number"/>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Estoque Médio (R$)</label>
+                                    <input class="w-full p-2.5 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy font-bold text-navy" id="diag-estoque" oninput="window.calcularDiagnostico()" placeholder="Ex: 850000" type="number"/>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Perda Apurada (%)</label>
+                                    <input class="w-full p-2.5 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-navy font-bold text-navy" id="diag-perda-perc" oninput="window.calcularDiagnostico()" placeholder="Ex: 2.0" step="0.1" type="number"/>
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-2 space-y-6">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div class="bg-navy p-4 rounded-xl text-white">
+                                        <p class="text-[10px] font-bold text-gold uppercase opacity-80">Perda Mensal</p>
+                                        <p class="text-lg font-bold" id="res-perda-total">R$ 0,00</p>
+                                    </div>
+                                    <div class="bg-white border border-slate-200 p-4 rounded-xl">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Giro de Estoque</p>
+                                        <p class="text-lg font-bold text-navy" id="res-giro">0.0x</p>
+                                    </div>
+                                    <div class="bg-white border border-slate-200 p-4 rounded-xl">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Cobertura</p>
+                                        <p class="text-lg font-bold text-navy" id="res-cobertura">0 dias</p>
+                                    </div>
+                                    <div class="bg-white border border-slate-200 p-4 rounded-xl">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Perda por Dia</p>
+                                        <p class="text-lg font-bold text-red-600" id="res-perda-dia">R$ 0,00</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                                        <h3 class="text-sm font-bold text-navy">Estimativa de Perdas por Origem</h3>
+                                        <span class="text-[10px] bg-navy text-gold px-2 py-1 rounded font-bold uppercase">Benchmark Proteção ao Lucro</span>
+                                    </div>
+                                    <table class="w-full text-xs text-left">
+                                        <thead class="bg-slate-100 text-slate-500 font-bold uppercase text-[9px]">
+                                            <tr>
+                                                <th class="px-4 py-3">Origem da Perda</th>
+                                                <th class="px-4 py-3 text-center">% Est.</th>
+                                                <th class="px-4 py-3 text-right">Impacto Mensal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100" id="diag-table-body">
+                                            <tr><td class="px-4 py-3 text-center text-slate-400" colspan="3">Insira os dados financeiros para calcular...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
