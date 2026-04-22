@@ -1633,4 +1633,4 @@ window.calcularDiagnostico = () => {
             <td class="px-4 py-3 text-right font-bold text-navy">${(perdaMensal * o.perc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
         </tr>
     `).join('');
-};
+}
