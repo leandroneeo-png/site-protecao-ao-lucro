@@ -949,11 +949,6 @@ const btnAdminDiag = document.getElementById('btn-admin-tab-diag');
 const wrapAdminUsers = document.getElementById('admin-wrapper-tab-users');
 const wrapAdminKpi = document.getElementById('admin-wrapper-tab-kpi');
 const wrapAdminDiag = document.getElementById('admin-wrapper-tab-diag');
-const btnAdminKpi = document.getElementById('btn-admin-tab-kpi');
-const btnAdminDiag = document.getElementById('btn-admin-tab-diag');
-const wrapAdminUsers = document.getElementById('admin-wrapper-tab-users');
-const wrapAdminKpi = document.getElementById('admin-wrapper-tab-kpi');
-const wrapAdminDiag = document.getElementById('admin-wrapper-tab-diag');
 
 const unselectAdmin = () => {
     [btnAdminUsers, btnAdminKpi, btnAdminDiag].forEach(b => {
