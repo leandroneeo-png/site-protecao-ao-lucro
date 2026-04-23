@@ -1769,3 +1769,9 @@ window.calcularDiagnostico = () => {
         }).join('');
     }
 };
+window.imprimirPDF = () => {
+    // Garante que os ícones do Lucide carreguem antes de imprimir
+    if (window.lucide) window.lucide.createIcons();
+    // Abre a janela de impressão do navegador (onde você escolhe 'Salvar como PDF')
+    window.print();
+};
