@@ -1614,7 +1614,6 @@ window.calcularDiagnostico = () => {
 
     const perdaMensal = fat * perdaPerc;
     const perdaDia = perdaMensal / 30;
-    const giro = estoque > 0 ? cmv / estoque : 0;
     const cobertura = cmv > 0 ? estoque / (cmv / 30) : 0;
 
     // Formatação de saída (R$ 1.000,00)
@@ -1622,26 +1621,21 @@ window.calcularDiagnostico = () => {
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     };
 
-    // Lógica de Status (Benchmarks da Planilha)
+    // Lógica de Status
     const statusPerda = perdaPerc <= 0.0151 
         ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded">✅ BOM</span>' 
         : '<span class="inline-block mt-1 text-red-400 font-bold text-[10px] bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">⚠️ ALTO</span>';
-    
-    const statusGiro = (giro >= 6 && giro <= 12) 
-        ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded">✅ BOM</span>' 
-        : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded">⚠️ ATENÇÃO</span>';
     
     const statusCobertura = (cobertura >= 30 && cobertura <= 45) 
         ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded">✅ BOM</span>' 
         : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded">⚠️ ATENÇÃO</span>';
 
-    // Atualiza os Cards
+    // Atualiza os Cards (O card res-giro foi removido)
     document.getElementById('res-perda-total').innerHTML = `${formatBRL(perdaMensal)} <br/>${statusPerda}`;
-    document.getElementById('res-giro').innerHTML = `${giro.toFixed(2)}x <br/>${statusGiro}`;
     document.getElementById('res-cobertura').innerHTML = `${Math.round(cobertura)} dias <br/>${statusCobertura}`;
     document.getElementById('res-perda-dia').innerText = formatBRL(perdaDia);
 
-    // Tabela de Origem (Pesos da Planilha)
+    // Tabela de Origem
     const origens = [
         { nome: "Perdas Desconhecidas", perc: 0.4613, causa: "Furtos e Fraudes" },
         { nome: "Perdas Conhecidas", perc: 0.3328, causa: "Validade e Avaria" },
