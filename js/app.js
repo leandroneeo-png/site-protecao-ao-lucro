@@ -1653,8 +1653,7 @@ window.calcularDiagnostico = () => {
             <td class="px-4 py-3 text-center font-bold text-slate-500 bg-slate-50/50">${(o.perc * 100).toFixed(2)}%</td>
             <td class="px-4 py-3 text-right font-black text-navy">${formatBRL(perdaMensal * o.perc)}</td>
         </tr>
-}).join('');
-
+        
     // --- CÁLCULO DE INVESTIMENTO E ROI ---
     
     // 1. Definição dos Investimentos (% do Faturamento)
