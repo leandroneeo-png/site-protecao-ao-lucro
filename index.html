@@ -33,6 +33,24 @@
     </script>
 
     <link rel="stylesheet" href="./css/style.css">
+    <style>
+    @media print {
+        /* Esconde menus, botões e fundos inúteis no papel */
+        .no-print, nav, aside, footer, button, .sidebar-mobile, header { display: none !important; }
+        body { background: white !important; padding: 0 !important; margin: 0 !important; }
+        
+        /* Garante que as cores da LUCROSEGURO saiam no PDF */
+        .bg-navy { background-color: #0A2540 !important; -webkit-print-color-adjust: exact; }
+        .text-white { color: white !important; }
+        .text-gold { color: #D4AF37 !important; }
+        
+        /* Ajusta o layout para ocupar a folha A4 inteira */
+        main { margin: 0 !important; padding: 20px !important; width: 100% !important; }
+        .grid { display: block !important; }
+        .grid > div { margin-bottom: 30px !important; page-break-inside: avoid; }
+        .rounded-xl { border: 1px solid #e2e8f0 !important; border-radius: 12px !important; }
+    }
+</style>
 </head>
 <body class="font-sans text-slate-800 antialiased selection:bg-gold selection:text-navy min-h-screen flex flex-col">
 
