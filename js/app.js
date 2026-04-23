@@ -1661,40 +1661,86 @@ window.calcularDiagnostico = () => {
         `).join('');
     }
 
-    // --- CÁLCULO DE INVESTIMENTO E ROI ---
-    const invM1 = fat * 0.0140; // 1,40%
-    const invM2 = fat * 0.0230; // 2,30%
-    const invM3 = fat * 0.0070; // 0,70%
-    const invM4 = fat * 0.0010; // 0,10%
+   // --- CÁLCULO DE INVESTIMENTO E ROI ---
+    
+    // 1. Investimentos (Percentuais sobre faturamento)
+    const invs = [fat * 0.0140, fat * 0.0230, fat * 0.0070, fat * 0.0010];
 
-    const ecoM1 = (perdaMensal * 0.3328) * 0.60;
-    const ecoM2 = (perdaMensal * 0.4613) * 0.60;
-    const ecoM3 = (perdaMensal * 0.1857) * 0.60;
-    const ecoM4 = (perdaMensal * 0.0202) * 0.60;
-
-    const calcRoi = (eco, inv) => inv > 0 ? ((eco - inv) / inv) * 100 : 0;
+    // 2. Economia Mensal (30% de recuperação sobre a perda de cada módulo)
+    const ecos = [
+        (perdaMensal * 0.3328) * 0.30,
+        (perdaMensal * 0.4613) * 0.30,
+        (perdaMensal * 0.1857) * 0.30,
+        (perdaMensal * 0.0202) * 0.30
+    ];
 
     const proposta = [
-        { nome: "Módulo 1 - Perdas Conhecidas", inv: invM1, eco: ecoM1 },
-        { nome: "Módulo 2 - Perdas Desconhecidas", inv: invM2, eco: ecoM2 },
-        { nome: "Módulo 3 - Perdas Administrativas", inv: invM3, eco: ecoM3 },
-        { nome: "Módulo 4 - Perdas Financeiras", inv: invM4, eco: ecoM4 }
+        { nome: "Módulo 1 - Perdas Conhecidas", inv: invs[0], ecoM: ecos[0] },
+        { nome: "Módulo 2 - Perdas Desconhecidas", inv: invs[1], ecoM: ecos[1] },
+        { nome: "Módulo 3 - Perdas Administrativas", inv: invs[2], ecoM: ecos[2] },
+        { nome: "Módulo 4 - Perdas Financeiras", inv: invs[3], ecoM: ecos[3] }
     ];
+
+    let totalInv = 0, totalEcoM = 0, totalEcoA = 0;
 
     const tbodyRoi = document.getElementById('diag-roi-body');
     if(tbodyRoi) {
         tbodyRoi.innerHTML = proposta.map(m => {
-            const roiVal = calcRoi(m.eco, m.inv);
+            const ecoAnual = m.ecoM * 12;
+            const roiVal = m.inv > 0 ? (ecoAnual / m.inv) * 100 : 0;
+            
+            totalInv += m.inv;
+            totalEcoM += m.ecoM;
+            totalEcoA += ecoAnual;
+
             return `
             <tr class="hover:bg-slate-50 transition-colors">
                 <td class="px-4 py-3 font-bold text-navy">${m.nome}</td>
                 <td class="px-4 py-3 text-right font-black text-slate-700">${formatBRL(m.inv)}</td>
-                <td class="px-4 py-3 text-right font-bold text-emerald">${formatBRL(m.eco)}</td>
-                <td class="px-4 py-3 text-center font-black ${roiVal >= 0 ? 'text-emerald' : 'text-red-500'} bg-slate-50/50">
-                    ${roiVal > 0 ? '+' : ''}${roiVal.toFixed(0)}%
-                </td>
-            </tr>
-            `;
+                <td class="px-4 py-3 text-right font-bold text-emerald">${formatBRL(m.ecoM)}</td>
+                <td class="px-4 py-3 text-right font-bold text-navy bg-slate-50">${formatBRL(ecoAnual)}</td>
+                <td class="px-4 py-3 text-center font-black text-emerald bg-emerald/5">${roiVal.toFixed(0)}%</td>
+            </tr>`;
+        }).join('');
+
+        // Injetar Linha de Totais
+        const tfootRoi = document.getElementById('diag-roi-footer');
+        const totalRoi = totalInv > 0 ? (totalEcoA / totalInv) * 100 : 0;
+        tfootRoi.innerHTML = `
+            <tr>
+                <td class="px-4 py-3 uppercase text-[9px]">Total da Proposta</td>
+                <td class="px-4 py-3 text-right">${formatBRL(totalInv)}</td>
+                <td class="px-4 py-3 text-right text-gold">${formatBRL(totalEcoM)}</td>
+                <td class="px-4 py-3 text-right text-gold">${formatBRL(totalEcoA)}</td>
+                <td class="px-4 py-3 text-center bg-gold text-navy font-black">${totalRoi.toFixed(0)}%</td>
+            </tr>`;
+    }
+
+    // --- ANÁLISE DE CENÁRIOS (CARDS INFERIORES) ---
+    const gridCenarios = document.getElementById('diag-cenarios-grid');
+    if(gridCenarios) {
+        const cenarios = [
+            { label: "Conservador (15%)", perc: 0.15, desc: "Ações básicas de processo" },
+            { label: "Esperado (30%)", perc: 0.30, desc: "Metodologia Proteção ao Lucro", destaque: true },
+            { label: "Excelência (50%)", perc: 0.50, desc: "Cultura de Prevenção Total" }
+        ];
+
+        gridCenarios.innerHTML = cenarios.map(c => {
+            const economia = perdaMensal * c.perc;
+            const economiaAnual = economia * 12;
+            return `
+            <div class="p-4 rounded-xl border ${c.destaque ? 'border-gold bg-gold/5 shadow-md' : 'border-slate-100 bg-white'}">
+                <div class="flex justify-between items-start mb-2">
+                    <p class="text-[10px] font-bold uppercase ${c.destaque ? 'text-navy' : 'text-slate-400'}">${c.label}</p>
+                    ${c.destaque ? '<span class="text-[8px] bg-navy text-white px-1.5 py-0.5 rounded-full">ALVO</span>' : ''}
+                </div>
+                <p class="text-lg font-black text-navy leading-none mb-1">${formatBRL(economiaAnual)}</p>
+                <p class="text-[9px] font-medium text-slate-500 italic mb-3">de economia anual estimada</p>
+                <div class="pt-3 border-t border-slate-100">
+                    <p class="text-[10px] text-slate-400 mb-1">Impacto Mensal:</p>
+                    <p class="text-sm font-bold text-emerald">${formatBRL(economia)}</p>
+                </div>
+            </div>`;
         }).join('');
     }
 };
