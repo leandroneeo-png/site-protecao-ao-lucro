@@ -312,10 +312,23 @@
                 </div>
                 <div class="hidden space-y-8" id="admin-wrapper-tab-diag">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-                        <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2">
-                            <i class="w-5 h-5 text-emerald" data-lucide="activity"></i> Simulador de Perdas e ROI
-                        </h2>
-                        <p class="text-slate-500 text-sm mb-6">Insira os dados financeiros reais do cliente para projetar o impacto da consultoria.</p>
+<div class="hidden print:block mb-8 text-center border-b-2 border-gold pb-4">
+                            <h1 class="text-3xl font-black text-navy tracking-widest uppercase">LUCROSEGURO</h1>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold">Estratégias Avançadas de Prevenção de Perdas e Controladoria</p>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 no-print">
+                            <div>
+                                <h2 class="text-xl font-heading font-bold text-navy mb-2 flex items-center gap-2">
+                                    <i class="w-5 h-5 text-emerald" data-lucide="activity"></i> Simulador de Perdas e ROI
+                                </h2>
+                                <p class="text-slate-500 text-sm">Insira os dados financeiros reais do cliente para projetar o impacto da consultoria.</p>
+                            </div>
+                            <button onclick="window.imprimirPDF()" class="bg-navy text-gold border border-gold/30 hover:bg-navyLight font-bold py-2 px-4 rounded-lg transition-all flex items-center gap-2 text-sm shadow-sm">
+                                <i class="w-4 h-4" data-lucide="printer"></i>
+                                Gerar PDF
+                            </button>
+                        </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             <div class="space-y-4 bg-slate-50 p-6 rounded-2xl border border-slate-100">
