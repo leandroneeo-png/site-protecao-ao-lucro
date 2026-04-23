@@ -1630,10 +1630,14 @@ window.calcularDiagnostico = () => {
         ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded">✅ BOM</span>' 
         : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded">⚠️ ATENÇÃO</span>';
 
-    // Atualiza os Cards (O card res-giro foi removido)
-    document.getElementById('res-perda-total').innerHTML = `${formatBRL(perdaMensal)} <br/>${statusPerda}`;
-    document.getElementById('res-cobertura').innerHTML = `${Math.round(cobertura)} dias <br/>${statusCobertura}`;
-    document.getElementById('res-perda-dia').innerText = formatBRL(perdaDia);
+    // Atualiza os Cards
+    const resPerdaTotal = document.getElementById('res-perda-total');
+    const resCobertura = document.getElementById('res-cobertura');
+    const resPerdaDia = document.getElementById('res-perda-dia');
+    
+    if(resPerdaTotal) resPerdaTotal.innerHTML = `${formatBRL(perdaMensal)} <br/>${statusPerda}`;
+    if(resCobertura) resCobertura.innerHTML = `${Math.round(cobertura)} dias <br/>${statusCobertura}`;
+    if(resPerdaDia) resPerdaDia.innerText = formatBRL(perdaDia);
 
     // Tabela de Origem
     const origens = [
@@ -1644,25 +1648,25 @@ window.calcularDiagnostico = () => {
     ];
 
     const tbody = document.getElementById('diag-table-body');
-    tbody.innerHTML = origens.map(o => `
-        <tr class="hover:bg-slate-50 transition-colors">
-            <td class="px-4 py-3">
-                <p class="font-bold text-navy">${o.nome}</p>
-                <p class="text-[9px] text-slate-400 uppercase font-medium">${o.causa}</p>
-            </td>
-            <td class="px-4 py-3 text-center font-bold text-slate-500 bg-slate-50/50">${(o.perc * 100).toFixed(2)}%</td>
-            <td class="px-4 py-3 text-right font-black text-navy">${formatBRL(perdaMensal * o.perc)}</td>
-        </tr>
-        
+    if(tbody) {
+        tbody.innerHTML = origens.map(o => `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-4 py-3">
+                    <p class="font-bold text-navy">${o.nome}</p>
+                    <p class="text-[9px] text-slate-400 uppercase font-medium">${o.causa}</p>
+                </td>
+                <td class="px-4 py-3 text-center font-bold text-slate-500 bg-slate-50/50">${(o.perc * 100).toFixed(2)}%</td>
+                <td class="px-4 py-3 text-right font-black text-navy">${formatBRL(perdaMensal * o.perc)}</td>
+            </tr>
+        `).join('');
+    }
+
     // --- CÁLCULO DE INVESTIMENTO E ROI ---
-    
-    // 1. Definição dos Investimentos (% do Faturamento)
     const invM1 = fat * 0.0140; // 1,40%
     const invM2 = fat * 0.0230; // 2,30%
     const invM3 = fat * 0.0070; // 0,70%
     const invM4 = fat * 0.0010; // 0,10%
 
-    // 2. Economia Estimada (60% de recuperação sobre a perda de cada módulo)
     const ecoM1 = (perdaMensal * 0.3328) * 0.60;
     const ecoM2 = (perdaMensal * 0.4613) * 0.60;
     const ecoM3 = (perdaMensal * 0.1857) * 0.60;
