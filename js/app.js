@@ -1588,44 +1588,65 @@ window.exportarInventarioIdInd = (idInv) => {
 // ==========================================
 // 17. MOTOR DE DIAGNÓSTICO E ROI (BASE EXCEL)
 // ==========================================
+// Função para formatar o campo em tempo real (Máscara)
+window.mascaraMoeda = (input) => {
+    let valor = input.value.replace(/\D/g, "");
+    valor = (valor / 100).toFixed(2) + "";
+    valor = valor.replace(".", ",");
+    valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    input.value = valor;
+};
+
+// Função para converter a string "1.500,00" em número "1500.00" para cálculo
+const limparMoeda = (valor) => {
+    if (!valor) return 0;
+    return parseFloat(valor.replace(/\./g, "").replace(",", ".")) || 0;
+};
+
 window.calcularDiagnostico = () => {
-    const fat = parseFloat(document.getElementById('diag-faturamento').value) || 0;
-    const cmv = parseFloat(document.getElementById('diag-cmv').value) || 0;
-    const estoque = parseFloat(document.getElementById('diag-estoque').value) || 0;
+    // Captura os valores usando a função de limpeza
+    const fat = limparMoeda(document.getElementById('diag-faturamento').value);
+    const cmv = limparMoeda(document.getElementById('diag-cmv').value);
+    const estoque = limparMoeda(document.getElementById('diag-estoque').value);
     const perdaPerc = (parseFloat(document.getElementById('diag-perda-perc').value) || 0) / 100;
 
     if (fat === 0) return;
 
-    // Fórmulas baseadas na folha "Cálculo Perdas e ROI"
     const perdaMensal = fat * perdaPerc;
     const perdaDia = perdaMensal / 30;
     const giro = estoque > 0 ? cmv / estoque : 0;
     const cobertura = cmv > 0 ? estoque / (cmv / 30) : 0;
 
-    // Formatação de moeda no padrão brasileiro: R$ 1.500,00
+    // Formatação de saída (R$ 1.000,00)
     const formatBRL = (valor) => {
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     };
 
-    // Lógica de Status (Benchmarks reais do Varejo)
-    const statusPerda = perdaPerc <= 0.0151 ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded uppercase">✅ BOM</span>' : '<span class="inline-block mt-1 text-red-400 font-bold text-[10px] bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded uppercase">⚠️ ALTO</span>';
+    // Lógica de Status (Benchmarks da Planilha)
+    const statusPerda = perdaPerc <= 0.0151 
+        ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded">✅ BOM</span>' 
+        : '<span class="inline-block mt-1 text-red-400 font-bold text-[10px] bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">⚠️ ALTO</span>';
     
-    const statusGiro = (giro >= 6 && giro <= 12) ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded uppercase">✅ BOM</span>' : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded uppercase">⚠️ ATENÇÃO</span>';
+    const statusGiro = (giro >= 6 && giro <= 12) 
+        ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded">✅ BOM</span>' 
+        : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded">⚠️ ATENÇÃO</span>';
     
-    const statusCobertura = (cobertura >= 30 && cobertura <= 45) ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded uppercase">✅ BOM</span>' : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded uppercase">⚠️ ATENÇÃO</span>';
+    const statusCobertura = (cobertura >= 30 && cobertura <= 45) 
+        ? '<span class="inline-block mt-1 text-emerald font-bold text-[10px] bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded">✅ BOM</span>' 
+        : '<span class="inline-block mt-1 text-orange-500 font-bold text-[10px] bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded">⚠️ ATENÇÃO</span>';
 
-    // Atualiza os Cards de KPIs
+    // Atualiza os Cards
     document.getElementById('res-perda-total').innerHTML = `${formatBRL(perdaMensal)} <br/>${statusPerda}`;
     document.getElementById('res-giro').innerHTML = `${giro.toFixed(2)}x <br/>${statusGiro}`;
     document.getElementById('res-cobertura').innerHTML = `${Math.round(cobertura)} dias <br/>${statusCobertura}`;
     document.getElementById('res-perda-dia').innerText = formatBRL(perdaDia);
 
-    // Estimativa por Origem (Pesos exatos da planilha)
+    // Tabela de Origem (Pesos da Planilha)
     const origens = [
-        { nome: "Perdas Desconhecidas", perc: 0.4613, causa: "Furtos e Fraudes", modulo: "Módulo 2" },
-        { nome: "Perdas Conhecidas", perc: 0.3328, causa: "Validade e Avaria", modulo: "Módulo 1" },
-        { nome: "Perdas Administrativas", perc: 0.1857, causa: "Erros de Processo", modulo: "Módulo 3" },
-        { nome: "Perdas Financeiras", perc: 0.0202, causa: "Preço e Caixa", modulo: "Módulo 4" }
+        { nome: "Perdas Desconhecidas", perc: 0.4613, causa: "Furtos e Fraudes" },
+        { nome: "Perdas Conhecidas", perc: 0.3328, causa: "Validade e Avaria" },
+        { nome: "Perdas Administrativas", perc: 0.1857, causa: "Erros de Processo" },
+        { nome: "Perdas Financeiras", perc: 0.0202, causa: "Preço e Caixa" }
     ];
 
     const tbody = document.getElementById('diag-table-body');
@@ -1633,7 +1654,7 @@ window.calcularDiagnostico = () => {
         <tr class="hover:bg-slate-50 transition-colors">
             <td class="px-4 py-3">
                 <p class="font-bold text-navy">${o.nome}</p>
-                <p class="text-[9px] text-slate-400 uppercase font-medium">${o.causa} <span class="text-gold">| ${o.modulo}</span></p>
+                <p class="text-[9px] text-slate-400 uppercase font-medium">${o.causa}</p>
             </td>
             <td class="px-4 py-3 text-center font-bold text-slate-500 bg-slate-50/50">${(o.perc * 100).toFixed(2)}%</td>
             <td class="px-4 py-3 text-right font-black text-navy">${formatBRL(perdaMensal * o.perc)}</td>
