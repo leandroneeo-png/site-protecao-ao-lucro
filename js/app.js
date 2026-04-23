@@ -1653,5 +1653,45 @@ window.calcularDiagnostico = () => {
             <td class="px-4 py-3 text-center font-bold text-slate-500 bg-slate-50/50">${(o.perc * 100).toFixed(2)}%</td>
             <td class="px-4 py-3 text-right font-black text-navy">${formatBRL(perdaMensal * o.perc)}</td>
         </tr>
-    `).join('');
+}).join('');
+
+    // --- CÁLCULO DE INVESTIMENTO E ROI ---
+    
+    // 1. Definição dos Investimentos (% do Faturamento)
+    const invM1 = fat * 0.0140; // 1,40%
+    const invM2 = fat * 0.0230; // 2,30%
+    const invM3 = fat * 0.0070; // 0,70%
+    const invM4 = fat * 0.0010; // 0,10%
+
+    // 2. Economia Estimada (60% de recuperação sobre a perda de cada módulo)
+    const ecoM1 = (perdaMensal * 0.3328) * 0.60;
+    const ecoM2 = (perdaMensal * 0.4613) * 0.60;
+    const ecoM3 = (perdaMensal * 0.1857) * 0.60;
+    const ecoM4 = (perdaMensal * 0.0202) * 0.60;
+
+    const calcRoi = (eco, inv) => inv > 0 ? ((eco - inv) / inv) * 100 : 0;
+
+    const proposta = [
+        { nome: "Módulo 1 - Perdas Conhecidas", inv: invM1, eco: ecoM1 },
+        { nome: "Módulo 2 - Perdas Desconhecidas", inv: invM2, eco: ecoM2 },
+        { nome: "Módulo 3 - Perdas Administrativas", inv: invM3, eco: ecoM3 },
+        { nome: "Módulo 4 - Perdas Financeiras", inv: invM4, eco: ecoM4 }
+    ];
+
+    const tbodyRoi = document.getElementById('diag-roi-body');
+    if(tbodyRoi) {
+        tbodyRoi.innerHTML = proposta.map(m => {
+            const roiVal = calcRoi(m.eco, m.inv);
+            return `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-4 py-3 font-bold text-navy">${m.nome}</td>
+                <td class="px-4 py-3 text-right font-black text-slate-700">${formatBRL(m.inv)}</td>
+                <td class="px-4 py-3 text-right font-bold text-emerald">${formatBRL(m.eco)}</td>
+                <td class="px-4 py-3 text-center font-black ${roiVal >= 0 ? 'text-emerald' : 'text-red-500'} bg-slate-50/50">
+                    ${roiVal > 0 ? '+' : ''}${roiVal.toFixed(0)}%
+                </td>
+            </tr>
+            `;
+        }).join('');
+    }
 };
