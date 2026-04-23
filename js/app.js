@@ -1716,9 +1716,21 @@ window.calcularDiagnostico = () => {
             </tr>`;
     }
 
-    // --- ANÁLISE DE CENÁRIOS (CARDS INFERIORES) ---
+ // --- ANÁLISE DE CENÁRIOS (CARDS INFERIORES) ---
     const gridCenarios = document.getElementById('diag-cenarios-grid');
     if(gridCenarios) {
+        // Função matemática para converter meses em texto legível (ex: "1 ano e 6 meses")
+        const formatPayback = (meses) => {
+            if (!isFinite(meses) || meses <= 0) return "Imediato";
+            const m = Math.ceil(meses);
+            const anos = Math.floor(m / 12);
+            const mesesRestantes = m % 12;
+            
+            if (anos === 0) return `${mesesRestantes} ${mesesRestantes === 1 ? 'mês' : 'meses'}`;
+            if (mesesRestantes === 0) return `${anos} ${anos === 1 ? 'ano' : 'anos'}`;
+            return `${anos} ${anos === 1 ? 'ano' : 'anos'} e ${mesesRestantes} ${mesesRestantes === 1 ? 'mês' : 'meses'}`;
+        };
+
         const cenarios = [
             { label: "Conservador (15%)", perc: 0.15, desc: "Ações básicas de processo" },
             { label: "Esperado (30%)", perc: 0.30, desc: "Metodologia Proteção ao Lucro", destaque: true },
@@ -1728,6 +1740,11 @@ window.calcularDiagnostico = () => {
         gridCenarios.innerHTML = cenarios.map(c => {
             const economia = perdaMensal * c.perc;
             const economiaAnual = economia * 12;
+            
+            // O Investimento Total é a soma dos 4 módulos (4,5% do Faturamento)
+            const invTotalMensal = (fat * 0.0140) + (fat * 0.0230) + (fat * 0.0070) + (fat * 0.0010);
+            const paybackMeses = economia > 0 ? invTotalMensal / economia : 0;
+
             return `
             <div class="p-4 rounded-xl border ${c.destaque ? 'border-gold bg-gold/5 shadow-md' : 'border-slate-100 bg-white'}">
                 <div class="flex justify-between items-start mb-2">
@@ -1736,9 +1753,17 @@ window.calcularDiagnostico = () => {
                 </div>
                 <p class="text-lg font-black text-navy leading-none mb-1">${formatBRL(economiaAnual)}</p>
                 <p class="text-[9px] font-medium text-slate-500 italic mb-3">de economia anual estimada</p>
-                <div class="pt-3 border-t border-slate-100">
-                    <p class="text-[10px] text-slate-400 mb-1">Impacto Mensal:</p>
-                    <p class="text-sm font-bold text-emerald">${formatBRL(economia)}</p>
+                
+                <div class="pt-3 border-t border-slate-100 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <p class="text-[10px] text-slate-400 uppercase font-bold mb-0">Impacto Mensal:</p>
+                        <p class="text-sm font-bold text-emerald">${formatBRL(economia)}</p>
+                    </div>
+                    
+                    <div class="bg-slate-50 p-2 rounded border border-slate-200 text-center mt-2">
+                        <p class="text-[9px] text-slate-500 uppercase font-bold mb-0.5">Tempo de Retorno (ROI)</p>
+                        <p class="text-sm font-black text-navy">${formatPayback(paybackMeses)}</p>
+                    </div>
                 </div>
             </div>`;
         }).join('');
