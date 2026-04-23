@@ -358,27 +358,40 @@
                             <tbody id="diag-table-body"> ... </tbody>
 </table>
 </div>
-</div> <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mt-6">
-    <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-        <h3 class="text-sm font-bold text-navy">Projeção de Investimento e Retorno (ROI)</h3>
-        <span class="text-[10px] bg-emerald text-white px-2 py-1 rounded font-bold uppercase tracking-wider">Proposta Comercial</span>
-    </div>
-    <div class="overflow-x-auto">
-        <table class="w-full text-xs text-left">
-            <thead class="bg-slate-100 text-slate-500 font-bold uppercase text-[9px]">
-                <tr>
-                    <th class="px-4 py-3">Módulo Recomendado</th>
-                    <th class="px-4 py-3 text-right">Investimento (Mensal)</th>
-                    <th class="px-4 py-3 text-right">Economia Estimada</th>
-                    <th class="px-4 py-3 text-center">ROI</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100" id="diag-roi-body">
-                <tr><td class="px-4 py-3 text-center text-slate-400" colspan="4">Aguardando dados...</td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+</div> 
+<div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mt-6">
+                                <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="text-sm font-bold text-navy uppercase tracking-tighter">Projeção Comercial: Investimento vs Retorno</h3>
+                                    <span class="text-[10px] bg-emerald text-white px-2 py-1 rounded font-bold uppercase tracking-wider">Payback Estimado</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-[11px] text-left">
+                                        <thead class="bg-slate-100 text-slate-500 font-bold uppercase text-[9px]">
+                                            <tr>
+                                                <th class="px-4 py-3">Módulo Recomendado</th>
+                                                <th class="px-4 py-3 text-right">Invest. Mensal</th>
+                                                <th class="px-4 py-3 text-right">Econ. Mensal (30%)</th>
+                                                <th class="px-4 py-3 text-right">Econ. Anual</th>
+                                                <th class="px-4 py-3 text-center">ROI (Anual/Inv)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100" id="diag-roi-body">
+                                            <tr><td class="px-4 py-3 text-center text-slate-400" colspan="5">Aguardando dados...</td></tr>
+                                        </tbody>
+                                        <tfoot class="bg-navy text-white font-bold" id="diag-roi-footer">
+                                            </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mt-6">
+                                <div class="p-4 bg-slate-900 border-b border-slate-800 flex justify-between items-center">
+                                    <h3 class="text-sm font-bold text-white uppercase tracking-tighter">Análise de Cenários (Recuperação de Lucro)</h3>
+                                    <i class="w-4 h-4 text-gold" data-lucide="trending-up"></i>
+                                </div>
+                                <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4" id="diag-cenarios-grid">
+                                    </div>
+                            </div>
                         </div>
                     </div>
                 </div>
