@@ -1067,14 +1067,32 @@ const autocompletarPorGtin = (gtin, inputsAlvo, filialId) => {
     const produto = produtosMestre.find(p => p.gtin === busca && (String(p.filial) === String(filialSelecionada) || !p.filial || String(p.filial).trim() === ""));
     
     if(produto) {
-        if(inputsAlvo.desc && document.getElementById(inputsAlvo.desc)) document.getElementById(inputsAlvo.desc).value = produto.descricao || '';
-        if(inputsAlvo.custo && document.getElementById(inputsAlvo.custo)) document.getElementById(inputsAlvo.custo).value = produto.custo || '';
-        if(inputsAlvo.preco && document.getElementById(inputsAlvo.preco)) document.getElementById(inputsAlvo.preco).value = produto.preco || '';
+        if(inputsAlvo.desc && document.getElementById(inputsAlvo.desc)) {
+            document.getElementById(inputsAlvo.desc).value = produto.descricao || '';
+        }
+        if(inputsAlvo.custo && document.getElementById(inputsAlvo.custo)) {
+            const custoNum = parseFloat(String(produto.custo || 0).replace(',', '.'));
+            document.getElementById(inputsAlvo.custo).value = custoNum > 0 ? custoNum.toFixed(2) : '';
+        }
+        if(inputsAlvo.preco && document.getElementById(inputsAlvo.preco)) {
+            const precoNum = parseFloat(String(produto.preco || 0).replace(',', '.'));
+            document.getElementById(inputsAlvo.preco).value = precoNum > 0 ? precoNum.toFixed(2) : '';
+        }
+    } else {
+        // Regra 2: Caso não encontre o produto, limpa os campos para digitação manual
+        if(inputsAlvo.desc && document.getElementById(inputsAlvo.desc)) document.getElementById(inputsAlvo.desc).value = '';
+        if(inputsAlvo.custo && document.getElementById(inputsAlvo.custo)) document.getElementById(inputsAlvo.custo).value = '';
+        if(inputsAlvo.preco && document.getElementById(inputsAlvo.preco)) document.getElementById(inputsAlvo.preco).value = '';
     }
 };
 
 // Liga o "espião" a cada campo de GTIN, ensinando-lhe onde está a caixa de filial correspondente
-[{ gtinId: 'inv-gtin', filialId: 'inv-filial-oculto', alvos: { desc: 'inv-desc' } }, { gtinId: 'q-gtin', filialId: 'q-filial-lancamento', alvos: { desc: 'q-desc', custo: 'q-custo' } }, { gtinId: 'p-gtin', filialId: 'p-filial-lancamento', alvos: { desc: 'p-desc', preco: 'p-sistema' } }, { gtinId: 'v-gtin', filialId: 'v-filial-lancamento', alvos: { desc: 'v-desc', custo: 'v-custo' } }].forEach(mapa => {
+[
+    { gtinId: 'inv-gtin', filialId: 'inv-filial-oculto', alvos: { desc: 'inv-desc', custo: 'inv-custo' } }, 
+    { gtinId: 'q-gtin', filialId: 'q-filial-lancamento', alvos: { desc: 'q-desc', custo: 'q-custo' } }, 
+    { gtinId: 'p-gtin', filialId: 'p-filial-lancamento', alvos: { desc: 'p-desc', preco: 'p-sistema' } }, 
+    { gtinId: 'v-gtin', filialId: 'v-filial-lancamento', alvos: { desc: 'v-desc', custo: 'v-custo' } }
+].forEach(mapa => {
     const inputEan = document.getElementById(mapa.gtinId);
     if(inputEan) { 
         // O evento 'input' atua a cada letra digitada ou apagada, tornando a limpeza instantânea
