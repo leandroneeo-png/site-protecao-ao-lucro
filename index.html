@@ -2094,29 +2094,32 @@
                                         </label>
                                     </div>
 
-                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                                    <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
                                         <div class="md:col-span-2">
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Código
-                                                de Barras (GTIN) <span class="text-red-500">*</span></label>
-                                            <input autofocus="autofocus"
-                                                class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold"
-                                                id="inv-gtin" placeholder="Bipe o código aqui" required type="text" />
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Código de Barras (GTIN) <span class="text-red-500">*</span></label>
+                                            <input autofocus="autofocus" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold" id="inv-gtin" placeholder="Bipe o código aqui" required type="text" />
+                                        </div>
+                                        <div class="md:col-span-2">
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Descrição (Opcional)</label>
+                                            <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="inv-desc" placeholder="Produto..." type="text" />
                                         </div>
                                         <div>
-                                            <label
-                                                class="block text-xs font-bold text-slate-500 uppercase mb-1">Descrição
-                                                (Opcional)</label>
-                                            <input
-                                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white"
-                                                id="inv-desc" placeholder="Produto..." type="text" />
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Qtd <span class="text-red-500">*</span></label>
+                                            <input class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold text-center" id="inv-qtd" inputmode="decimal" placeholder="0" required type="number" />
                                         </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Qtd
-                                                <span class="text-red-500">*</span></label>
-                                            <input
-                                                class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold text-center"
-                                                id="inv-qtd" inputmode="decimal" placeholder="0" required
-                                                type="number" />
+                                        <div class="md:col-span-2">
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Custo Unitário (R$) <span class="text-red-500">*</span></label>
+                                            <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white font-bold" id="inv-custo" placeholder="0.00" required type="number" step="0.01" />
+                                        </div>
+                                        <div class="md:col-span-3">
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Motivo do Ajuste <span class="text-red-500">*</span></label>
+                                            <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white text-sm" id="inv-motivo" required>
+                                                <option value="">Selecione...</option>
+                                                <option value="Erro de contagem">Erro de contagem</option>
+                                                <option value="Erro no recebimento">Erro no recebimento</option>
+                                                <option value="Erro no PDV">Erro no PDV</option>
+                                                <option value="Falta de entrada de Nota Fiscal">Falta de entrada de Nota Fiscal</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

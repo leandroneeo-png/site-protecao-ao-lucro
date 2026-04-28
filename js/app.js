@@ -568,18 +568,47 @@ window.encerrarInventarioAtual = async (event) => {
 
 document.getElementById('form-inventario')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
-    const idInv = document.getElementById('inv-id-oculto').value; const filial = document.getElementById('inv-filial-oculto').value; 
+    const idInv = document.getElementById('inv-id-oculto').value; 
+    const filial = document.getElementById('inv-filial-oculto').value; 
     const inputLote = document.getElementById('inv-lote');
     const inputGtin = document.getElementById('inv-gtin');
     const inputQtd = document.getElementById('inv-qtd');
+    const inputCusto = document.getElementById('inv-custo');
+    const inputMotivo = document.getElementById('inv-motivo');
     const lote = inputLote.value.trim().toUpperCase();
     
-    const payload = { tipo: "inventario", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: filial, lote: lote, gtin: inputGtin.value, descricao: document.getElementById('inv-desc')?.value || "", quantidade: inputQtd.value, id_inventario: idInv, status: "ABERTO" };
+    // Conversão estrita para Float para evitar NaN
+    const custoConvertido = parseFloat(String(inputCusto.value).replace(',', '.')) || 0;
+    const qtdConvertida = parseFloat(String(inputQtd.value).replace(',', '.')) || 0;
+    
+    const payload = { 
+        tipo: "inventario", 
+        email: auth.currentUser.email, 
+        empresa: currentUserEmpresa, 
+        filial: filial, 
+        lote: lote, 
+        gtin: inputGtin.value, 
+        descricao: document.getElementById('inv-desc')?.value || "", 
+        quantidade: qtdConvertida, 
+        custo: custoConvertido,
+        motivo: inputMotivo.value || "",
+        id_inventario: idInv, 
+        status: "ABERTO" 
+    };
     
     // Submissão otimista
     submitToSheets(null, 'btn-save-inv', '', '', payload, '<i data-lucide="plus-square" class="w-5 h-5 text-gold"></i> Salvar Bipagem');
     
-    inputGtin.value = ''; document.getElementById('inv-desc').value = ''; 
+    // Limpeza de campos
+    inputGtin.value = ''; 
+    document.getElementById('inv-desc').value = ''; 
+    
+    const travarQtd = document.getElementById('inv-travar-qtd')?.checked;
+    if (travarQtd) {
+        inputQtd.value = '1';
+    } else {
+        inputQtd.value = '';
+    }
     
     // Força o retorno do cursor de forma agressiva após limpar os dados
     setTimeout(() => { 
@@ -602,6 +631,12 @@ window.renderHistoricoBipagem = (idInv) => {
             const itemEnc = encodeURIComponent(JSON.stringify(i));
             const isEstorno = parseFloat(i.quantidade) < 0;
             
+            // Cálculos financeiros com conversão para Float
+            const custoUnit = parseFloat(i.custo) || 0;
+            const qtdNum = parseFloat(i.quantidade) || 0;
+            const totalPerda = custoUnit * Math.abs(qtdNum);
+            const motivoText = i.motivo ? `<span class="text-slate-300">|</span> <span class="text-slate-500">Motivo: <span class="font-semibold">${i.motivo}</span></span>` : '';
+            
             // Renderiza o botão de lixeira (apenas se não for já um estorno)
             const btnExcluir = isEstorno ? '' : `<button type="button" onclick="window.estornarBipagem('${itemEnc}')" class="text-red-400 hover:text-red-600 p-1.5 rounded transition-colors" title="Cancelar Leitura"><i class="w-4 h-4" data-lucide="trash-2"></i></button>`;
             const corQtd = isEstorno ? 'text-red-600 bg-red-50 border-red-200' : 'text-emerald bg-emerald/10 border-emerald/20';
@@ -611,6 +646,12 @@ window.renderHistoricoBipagem = (idInv) => {
                 <div class="flex flex-col flex-1 min-w-0 pr-2">
                     <span class="text-xs font-bold ${textNome} truncate">${i.descricao || i.gtin}</span>
                     <span class="text-[10px] text-slate-400">Lote: ${i.lote} | EAN: ${i.gtin}</span>
+                    <span class="text-[10px] mt-1">
+                        <span class="text-slate-500">Custo: R$ ${custoUnit.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                        <span class="text-slate-300">|</span> 
+                        <span class="text-slate-500">Total: <strong class="text-red-500">R$ ${totalPerda.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></span>
+                        ${motivoText}
+                    </span>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     <span class="text-sm font-black px-2 py-1 rounded border ${corQtd}">${i.quantidade} un</span>
