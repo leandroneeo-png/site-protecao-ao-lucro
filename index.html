@@ -52,11 +52,11 @@
     }
 </style>
 </head>
-<body class="font-sans text-slate-800 antialiased selection:bg-gold selection:text-navy min-h-screen flex flex-col">
+<body class="m-0 p-0 h-full w-full min-h-screen flex flex-col font-sans text-slate-800 antialiased selection:bg-gold selection:text-navy">
 
-<div id="app-root">
+<div id="app-root" class="m-0 p-0 h-full w-full flex-1 flex flex-col">
 
-    <div class="hidden flex-col w-full min-h-screen" id="portal-cliente">
+    <div class="hidden flex-col w-full h-full flex-1 m-0 p-0" id="portal-cliente">
         
         <div class="flex-1 flex items-center justify-center w-full p-4 relative overflow-hidden min-h-screen bg-navy" id="auth-view">
             <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
@@ -429,8 +429,8 @@
             </main>
         </div>
       
-        <div class="hidden flex-1 flex flex-col h-screen overflow-hidden bg-slate-50" id="view-client">
-            <header class="bg-navy text-white shrink-0 z-40 shadow-md relative">
+        <div class="hidden flex-1 flex flex-col h-full w-full m-0 p-0 overflow-hidden bg-slate-50" id="view-client">
+            <header class="bg-navy text-white shrink-0 z-40 shadow-md relative m-0 p-0 w-full">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16 items-center">
                         <div class="flex items-center gap-3">
