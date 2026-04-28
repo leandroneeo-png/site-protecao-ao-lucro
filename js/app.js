@@ -574,7 +574,6 @@ document.getElementById('form-inventario')?.addEventListener('submit', async (e)
     const inputGtin = document.getElementById('inv-gtin');
     const inputQtd = document.getElementById('inv-qtd');
     const inputCusto = document.getElementById('inv-custo');
-    const inputMotivo = document.getElementById('inv-motivo');
     const lote = inputLote.value.trim().toUpperCase();
     
     // Conversão estrita para Float para evitar NaN
@@ -591,7 +590,7 @@ document.getElementById('form-inventario')?.addEventListener('submit', async (e)
         descricao: document.getElementById('inv-desc')?.value || "", 
         quantidade: qtdConvertida, 
         custo: custoConvertido,
-        motivo: inputMotivo.value || "",
+        motivo: "Não Identificado", // Motivo padrão agora que foi removido do form
         id_inventario: idInv, 
         status: "ABERTO" 
     };
@@ -602,6 +601,7 @@ document.getElementById('form-inventario')?.addEventListener('submit', async (e)
     // Limpeza de campos
     inputGtin.value = ''; 
     document.getElementById('inv-desc').value = ''; 
+    inputCusto.value = '';
     
     const travarQtd = document.getElementById('inv-travar-qtd')?.checked;
     if (travarQtd) {
@@ -623,6 +623,34 @@ window.renderHistoricoBipagem = (idInv) => {
     const items = sheetsDataRaw.filter(i => i.tipo === 'inventario' && i.id_inventario === idInv && i.gtin !== 'FECHAMENTO');
     const bipagens = items.filter(i => i.gtin !== 'LISTA_DIRIGIDA').reverse();
 
+    // Lógica Financeira (Dashboard)
+    let totalDesconhecida = 0;
+    let totalAdministrativa = 0;
+    
+    bipagens.forEach(i => {
+        // Custo * Qtd (preservando o sinal para abater estornos)
+        const c = parseFloat(i.custo) || 0;
+        const q = parseFloat(i.quantidade) || 0;
+        const valorReal = c * q;
+        const m = (i.motivo || '').trim();
+        
+        if (m === 'Não Identificado' || m === '') {
+            totalDesconhecida += valorReal;
+        } else {
+            totalAdministrativa += valorReal;
+        }
+    });
+    
+    // Evita exibir valores negativos caso os estornos fiquem estranhos
+    totalDesconhecida = Math.max(0, totalDesconhecida);
+    totalAdministrativa = Math.max(0, totalAdministrativa);
+    
+    const uiPerdaDesc = document.getElementById('ui-inv-perda-desconhecida');
+    if (uiPerdaDesc) uiPerdaDesc.innerText = 'R$ ' + totalDesconhecida.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    
+    const uiPerdaAdmin = document.getElementById('ui-inv-perda-admin');
+    if (uiPerdaAdmin) uiPerdaAdmin.innerText = 'R$ ' + totalAdministrativa.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
     if(bipagens.length === 0) { 
         divHist.innerHTML = '<p class="text-xs text-slate-400 italic">Nenhum item bipado.</p>'; 
     } else { 
@@ -635,7 +663,17 @@ window.renderHistoricoBipagem = (idInv) => {
             const custoUnit = parseFloat(i.custo) || 0;
             const qtdNum = parseFloat(i.quantidade) || 0;
             const totalPerda = custoUnit * Math.abs(qtdNum);
-            const motivoText = i.motivo ? `<span class="text-slate-300">|</span> <span class="text-slate-500">Motivo: <span class="font-semibold">${i.motivo}</span></span>` : '';
+            
+            const motivoText = !isEstorno ? `
+                <span class="text-slate-300 mx-1">|</span> 
+                <select onchange="window.atualizarMotivoInventario('${itemEnc}', this.value)" class="bg-transparent text-slate-500 font-semibold focus:outline-none focus:text-navy cursor-pointer hover:bg-slate-200 rounded transition-colors text-[10px] w-28 truncate">
+                    <option value="Não Identificado" ${i.motivo === 'Não Identificado' || !i.motivo ? 'selected' : ''}>Não Identificado</option>
+                    <option value="Erro de contagem" ${i.motivo === 'Erro de contagem' ? 'selected' : ''}>Erro de contagem</option>
+                    <option value="Erro no recebimento" ${i.motivo === 'Erro no recebimento' ? 'selected' : ''}>Erro no recebimento</option>
+                    <option value="Erro no PDV" ${i.motivo === 'Erro no PDV' ? 'selected' : ''}>Erro no PDV</option>
+                    <option value="Falta de entrada de Nota Fiscal" ${i.motivo === 'Falta de entrada de Nota Fiscal' ? 'selected' : ''}>Falta de entrada de Nota Fiscal</option>
+                </select>
+            ` : (i.motivo ? `<span class="text-slate-300 mx-1">|</span> <span class="text-slate-500">Motivo: <span class="font-semibold">${i.motivo}</span></span>` : '');
             
             // Renderiza o botão de lixeira (apenas se não for já um estorno)
             const btnExcluir = isEstorno ? '' : `<button type="button" onclick="window.estornarBipagem('${itemEnc}')" class="text-red-400 hover:text-red-600 p-1.5 rounded transition-colors" title="Cancelar Leitura"><i class="w-4 h-4" data-lucide="trash-2"></i></button>`;
@@ -646,9 +684,9 @@ window.renderHistoricoBipagem = (idInv) => {
                 <div class="flex flex-col flex-1 min-w-0 pr-2">
                     <span class="text-xs font-bold ${textNome} truncate">${i.descricao || i.gtin}</span>
                     <span class="text-[10px] text-slate-400">Lote: ${i.lote} | EAN: ${i.gtin}</span>
-                    <span class="text-[10px] mt-1">
+                    <span class="text-[10px] mt-1 flex items-center">
                         <span class="text-slate-500">Custo: R$ ${custoUnit.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                        <span class="text-slate-300">|</span> 
+                        <span class="text-slate-300 mx-1">|</span> 
                         <span class="text-slate-500">Total: <strong class="text-red-500">R$ ${totalPerda.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></span>
                         ${motivoText}
                     </span>
@@ -661,6 +699,37 @@ window.renderHistoricoBipagem = (idInv) => {
         }); 
         divHist.innerHTML = html; 
         if(window.lucide) window.lucide.createIcons();
+    }
+};
+
+window.atualizarMotivoInventario = async (itemEncoded, novoMotivo) => {
+    const item = JSON.parse(decodeURIComponent(itemEncoded));
+    
+    // Atualiza localmente no cache otimista
+    const idx = sheetsDataRaw.findIndex(i => i.tipo === 'inventario' && i.id_inventario === item.id_inventario && i.gtin === item.gtin && i.quantidade === item.quantidade && i.lote === item.lote);
+    if(idx > -1) {
+        sheetsDataRaw[idx].motivo = novoMotivo;
+    }
+    
+    window.renderHistoricoBipagem(item.id_inventario);
+    
+    // Atualiza no backend/Google Sheets
+    const payload = {
+        tipo: "atualizar_motivo_inventario",
+        id_inventario: item.id_inventario,
+        gtin: item.gtin,
+        quantidade: item.quantidade,
+        lote: item.lote,
+        motivo: novoMotivo,
+        filial: item.filial,
+        email: window.auth && window.auth.currentUser ? window.auth.currentUser.email : ''
+    };
+    
+    try { 
+        await fetch(window.GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) }); 
+        if(window.currentUserFilial) sessionStorage.setItem(`lucroData_${window.currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...(window.produtosMestre || [])])); 
+    } catch(e) { 
+        console.warn("Aviso: Motivo atualizado localmente mas falhou ao sincronizar com o servidor."); 
     }
 };
 

@@ -2094,7 +2094,7 @@
                                         </label>
                                     </div>
 
-                                    <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
+                                    <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
                                         <div class="md:col-span-2">
                                             <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Código de Barras (GTIN) <span class="text-red-500">*</span></label>
                                             <input autofocus="autofocus" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold" id="inv-gtin" placeholder="Bipe o código aqui" required type="text" />
@@ -2107,19 +2107,9 @@
                                             <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Qtd <span class="text-red-500">*</span></label>
                                             <input class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold text-center" id="inv-qtd" inputmode="decimal" placeholder="0" required type="number" />
                                         </div>
-                                        <div class="md:col-span-2">
+                                        <div>
                                             <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Custo Unitário (R$) <span class="text-red-500">*</span></label>
                                             <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white font-bold" id="inv-custo" placeholder="0.00" required type="number" step="0.01" />
-                                        </div>
-                                        <div class="md:col-span-3">
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Motivo do Ajuste <span class="text-red-500">*</span></label>
-                                            <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white text-sm" id="inv-motivo" required>
-                                                <option value="">Selecione...</option>
-                                                <option value="Erro de contagem">Erro de contagem</option>
-                                                <option value="Erro no recebimento">Erro no recebimento</option>
-                                                <option value="Erro no PDV">Erro no PDV</option>
-                                                <option value="Falta de entrada de Nota Fiscal">Falta de entrada de Nota Fiscal</option>
-                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -2133,6 +2123,16 @@
 
                             <div class="mt-8 pt-6 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div class="bg-red-50 border border-red-100 rounded-lg p-3 shadow-sm">
+                                            <p class="text-[10px] font-bold text-red-500 uppercase">Perda Desconhecida</p>
+                                            <p class="text-lg font-black text-red-600 truncate" id="ui-inv-perda-desconhecida">R$ 0,00</p>
+                                        </div>
+                                        <div class="bg-orange-50 border border-orange-100 rounded-lg p-3 shadow-sm">
+                                            <p class="text-[10px] font-bold text-orange-500 uppercase">Perda Administrativa</p>
+                                            <p class="text-lg font-black text-orange-600 truncate" id="ui-inv-perda-admin">R$ 0,00</p>
+                                        </div>
+                                    </div>
                                     <h3
                                         class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                                         <i class="w-4 h-4" data-lucide="history"></i> Últimas Bipagens</h3>
