@@ -1216,7 +1216,13 @@ btnAdminDiag?.addEventListener('click', () => { unselectAdmin(); btnAdminDiag.cl
 const lF = document.getElementById('login-form');
 if (lF) lF.addEventListener('submit', async (e) => { e.preventDefault(); document.getElementById('login-error-box')?.classList.add('hidden'); document.getElementById('login-loading')?.classList.remove('hidden'); try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value); } catch (er) { document.getElementById('login-loading')?.classList.add('hidden'); document.getElementById('login-error-box')?.classList.remove('hidden'); document.getElementById('login-error-text').innerText = "Credenciais inválidas."; } });
 
-document.querySelectorAll('.btn-logout').forEach(b => b.addEventListener('click', () => signOut(auth)));
+document.querySelectorAll('.btn-logout').forEach(b => b.addEventListener('click', () => {
+    signOut(auth).then(() => {
+        sessionStorage.clear();
+        localStorage.clear();
+        window.location.reload();
+    }).catch(err => console.error("Erro no logout:", err));
+}));
 
 onAuthStateChanged(auth, async (user) => {
     const loadBox = document.getElementById('login-loading'); if (loadBox) loadBox.classList.add('hidden');
