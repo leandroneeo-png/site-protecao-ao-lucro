@@ -1,20 +1,20 @@
 // ==========================================
 // CONFIGURAÇÃO DOS BANCOS DE DADOS (IDs)
 // ==========================================
-const ID_QUEBRAS    = "1q5d3jYog8zMnV25IwnE5oNpfjrd5GGFtOT--Z0A3sX0";
-const ID_DOCAS      = "1U6gyKIW7LwRqFOsIzg09xcEpjuth2byxVATbpw_mwkQ";
-const ID_VALIDADE   = "1DPoLSVznQzXdpLKxl_a6GbpikFi7SVUC5jU-o7oU-Ro";
-const ID_FURTOS     = "1pAepZ-vKuC0Y8cgo0ogJWvoMFKBjT8XAU-4-eW_y3eY";
-const ID_PRECOS     = "1RTmMTqfoxj2svsQKzzv9_WJw0N-9SPJNZ4Dv3wokls4";
-const ID_CAIXA      = "1w_PQDr5vnf521i4y4onDH4aP10FBFAHAFA6vVVgbxEk";
+const ID_QUEBRAS = "1q5d3jYog8zMnV25IwnE5oNpfjrd5GGFtOT--Z0A3sX0";
+const ID_DOCAS = "1U6gyKIW7LwRqFOsIzg09xcEpjuth2byxVATbpw_mwkQ";
+const ID_VALIDADE = "1DPoLSVznQzXdpLKxl_a6GbpikFi7SVUC5jU-o7oU-Ro";
+const ID_FURTOS = "1pAepZ-vKuC0Y8cgo0ogJWvoMFKBjT8XAU-4-eW_y3eY";
+const ID_PRECOS = "1RTmMTqfoxj2svsQKzzv9_WJw0N-9SPJNZ4Dv3wokls4";
+const ID_CAIXA = "1w_PQDr5vnf521i4y4onDH4aP10FBFAHAFA6vVVgbxEk";
 const ID_INVENTARIO = "11MXWJYO5MkEcCAltYVxhR57sa9XDsOQgguJSuypvjzU";
-const ID_TAREFAS    = "1ktdRvaMFxakMzpbIaY9hS6yYaq29igXlqFRT_CGJqtw";
-const ID_PRODUTOS   = "1plGH4vu9L38t8YEQcCH5RAobQqAho5mrSYn1kfsQ450"; 
+const ID_TAREFAS = "1ktdRvaMFxakMzpbIaY9hS6yYaq29igXlqFRT_CGJqtw";
+const ID_PRODUTOS = "1plGH4vu9L38t8YEQcCH5RAobQqAho5mrSYn1kfsQ450";
 
 // IDs DO SEGMENTO INDÚSTRIA
-const ID_IND_REFUGO     = "1q9A8QoP9IxrTjiJ1kLKEko5XgQJrls6Y2sLCiF6gye8";
-const ID_IND_PARADAS    = "1eB52FdzxPsyeUUn2Ec1s63Ns19szHbKhyMD5WOqp1D0";
-const ID_IND_QUALIDADE  = "1ulfmz9f-v8_p_m7jRN1Y-B7-ss2GQvPbrcipfWBf0kE";
+const ID_IND_REFUGO = "1q9A8QoP9IxrTjiJ1kLKEko5XgQJrls6Y2sLCiF6gye8";
+const ID_IND_PARADAS = "1eB52FdzxPsyeUUn2Ec1s63Ns19szHbKhyMD5WOqp1D0";
+const ID_IND_QUALIDADE = "1ulfmz9f-v8_p_m7jRN1Y-B7-ss2GQvPbrcipfWBf0kE";
 const ID_IND_ALMOXARIFADO = "1rAl8f21RulJkx37v3SoeK07eY3fxzKbzS5s1g9X_pj4";
 const ID_IND_INVENTARIO = "1FW-lM4vrFAttA87lZFAPyJeT8BpBB0zqTh4QSMbx6jo";
 
@@ -29,15 +29,15 @@ function doOptions(e) {
 function converterMoedaParaFloat(valor) {
   if (valor === null || valor === undefined || valor === "") return 0.0;
   if (typeof valor === "number") return valor;
-  
+
   let strValor = String(valor).replace(/[R$\s]/gi, '').trim();
   if (strValor === "") return 0.0;
-  
+
   // Se contiver vírgula, assume que é o separador decimal brasileiro
   if (strValor.indexOf(',') > -1) {
     strValor = strValor.replace(/\./g, '').replace(',', '.');
   }
-  
+
   let floatValor = parseFloat(strValor);
   return isNaN(floatValor) ? 0.0 : floatValor;
 }
@@ -48,27 +48,27 @@ function converterMoedaParaFloat(valor) {
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
-    const tipo = payload.tipo; 
-    const email = payload.email || "Sem e-mail"; 
+    const tipo = payload.tipo;
+    const email = payload.email || "Sem e-mail";
     const empresa = payload.empresa || "Matriz";
-    
-    const filial = payload.filial_lancamento || payload.filial || "Loja Padrão"; 
+
+    const filial = payload.filial_lancamento || payload.filial || "Loja Padrão";
     const dataHoraFormatada = Utilities.formatDate(new Date(), "GMT-3", "dd/MM/yyyy HH:mm:ss");
 
     // 1. QUEBRAS
     if (tipo === "quebra") {
-      const ss = SpreadsheetApp.openById(ID_QUEBRAS); 
+      const ss = SpreadsheetApp.openById(ID_QUEBRAS);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora", "Empresa", "Filial", "Usuário", "Mês Ref.", "GTIN", "Descrição", "Quantidade", "Custo (R$)", "Motivo"]);
         sheet.getRange("A1:J1").setFontWeight("bold").setBackground("#0A2540").setFontColor("white");
       }
       sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.mes, "'" + payload.gtin, payload.descricao, payload.quantidade, converterMoedaParaFloat(payload.custo), payload.motivo]);
-    } 
-    
+    }
+
     // 2. RECEBIMENTO (DOCAS)
     else if (tipo === "recebimento") {
-      const ss = SpreadsheetApp.openById(ID_DOCAS); 
+      const ss = SpreadsheetApp.openById(ID_DOCAS);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora", "Empresa", "Filial", "Usuário", "Data Entrega", "Fornecedor", "NF-e", "Produto", "Qtd. Divergente", "Custo Unit.", "Motivo", "Observações"]);
@@ -76,10 +76,10 @@ function doPost(e) {
       }
       sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.data_entrega, payload.fornecedor, payload.nf, payload.descricao, payload.quantidade, converterMoedaParaFloat(payload.custo), payload.motivo, payload.observacoes || ""]);
     }
-    
+
     // 3. VALIDADE
     else if (tipo === "validade") {
-      const ss = SpreadsheetApp.openById(ID_VALIDADE); 
+      const ss = SpreadsheetApp.openById(ID_VALIDADE);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora", "Empresa", "Filial", "Usuário", "GTIN", "Produto", "Categoria", "Quantidade", "Custo Unit.", "Data Vencimento"]);
@@ -87,26 +87,26 @@ function doPost(e) {
       }
       sheet.appendRow([dataHoraFormatada, empresa, filial, email, "'" + payload.gtin, payload.descricao, payload.categoria, payload.quantidade, converterMoedaParaFloat(payload.custo), payload.data_validade]);
     }
-    
+
     // 4. ATUALIZAR VALIDADE (MODAL AUDITORIA)
     else if (tipo === "atualizar_validade") {
-      const ss = SpreadsheetApp.openById(ID_VALIDADE); 
+      const ss = SpreadsheetApp.openById(ID_VALIDADE);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() > 0) {
-        const data = sheet.getDataRange().getDisplayValues(); 
-        for (let i = data.length - 1; i > 0; i--) { 
+        const data = sheet.getDataRange().getDisplayValues();
+        for (let i = data.length - 1; i > 0; i--) {
           const row = data[i];
-          let dataStr = String(row[9]).trim(); 
-          let gtinPlanilha = Number(String(row[4]).replace(/[^0-9]/g, '')); 
+          let dataStr = String(row[9]).trim();
+          let gtinPlanilha = Number(String(row[4]).replace(/[^0-9]/g, ''));
           let gtinSite = Number(String(payload.gtin).replace(/[^0-9]/g, ''));
-          
+
           if (row[1] === empresa && row[2] === filial && gtinPlanilha === gtinSite && dataStr === String(payload.data_validade).trim()) {
             if (parseFloat(payload.quantidade) <= 0) {
-              sheet.deleteRow(i + 1); 
+              sheet.deleteRow(i + 1);
             } else {
               sheet.getRange(i + 1, 8).setValue(payload.quantidade);
             }
-            break; 
+            break;
           }
         }
       }
@@ -114,36 +114,36 @@ function doPost(e) {
 
     // 4.1 ATUALIZAR REBAIXA (MARCAR COMO REBAIXADO)
     else if (tipo === "atualizar_rebaixa_validade") {
-      const ss = SpreadsheetApp.openById(ID_VALIDADE); 
+      const ss = SpreadsheetApp.openById(ID_VALIDADE);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() > 0) {
-        const data = sheet.getDataRange().getDisplayValues(); 
-        for (let i = data.length - 1; i > 0; i--) { 
+        const data = sheet.getDataRange().getDisplayValues();
+        for (let i = data.length - 1; i > 0; i--) {
           const row = data[i];
-          let dataStr = String(row[9]).trim(); 
-          let gtinPlanilha = Number(String(row[4]).replace(/[^0-9]/g, '')); 
+          let dataStr = String(row[9]).trim();
+          let gtinPlanilha = Number(String(row[4]).replace(/[^0-9]/g, ''));
           let gtinSite = Number(String(payload.gtin).replace(/[^0-9]/g, ''));
-          
+
           if (row[1] === empresa && row[2] === filial && gtinPlanilha === gtinSite && dataStr === String(payload.data_validade).trim()) {
             // Escreve "SIM" ou "NÃO" na Coluna 11 (K)
             sheet.getRange(i + 1, 11).setValue(payload.rebaixado);
-            break; 
+            break;
           }
         }
       }
     }
-    
+
     // 5. FURTOS EVITADOS
     else if (tipo === "furto") {
-      const ss = SpreadsheetApp.openById(ID_FURTOS); 
+      const ss = SpreadsheetApp.openById(ID_FURTOS);
       let sheet = ss.getSheets()[0];
-      
+
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora Registro", "Empresa", "Filial", "Usuário", "Data Ocorrência", "Gênero", "Idade", "Abordagem", "Local", "Descrição", "Produto", "Qtd", "Preço Unitário (R$)", "Subtotal (R$)"]);
         sheet.getRange("A1:N1").setFontWeight("bold").setBackground("#dc2626").setFontColor("white");
       }
-      
-      const produtos = payload.produtos ||[];
+
+      const produtos = payload.produtos || [];
       if (produtos.length > 0) {
         produtos.forEach(p => {
           const precoFormatado = converterMoedaParaFloat(p.preco);
@@ -157,9 +157,9 @@ function doPost(e) {
 
     // 6. AUDITORIA DE PREÇO
     else if (tipo === "auditoria_preco") {
-      const ss = SpreadsheetApp.openById(ID_PRECOS); 
+      const ss = SpreadsheetApp.openById(ID_PRECOS);
       let sheet = ss.getSheets()[0];
-      
+
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora Registro", "Empresa", "Filial", "Usuário", "Data Auditoria", "GTIN", "Descrição", "Preço Sistema (R$)", "Preço Gôndola (R$)", "Sem Preço"]);
         sheet.getRange("A1:J1").setFontWeight("bold").setBackground("#3b82f6").setFontColor("white");
@@ -169,9 +169,9 @@ function doPost(e) {
 
     // 7. CAIXA CENTRAL
     else if (tipo === "caixa_central") {
-      const ss = SpreadsheetApp.openById(ID_CAIXA); 
+      const ss = SpreadsheetApp.openById(ID_CAIXA);
       let sheet = ss.getSheets()[0];
-      
+
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora Registro", "Empresa", "Filial", "Usuário", "Data Auditoria", "Operador", "Tipo de Divergência", "Valor Falta (R$)", "Observações"]);
         sheet.getRange("A1:I1").setFontWeight("bold").setBackground("#b91c1c").setFontColor("white");
@@ -181,22 +181,82 @@ function doPost(e) {
 
     // 8. INVENTÁRIO ROTATIVO
     else if (tipo === "inventario") {
-      const ss = SpreadsheetApp.openById(ID_INVENTARIO); 
+      const ss = SpreadsheetApp.openById(ID_INVENTARIO);
       let sheet = ss.getSheets()[0];
-      
+
       if (sheet.getLastRow() === 0) {
-        sheet.appendRow(["Data/Hora Registro", "Empresa", "Filial", "Usuário", "Lote (Corredor)", "GTIN", "Descrição", "Quantidade", "ID Inventário", "Status"]);
-        sheet.getRange("A1:J1").setFontWeight("bold").setBackground("#10b981").setFontColor("white"); 
+        sheet.appendRow(["Data/Hora Registro", "Empresa", "Filial", "Usuário", "Lote (Corredor)", "GTIN", "Descrição", "Quantidade", "Custo", "Motivo", "ID Inventário", "Status"]);
+        sheet.getRange("A1:L1").setFontWeight("bold").setBackground("#10b981").setFontColor("white");
       }
-      sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.lote, "'" + payload.gtin, payload.descricao, payload.quantidade, payload.id_inventario, payload.status || "ABERTO"]);
+      sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.lote, "'" + payload.gtin, payload.descricao, payload.quantidade, converterMoedaParaFloat(payload.custo), payload.motivo, payload.id_inventario, payload.status || "ABERTO"]);
     }
-    
-// FECHAMENTO DO INVENTÁRIO (COM ZERAMENTO DE NÃO ENCONTRADOS)
+    // ==========================================
+    // 8.1 ATUALIZAR MOTIVO DO INVENTÁRIO (EDIÇÃO REMOTA)
+    // ==========================================
+    else if (tipo === "atualizar_motivo_inventario") {
+      const ss = SpreadsheetApp.openById(ID_INVENTARIO);
+      let sheet = ss.getSheets()[0];
+
+      if (sheet.getLastRow() > 0) {
+        // Pega todos os valores de uma vez (alta performance)
+        const data = sheet.getDataRange().getValues();
+
+        // Localiza as colunas dinamicamente pela Linha 1 (Cabeçalho)
+        const cabecalho = data[0];
+
+        // indexOf retorna -1 se não encontrar. Caso a coluna tenha outro nome exato, ajustaremos o fallback
+        const colIdInv = cabecalho.indexOf("ID Inventário") > -1 ? cabecalho.indexOf("ID Inventário") : 8;
+        const colGtin = cabecalho.indexOf("GTIN") > -1 ? cabecalho.indexOf("GTIN") : 5;
+        const colLote = cabecalho.indexOf("Lote (Corredor)") > -1 ? cabecalho.indexOf("Lote (Corredor)") : 4;
+        const colQtd = cabecalho.indexOf("Quantidade") > -1 ? cabecalho.indexOf("Quantidade") : 7;
+
+        // A coluna Motivo será localizada dinamicamente. Se não achar o nome "Motivo", 
+        // substitua o número 11 pelo índice real (ex: 11 corresponde à coluna L, 10 à coluna K)
+        const colMotivo = cabecalho.indexOf("Motivo") > -1 ? cabecalho.indexOf("Motivo") : 11;
+
+        // Tratamento da tipagem estrita que vem do payload do frontend
+        let payloadGtin = Number(String(payload.gtin).replace(/[^0-9]/g, ''));
+        let payloadLote = String(payload.lote).trim().toUpperCase();
+        let payloadQtd = parseFloat(payload.quantidade) || 0;
+        let payloadIdInv = String(payload.id_inventario).trim();
+
+        // Varredura de baixo para cima (mais rápido, pois edições remotas geralmente ocorrem em itens recentes)
+        for (let i = data.length - 1; i > 0; i--) {
+          const row = data[i];
+
+          let rowIdInv = String(row[colIdInv]).trim();
+          let rowGtin = Number(String(row[colGtin]).replace(/[^0-9]/g, ''));
+          let rowLote = String(row[colLote]).trim().toUpperCase();
+          let rowQtd = parseFloat(row[colQtd]) || 0;
+
+          // Verifica correspondência exata de 6 chaves para evitar alteração indevida de outro item similar
+          if (rowIdInv === payloadIdInv &&
+            rowGtin === payloadGtin &&
+            rowLote === payloadLote &&
+            rowQtd === payloadQtd &&
+            row[1] === empresa &&
+            row[2] === filial) {
+
+            // sheet.getRange pede (linha, coluna) em base 1 (A=1, B=2...)
+            // O índice do array é base 0, por isso somamos +1 ao 'i' (linha) e ao 'colMotivo' (coluna)
+            sheet.getRange(i + 1, colMotivo + 1).setValue(payload.motivo);
+
+            // Interrompe a varredura ao encontrar e sobrescrever a linha exata e retorna sucesso
+            return ContentService.createTextOutput(JSON.stringify({ status: 'success' })).setMimeType(ContentService.MimeType.JSON);
+          }
+        }
+      }
+
+      // Retorna erro se varreu a planilha toda e não encontrou a linha
+      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Item de inventário não encontrado' })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // FECHAMENTO DO INVENTÁRIO (COM ZERAMENTO DE NÃO ENCONTRADOS)
     else if (tipo === "fechar_inventario") {
-      const ss = SpreadsheetApp.openById(ID_INVENTARIO); 
+      const ss = SpreadsheetApp.openById(ID_INVENTARIO);
       let sheet = ss.getSheets()[0];
       sheet.appendRow([dataHoraFormatada, empresa, filial, email, "SISTEMA", "FECHAMENTO", "ENCERRAMENTO DE CONTAGEM", 0, payload.id_inventario, "FECHADO"]);
-      
+
       // Varre o array enviado pelo celular e insere 0 na planilha para os produtos não achados
       if (payload.nao_encontrados && payload.nao_encontrados.length > 0) {
         payload.nao_encontrados.forEach(gtin => {
@@ -207,18 +267,18 @@ function doPost(e) {
 
     // 9. TAREFAS MANUAIS
     else if (tipo === "tarefa") {
-      const ss = SpreadsheetApp.openById(ID_TAREFAS); 
+      const ss = SpreadsheetApp.openById(ID_TAREFAS);
       let sheet = ss.getSheets()[0];
-      
+
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data Criação", "Empresa", "Filial", "Criado Por", "Título / Demanda", "Prazo Limite", "Status"]);
-        sheet.getRange("A1:G1").setFontWeight("bold").setBackground("#f97316").setFontColor("white"); 
+        sheet.getRange("A1:G1").setFontWeight("bold").setBackground("#f97316").setFontColor("white");
       }
       sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.titulo, payload.prazo, payload.status]);
     }
     // 10. CONCLUIR TAREFA
     else if (tipo === "concluir_tarefa") {
-      const ss = SpreadsheetApp.openById(ID_TAREFAS); 
+      const ss = SpreadsheetApp.openById(ID_TAREFAS);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() > 1) {
         const data = sheet.getDataRange().getDisplayValues();
@@ -228,15 +288,15 @@ function doPost(e) {
           // row[1]=Empresa, row[2]=Filial, row[4]=Titulo, row[6]=Status
           if (row[1] === empresa && row[2] === filial && row[4] === payload.titulo && row[6] === "PENDENTE") {
             sheet.getRange(i + 1, 7).setValue("CONCLUÍDA"); // Coluna G
-            break; 
+            break;
           }
         }
       }
     }
 
-// 11. INDÚSTRIA: REFUGO E SUCATA
+    // 11. INDÚSTRIA: REFUGO E SUCATA
     else if (tipo === "ind_refugo") {
-      const ss = SpreadsheetApp.openById(ID_IND_REFUGO); 
+      const ss = SpreadsheetApp.openById(ID_IND_REFUGO);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora", "Empresa", "Filial", "Usuário", "Data Refugo", "Turno", "Máquina/Linha", "Material", "Qtd", "Unidade", "Motivo"]);
@@ -244,11 +304,11 @@ function doPost(e) {
       }
       sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.data_refugo, payload.turno, payload.maquina, payload.material, payload.quantidade, payload.unidade, payload.motivo]);
     }
-// 12. INDÚSTRIA: PARADAS DE MÁQUINA (OEE)
+    // 12. INDÚSTRIA: PARADAS DE MÁQUINA (OEE)
     else if (tipo === "ind_paradas") {
-      const ss = SpreadsheetApp.openById(ID_IND_PARADAS); 
+      const ss = SpreadsheetApp.openById(ID_IND_PARADAS);
       let sheet = ss.getSheets()[0];
-if (sheet.getLastRow() === 0) {
+      if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora", "Empresa", "Filial", "Usuário", "Data Ocorrência", "Turno", "Máquina/Linha", "Motivo da Parada", "Tempo Perdido (Min)", "Custo da Hora (R$)", "Observações"]);
         sheet.getRange("A1:K1").setFontWeight("bold").setBackground("#dc2626").setFontColor("white");
       }
@@ -256,7 +316,7 @@ if (sheet.getLastRow() === 0) {
     }
     // 13. INDÚSTRIA: CONTROLE DE QUALIDADE (RETRABALHO)
     else if (tipo === "ind_qualidade") {
-      const ss = SpreadsheetApp.openById(ID_IND_QUALIDADE); 
+      const ss = SpreadsheetApp.openById(ID_IND_QUALIDADE);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora", "Empresa", "Filial", "Usuário", "Data Ocorrência", "Turno", "Lote / OP", "Produto", "Motivo Reprovação", "Qtd Reprovada", "Horas Retrabalho", "Custo Hora-Homem (R$)", "Material Extra (R$)"]);
@@ -266,7 +326,7 @@ if (sheet.getLastRow() === 0) {
     }
     // 14. INDÚSTRIA: ALMOXARIFADO / INVENTÁRIO
     else if (tipo === "ind_almoxarifado") {
-      const ss = SpreadsheetApp.openById(ID_IND_ALMOXARIFADO); 
+      const ss = SpreadsheetApp.openById(ID_IND_ALMOXARIFADO);
       let sheet = ss.getSheets()[0];
       if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora", "Empresa", "Filial", "Usuário", "Data Auditoria", "Turno", "Material / Peça", "Qtd Sistema", "Qtd Física", "Divergência", "Custo Unitário (R$)", "Impacto Financeiro (R$)", "Motivo/Justificativa"]);
@@ -282,15 +342,15 @@ if (sheet.getLastRow() === 0) {
         sheet.appendRow(["Data/Hora", "Empresa", "Filial", "Usuário", "Lote/Corredor", "GTIN", "Descrição", "Quantidade", "ID_Inventario", "Status"]);
         sheet.getRange("A1:J1").setFontWeight("bold").setBackground("#059669").setFontColor("white");
       }
-      if(tipo === "fechar_ind_inventario") {
+      if (tipo === "fechar_ind_inventario") {
         sheet.appendRow([dataHoraFormatada, empresa, filial, email, "FECHAMENTO", "FECHAMENTO", "Fechamento de Inventário", 0, payload.id_inventario, "FECHADO"]);
       } else {
         sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.lote, payload.gtin, payload.descricao, payload.quantidade, payload.id_inventario, payload.status]);
       }
     }
     return ContentService.createTextOutput(JSON.stringify({ status: 'success' })).setMimeType(ContentService.MimeType.JSON);
-  } catch (error) { 
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: error.toString() })).setMimeType(ContentService.MimeType.JSON); 
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: error.toString() })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
@@ -301,10 +361,10 @@ if (sheet.getLastRow() === 0) {
 function doGet(e) {
   const filial_buscada = String(e.parameter.filial || "").trim();
   const empresa_buscada = String(e.parameter.empresa || "").trim();
-  const role = String(e.parameter.role || "").trim(); 
+  const role = String(e.parameter.role || "").trim();
 
-  let resultados =[];
-  
+  let resultados = [];
+
   const podeVer = (linhaEmpresa, linhaFilial) => {
     const emp = String(linhaEmpresa).trim();
     const fil = String(linhaFilial).trim();
@@ -316,42 +376,42 @@ function doGet(e) {
   try {
     const sheetQ = SpreadsheetApp.openById(ID_QUEBRAS).getSheets()[0];
     if (sheetQ.getLastRow() > 1) {
-      const dataQ = sheetQ.getDataRange().getDisplayValues(); 
+      const dataQ = sheetQ.getDataRange().getDisplayValues();
       for (let i = 1; i < dataQ.length; i++) {
         if (podeVer(dataQ[i][1], dataQ[i][2])) {
           resultados.push({ tipo: "quebra", mes: dataQ[i][4], gtin: dataQ[i][5], descricao: dataQ[i][6], quantidade: dataQ[i][7], custo: dataQ[i][8], motivo: dataQ[i][9], filial: dataQ[i][2] });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
-// 2. Busca Docas
+  // 2. Busca Docas
   try {
     const sheetD = SpreadsheetApp.openById(ID_DOCAS).getSheets()[0];
     if (sheetD.getLastRow() > 1) {
       const dataD = sheetD.getDataRange().getDisplayValues();
       for (let i = 1; i < dataD.length; i++) {
         if (podeVer(dataD[i][1], dataD[i][2])) {
-          
+
           // Lógica de Prevenção: Se a Data da Entrega (coluna 4) estiver em branco, 
           // ele usa a Data/Hora que o sistema gerou no registro da linha (coluna 0).
           const dataCorreta = dataD[i][4] ? dataD[i][4] : dataD[i][0];
-          
-          resultados.push({ 
-            tipo: "recebimento", 
-            data_entrega: dataCorreta, 
-            fornecedor: dataD[i][5], 
-            nf: dataD[i][6], 
-            descricao: dataD[i][7], 
-            quantidade: dataD[i][8], 
-            custo: dataD[i][9], 
-            motivo: dataD[i][10], 
-            filial: dataD[i][2] 
+
+          resultados.push({
+            tipo: "recebimento",
+            data_entrega: dataCorreta,
+            fornecedor: dataD[i][5],
+            nf: dataD[i][6],
+            descricao: dataD[i][7],
+            quantidade: dataD[i][8],
+            custo: dataD[i][9],
+            motivo: dataD[i][10],
+            filial: dataD[i][2]
           });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
   // 3. Busca Validades
   try {
@@ -359,16 +419,16 @@ function doGet(e) {
     if (sheetV.getLastRow() > 1) {
       const dataV = sheetV.getDataRange().getDisplayValues();
       for (let i = 1; i < dataV.length; i++) {
-if (podeVer(dataV[i][1], dataV[i][2])) {
-          resultados.push({ 
-              tipo: "validade", gtin: String(dataV[i][4]).replace(/[^0-9]/g, ''), 
-              descricao: dataV[i][5], categoria: dataV[i][6], quantidade: dataV[i][7], 
-              custo: dataV[i][8], data_validade: dataV[i][9], rebaixado: dataV[i][10] || "NÃO", filial: dataV[i][2] 
+        if (podeVer(dataV[i][1], dataV[i][2])) {
+          resultados.push({
+            tipo: "validade", gtin: String(dataV[i][4]).replace(/[^0-9]/g, ''),
+            descricao: dataV[i][5], categoria: dataV[i][6], quantidade: dataV[i][7],
+            custo: dataV[i][8], data_validade: dataV[i][9], rebaixado: dataV[i][10] || "NÃO", filial: dataV[i][2]
           });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
   // 4. Busca Furtos
   try {
@@ -377,15 +437,15 @@ if (podeVer(dataV[i][1], dataV[i][2])) {
       const dataF = sheetF.getDataRange().getDisplayValues();
       for (let i = 1; i < dataF.length; i++) {
         if (podeVer(dataF[i][1], dataF[i][2])) {
-          resultados.push({ 
-            tipo: "furto", data_hora_registro: dataF[i][0], data_ocorrencia: dataF[i][4], genero: dataF[i][5], 
-            idade: dataF[i][6], abordagem: dataF[i][7], local: dataF[i][8], descricao: dataF[i][9], 
-            produto: dataF[i][10], quantidade: dataF[i][11], preco: dataF[i][12], subtotal: dataF[i][13], filial: dataF[i][2] 
+          resultados.push({
+            tipo: "furto", data_hora_registro: dataF[i][0], data_ocorrencia: dataF[i][4], genero: dataF[i][5],
+            idade: dataF[i][6], abordagem: dataF[i][7], local: dataF[i][8], descricao: dataF[i][9],
+            produto: dataF[i][10], quantidade: dataF[i][11], preco: dataF[i][12], subtotal: dataF[i][13], filial: dataF[i][2]
           });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
   // 5. Busca Auditoria de Preços
   try {
@@ -394,14 +454,14 @@ if (podeVer(dataV[i][1], dataV[i][2])) {
       const dataP = sheetP.getDataRange().getDisplayValues();
       for (let i = 1; i < dataP.length; i++) {
         if (podeVer(dataP[i][1], dataP[i][2])) {
-          resultados.push({ 
-            tipo: "auditoria_preco", data_auditoria: dataP[i][4], gtin: String(dataP[i][5]).replace(/[^0-9]/g, ''), 
+          resultados.push({
+            tipo: "auditoria_preco", data_auditoria: dataP[i][4], gtin: String(dataP[i][5]).replace(/[^0-9]/g, ''),
             descricao: dataP[i][6], preco_sistema: dataP[i][7], preco_gondola: dataP[i][8], sem_preco: dataP[i][9], filial: dataP[i][2]
           });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
   // 6. Busca Caixa Central
   try {
@@ -410,14 +470,14 @@ if (podeVer(dataV[i][1], dataV[i][2])) {
       const dataC = sheetC.getDataRange().getDisplayValues();
       for (let i = 1; i < dataC.length; i++) {
         if (podeVer(dataC[i][1], dataC[i][2])) {
-          resultados.push({ 
-            tipo: "caixa_central", data_auditoria: dataC[i][4], operador: dataC[i][5], tipo_divergencia: dataC[i][6], 
+          resultados.push({
+            tipo: "caixa_central", data_auditoria: dataC[i][4], operador: dataC[i][5], tipo_divergencia: dataC[i][6],
             valor_falta: dataC[i][7], observacoes: dataC[i][8], filial: dataC[i][2]
           });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
   // 7. Busca Inventário
   try {
@@ -426,15 +486,15 @@ if (podeVer(dataV[i][1], dataV[i][2])) {
       const dataI = sheetI.getDataRange().getDisplayValues();
       for (let i = 1; i < dataI.length; i++) {
         if (podeVer(dataI[i][1], dataI[i][2])) {
-          resultados.push({ 
-            tipo: "inventario", data_registro: dataI[i][0], lote: dataI[i][4], 
-            gtin: String(dataI[i][5]).replace(/[^0-9]/g, ''), descricao: dataI[i][6], 
-            quantidade: dataI[i][7], id_inventario: dataI[i][8], status: dataI[i][9], filial: dataI[i][2] 
+          resultados.push({
+            tipo: "inventario", data_registro: dataI[i][0], lote: dataI[i][4],
+            gtin: String(dataI[i][5]).replace(/[^0-9]/g, ''), descricao: dataI[i][6],
+            quantidade: dataI[i][7], id_inventario: dataI[i][8], status: dataI[i][9], filial: dataI[i][2]
           });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
   // 8. Busca Tarefas
   try {
@@ -443,25 +503,25 @@ if (podeVer(dataV[i][1], dataV[i][2])) {
       const dataT = sheetT.getDataRange().getDisplayValues();
       for (let i = 1; i < dataT.length; i++) {
         if (podeVer(dataT[i][1], dataT[i][2])) {
-          resultados.push({ 
-            tipo: "tarefa", titulo: dataT[i][4], prazo: dataT[i][5], status: dataT[i][6], filial: dataT[i][2] 
+          resultados.push({
+            tipo: "tarefa", titulo: dataT[i][4], prazo: dataT[i][5], status: dataT[i][6], filial: dataT[i][2]
           });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
-// 9. Busca Cadastro de Produtos (Master Data)
+  // 9. Busca Cadastro de Produtos (Master Data)
   try {
     const sheetProd = SpreadsheetApp.openById(ID_PRODUTOS).getSheets()[0];
     if (sheetProd.getLastRow() > 1) {
       const dataProd = sheetProd.getDataRange().getDisplayValues();
       for (let i = 1; i < dataProd.length; i++) {
-        
+
         // Verifica se a Empresa bate (Coluna A)
         if (String(dataProd[i][0]).trim() === empresa_buscada) {
-          resultados.push({ 
-            tipo: "produto", 
+          resultados.push({
+            tipo: "produto",
             filial: String(dataProd[i][1]).trim(),               // <--- ADICIONADO: O robô agora lê a Coluna B (Filial)
             gtin: String(dataProd[i][2]).replace(/[^0-9]/g, ''), // Coluna C [2] - GTIN
             descricao: dataProd[i][3],                           // Coluna D [3] - Descrição
@@ -469,10 +529,10 @@ if (podeVer(dataV[i][1], dataV[i][2])) {
             preco: dataProd[i][5]                                // Coluna F [5] - Preço
           });
         }
-        
+
       }
     }
-  } catch(err) {}
+  } catch (err) { }
 
   // 10. Busca Refugo Industrial
   try {
@@ -485,19 +545,19 @@ if (podeVer(dataV[i][1], dataV[i][2])) {
         }
       }
     }
-  } catch(err) {}
-// 11. Busca Paradas de Máquina
+  } catch (err) { }
+  // 11. Busca Paradas de Máquina
   try {
     const sheetIP = SpreadsheetApp.openById(ID_IND_PARADAS).getSheets()[0];
     if (sheetIP.getLastRow() > 1) {
       const dataIP = sheetIP.getDataRange().getDisplayValues();
       for (let i = 1; i < dataIP.length; i++) {
         if (podeVer(dataIP[i][1], dataIP[i][2])) {
-resultados.push({ tipo: "ind_paradas", data_parada: dataIP[i][4], turno: dataIP[i][5], maquina: dataIP[i][6], motivo: dataIP[i][7], tempo: dataIP[i][8], custo_hora: dataIP[i][9], observacoes: dataIP[i][10], filial: dataIP[i][2] });
+          resultados.push({ tipo: "ind_paradas", data_parada: dataIP[i][4], turno: dataIP[i][5], maquina: dataIP[i][6], motivo: dataIP[i][7], tempo: dataIP[i][8], custo_hora: dataIP[i][9], observacoes: dataIP[i][10], filial: dataIP[i][2] });
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
   // 12. Busca Qualidade (Retrabalho)
   try {
     const sheetIQ = SpreadsheetApp.openById(ID_IND_QUALIDADE).getSheets()[0];
@@ -509,7 +569,7 @@ resultados.push({ tipo: "ind_paradas", data_parada: dataIP[i][4], turno: dataIP[
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
   // 13. Busca Almoxarifado / Inventário
   try {
     const sheetIA = SpreadsheetApp.openById(ID_IND_ALMOXARIFADO).getSheets()[0];
@@ -521,7 +581,7 @@ resultados.push({ tipo: "ind_paradas", data_parada: dataIP[i][4], turno: dataIP[
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
   // 14. Busca Inventário Indústria
   try {
     const sheetII = SpreadsheetApp.openById(ID_IND_INVENTARIO).getSheets()[0];
@@ -533,7 +593,7 @@ resultados.push({ tipo: "ind_paradas", data_parada: dataIP[i][4], turno: dataIP[
         }
       }
     }
-  } catch(err) {}
+  } catch (err) { }
   // ESTAS DUAS LINHAS SÃO VITAIS PARA FECHAR A FUNÇÃO!
   return ContentService.createTextOutput(JSON.stringify(resultados)).setMimeType(ContentService.MimeType.JSON);
 }

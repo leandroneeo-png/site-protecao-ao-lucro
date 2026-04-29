@@ -1208,7 +1208,8 @@
                                     class="bg-orange-50 rounded-xl p-6 border border-orange-100 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-orange-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="dollar-sign"></i></div>
+                                        <i class="w-32 h-32" data-lucide="dollar-sign"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-orange-600 uppercase mb-1 tracking-wider">Impacto
                                         Financeiro (R$)</p>
                                     <p class="text-4xl font-heading font-bold text-orange-700" id="ui-docas-custo">R$
@@ -1220,7 +1221,8 @@
                                     class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="clipboard-list"></i></div>
+                                        <i class="w-32 h-32" data-lucide="clipboard-list"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Total de
                                         Ocorrências</p>
                                     <p class="text-4xl font-heading font-bold text-navy" id="ui-docas-total">0</p>
@@ -1232,7 +1234,8 @@
                                 <h3
                                     class="font-bold text-navy mb-4 text-sm border-b border-slate-200 pb-2 flex items-center gap-2">
                                     <i class="w-4 h-4 text-gold" data-lucide="list"></i> Últimas Divergências
-                                    Registradas</h3>
+                                    Registradas
+                                </h3>
                                 <div class="flex flex-col gap-2 mt-4 max-h-64 overflow-y-auto pr-2"
                                     id="docas-lista-divergencias"></div>
                             </div>
@@ -1383,7 +1386,8 @@
                                     class="bg-orange-50 rounded-xl p-6 border border-orange-100 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-orange-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="alert-triangle"></i></div>
+                                        <i class="w-32 h-32" data-lucide="alert-triangle"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-orange-600 uppercase mb-1 tracking-wider">Risco
                                         Financeiro (R$)</p>
                                     <p class="text-4xl font-heading font-bold text-orange-700" id="ui-validade-custo">R$
@@ -1394,7 +1398,8 @@
                                     class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="box"></i></div>
+                                        <i class="w-32 h-32" data-lucide="box"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Itens no
                                         Radar</p>
                                     <p class="text-4xl font-heading font-bold text-navy" id="ui-validade-total">0</p>
@@ -1407,7 +1412,8 @@
                                 <h3
                                     class="font-bold text-navy mb-4 text-sm border-b border-slate-200 pb-2 flex items-center gap-2">
                                     <i class="w-4 h-4 text-gold" data-lucide="target"></i> Foco Operacional (Próximos a
-                                    Vencer)</h3>
+                                    Vencer)
+                                </h3>
                                 <div class="flex flex-col gap-2 mt-4 max-h-96 overflow-y-auto pr-2"
                                     id="validade-lista-radar"></div>
                             </div>
@@ -1819,7 +1825,8 @@
                             <div class="bg-red-50 rounded-xl p-6 border border-red-100 relative overflow-hidden">
                                 <div
                                     class="absolute right-0 top-0 opacity-10 text-red-500 transform translate-x-4 -translate-y-4">
-                                    <i class="w-32 h-32" data-lucide="trending-down"></i></div>
+                                    <i class="w-32 h-32" data-lucide="trending-down"></i>
+                                </div>
                                 <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Déficit
                                     Financeiro (R$)</p>
                                 <p class="text-4xl font-heading font-bold text-red-700" id="ui-caixa-total-rs">R$ 0,00
@@ -1829,7 +1836,8 @@
                             <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
                                 <div
                                     class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                    <i class="w-32 h-32" data-lucide="alert-circle"></i></div>
+                                    <i class="w-32 h-32" data-lucide="alert-circle"></i>
+                                </div>
                                 <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Volume de
                                     Ocorrências</p>
                                 <p class="text-4xl font-heading font-bold text-navy" id="ui-caixa-total-ocorrencias">0
@@ -2096,20 +2104,34 @@
 
                                     <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
                                         <div class="md:col-span-2">
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Código de Barras (GTIN) <span class="text-red-500">*</span></label>
-                                            <input autofocus="autofocus" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold" id="inv-gtin" placeholder="Bipe o código aqui" required type="text" />
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Código
+                                                de Barras (GTIN) <span class="text-red-500">*</span></label>
+                                            <input autofocus="autofocus"
+                                                class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold"
+                                                id="inv-gtin" placeholder="Bipe o código aqui" required type="text" />
                                         </div>
                                         <div class="md:col-span-2">
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Descrição (Opcional)</label>
-                                            <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" id="inv-desc" placeholder="Produto..." type="text" />
+                                            <label
+                                                class="block text-xs font-bold text-slate-500 uppercase mb-1">Descrição
+                                                (Opcional)</label>
+                                            <input
+                                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white"
+                                                id="inv-desc" placeholder="Produto..." type="text" />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Qtd <span class="text-red-500">*</span></label>
-                                            <input class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold text-center" id="inv-qtd" inputmode="decimal" placeholder="0" required type="number" />
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Qtd
+                                                <span class="text-red-500">*</span></label>
+                                            <input
+                                                class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 focus:border-emerald outline-none bg-white font-bold text-center"
+                                                id="inv-qtd" inputmode="decimal" placeholder="0" required
+                                                type="number" />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Custo Unitário (R$) <span class="text-red-500">*</span></label>
-                                            <input class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white font-bold" id="inv-custo" placeholder="0.00" required type="number" step="0.01" />
+                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Custo
+                                                Unitário (R$) <span class="text-red-500">*</span></label>
+                                            <input
+                                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white font-bold"
+                                                id="inv-custo" placeholder="0.00" required type="number" step="0.01" />
                                         </div>
                                     </div>
                                 </div>
@@ -2125,17 +2147,22 @@
                                 <div>
                                     <div class="grid grid-cols-2 gap-4 mb-4">
                                         <div class="bg-red-50 border border-red-100 rounded-lg p-3 shadow-sm">
-                                            <p class="text-[10px] font-bold text-red-500 uppercase">Perda Desconhecida</p>
-                                            <p class="text-lg font-black text-red-600 truncate" id="ui-inv-perda-desconhecida">R$ 0,00</p>
+                                            <p class="text-[10px] font-bold text-red-500 uppercase">Perda Desconhecida
+                                            </p>
+                                            <p class="text-lg font-black text-red-600 truncate"
+                                                id="ui-inv-perda-desconhecida">R$ 0,00</p>
                                         </div>
                                         <div class="bg-orange-50 border border-orange-100 rounded-lg p-3 shadow-sm">
-                                            <p class="text-[10px] font-bold text-orange-500 uppercase">Perda Administrativa</p>
-                                            <p class="text-lg font-black text-orange-600 truncate" id="ui-inv-perda-admin">R$ 0,00</p>
+                                            <p class="text-[10px] font-bold text-orange-500 uppercase">Perda
+                                                Administrativa</p>
+                                            <p class="text-lg font-black text-orange-600 truncate"
+                                                id="ui-inv-perda-admin">R$ 0,00</p>
                                         </div>
                                     </div>
                                     <h3
                                         class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                        <i class="w-4 h-4" data-lucide="history"></i> Últimas Bipagens</h3>
+                                        <i class="w-4 h-4" data-lucide="history"></i> Últimas Bipagens
+                                    </h3>
                                     <div class="max-h-60 overflow-y-auto pr-2" id="inv-historico-bipagem">
                                         <p class="text-xs text-slate-400 italic">Nenhum item bipado ainda.</p>
                                     </div>
@@ -2144,7 +2171,8 @@
                                     <h3
                                         class="text-xs font-bold text-navy uppercase tracking-wider mb-3 flex items-center gap-2">
                                         <i class="w-4 h-4 text-emerald" data-lucide="list-checks"></i> Progresso
-                                        Dirigido</h3>
+                                        Dirigido
+                                    </h3>
                                     <div
                                         class="flex justify-between items-center mb-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
                                         <span class="text-xs font-bold text-slate-500" id="ui-inv-progresso-text">0 / 0
@@ -2332,7 +2360,8 @@
                             <div class="mt-8 pt-6 border-t border-slate-100">
                                 <h3
                                     class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                    <i class="w-4 h-4" data-lucide="history"></i> Últimas Leituras (Neste Lote)</h3>
+                                    <i class="w-4 h-4" data-lucide="history"></i> Últimas Leituras (Neste Lote)
+                                </h3>
                                 <div class="max-h-60 overflow-y-auto pr-2" id="inv-ind-historico-bipagem">
                                     <p class="text-xs text-slate-400 italic">Nenhum item bipado ainda.</p>
                                 </div>
@@ -2363,7 +2392,8 @@
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 h-fit">
                             <h2
                                 class="text-lg font-bold text-navy mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
-                                <i class="w-5 h-5 text-orange-500" data-lucide="list-plus"></i> Nova Tarefa</h2>
+                                <i class="w-5 h-5 text-orange-500" data-lucide="list-plus"></i> Nova Tarefa
+                            </h2>
                             <form class="space-y-4" id="form-tarefas">
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 mb-1">Filial Alvo</label>
@@ -2469,7 +2499,8 @@
                                     class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="scale"></i></div>
+                                        <i class="w-32 h-32" data-lucide="scale"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Volume
                                         Total Refugado</p>
                                     <p class="text-4xl font-heading font-bold text-navy" id="ui-refugo-total-qtd">0</p>
@@ -2478,7 +2509,8 @@
                                 <div class="bg-red-50 rounded-xl p-6 border border-red-100 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-red-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="alert-triangle"></i></div>
+                                        <i class="w-32 h-32" data-lucide="alert-triangle"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Ocorrências
                                     </p>
                                     <p class="text-4xl font-heading font-bold text-red-700"
@@ -2639,7 +2671,8 @@
                                 <div class="bg-red-50 rounded-xl p-6 border border-red-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-red-600 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="trending-down"></i></div>
+                                        <i class="w-32 h-32" data-lucide="trending-down"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Capital
                                         Ocioso Queimado</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-red-700"
@@ -2650,7 +2683,8 @@
                                     class="bg-orange-50 rounded-xl p-6 border border-orange-100 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-orange-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="clock"></i></div>
+                                        <i class="w-32 h-32" data-lucide="clock"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-orange-600 uppercase mb-1 tracking-wider">Tempo
                                         Inativo</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-orange-700"
@@ -2663,7 +2697,8 @@
                                     class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="alert-circle"></i></div>
+                                        <i class="w-32 h-32" data-lucide="alert-circle"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">
                                         Ocorrências</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-navy"
@@ -2819,7 +2854,8 @@
                                 <div class="bg-blue-50 rounded-xl p-6 border border-blue-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-blue-600 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="wrench"></i></div>
+                                        <i class="w-32 h-32" data-lucide="wrench"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-blue-600 uppercase mb-1 tracking-wider">Custo do
                                         Retrabalho</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-blue-700"
@@ -2829,7 +2865,8 @@
                                 <div class="bg-red-50 rounded-xl p-6 border border-red-100 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-red-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="x-circle"></i></div>
+                                        <i class="w-32 h-32" data-lucide="x-circle"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Itens
                                         Reprovados</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-red-700"
@@ -2840,7 +2877,8 @@
                                     class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="clipboard-list"></i></div>
+                                        <i class="w-32 h-32" data-lucide="clipboard-list"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Lotes c/
                                         Ocorrência</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-navy"
@@ -3015,7 +3053,8 @@
                                     class="bg-orange-50 rounded-xl p-6 border border-orange-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-orange-600 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="trending-down"></i></div>
+                                        <i class="w-32 h-32" data-lucide="trending-down"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-orange-600 uppercase mb-1 tracking-wider">Impacto
                                         de Divergências</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-orange-700"
@@ -3027,7 +3066,8 @@
                                     class="bg-slate-50 rounded-xl p-6 border border-slate-200 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-5 text-navy transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="boxes"></i></div>
+                                        <i class="w-32 h-32" data-lucide="boxes"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider">Itens
                                         Auditados</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-navy"
@@ -3037,7 +3077,8 @@
                                 <div class="bg-red-50 rounded-xl p-6 border border-red-100 relative overflow-hidden">
                                     <div
                                         class="absolute right-0 top-0 opacity-10 text-red-500 transform translate-x-4 -translate-y-4">
-                                        <i class="w-32 h-32" data-lucide="alert-triangle"></i></div>
+                                        <i class="w-32 h-32" data-lucide="alert-triangle"></i>
+                                    </div>
                                     <p class="text-xs font-bold text-red-600 uppercase mb-1 tracking-wider">Erros
                                         Encontrados</p>
                                     <p class="text-3xl lg:text-4xl font-heading font-bold text-red-700"
@@ -3366,7 +3407,8 @@
                             2025</strong> confirmam: embora o índice médio de perdas tenha ajustado para
                         <strong>1,51%</strong>, o volume financeiro do prejuízo bateu a marca histórica de <strong>R$
                             36,5 bilhões</strong>. Em uma operação de R$ 1 milhão, isso representa mais de R$ 15.100,00
-                        que evaporam do seu lucro líquido todos os meses.</p>
+                        que evaporam do seu lucro líquido todos os meses.
+                    </p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -3500,7 +3542,8 @@
                     <span class="text-gold font-bold tracking-wider uppercase text-sm mb-2 block">O Nosso Modelo de
                         Atuação</span>
                     <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mb-6">Transparência, Ética e
-                        <br /><span class="text-emerald">Retorno Comprovado.</span></h2>
+                        <br /><span class="text-emerald">Retorno Comprovado.</span>
+                    </h2>
                     <p class="text-slate-300 max-w-2xl mx-auto text-lg">Substituímos o achismo por processos auditáveis.
                         O nosso modelo de consultoria entrega clareza financeira e de investimento desde o primeiro dia
                         de projeto.</p>
