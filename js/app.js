@@ -1224,6 +1224,7 @@ onAuthStateChanged(auth, async (user) => {
         if (document.getElementById('top-user-email')) document.getElementById('top-user-email').innerText = user.email;
         if (user.email === 'leandro@lucroseguro.com.br' || user.email.includes('leandro')) {
             currentUserRole = 'admin';
+            currentUserEmpresa = ''; // <-- INJETE ESTA LINHA PARA LIMPAR O FILTRO
             window.showView('admin');
             window.fetchSheetsDataComHierarquia();
             if (typeof window.carregarFiltrosKpi === 'function') window.carregarFiltrosKpi();
