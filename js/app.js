@@ -529,7 +529,14 @@ window.renderListaInventarios = () => {
 
 window.renderDashboardInventarioMaster = () => {
     const selFilial = document.getElementById('filtro-dash-inv-master');
-    if (!selFilial) return;
+    const inputData = document.getElementById('filtro-data-dash-inv-master');
+    if (!selFilial || !inputData) return;
+
+    if (!inputData.value) {
+        const hoje = new Date();
+        inputData.value = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+        inputData.addEventListener('change', window.renderDashboardInventarioMaster);
+    }
 
     if (selFilial.options.length <= 1) {
         const selectFonte = document.getElementById('filtro-filial-inv');
@@ -547,6 +554,8 @@ window.renderDashboardInventarioMaster = () => {
     }
 
     const filialFiltro = selFilial.value;
+    const mesFiltro = inputData.value;
+
     const fechados = new Set();
     sheetsDataRaw.forEach(i => {
         if (i.tipo === 'inventario' && i.gtin === 'FECHAMENTO') {
@@ -564,17 +573,32 @@ window.renderDashboardInventarioMaster = () => {
                 // Filtro de filial vindo do select
                 if (filialFiltro === 'Todas as Minhas Lojas' || String(i.filial).trim() === String(filialFiltro).trim()) {
 
-                    const custo = parseFloat(String(i.custo).replace(',', '.')) || 0;
-                    const qtd = parseFloat(String(i.quantidade).replace(',', '.')) || 0;
+                    // Filtro Temporal
+                    let matchData = false;
+                    const dataReg = String(i.data_registro || '').trim(); // DD/MM/YYYY HH:MM:SS
+                    if (dataReg.length >= 10) {
+                        const partesData = dataReg.split(' ')[0].split('/'); // [DD, MM, YYYY]
+                        if (partesData.length >= 3) {
+                            const anoMesRegistro = `${partesData[2]}-${partesData[1]}`;
+                            if (anoMesRegistro === mesFiltro) {
+                                matchData = true;
+                            }
+                        }
+                    }
 
-                    // CORREÇÃO: Mantemos o sinal real para que os estornos (qtd negativa) abatam do total
-                    const valorFinanceiro = custo * qtd;
-                    const motivo = String(i.motivo || '').trim();
+                    if (matchData) {
+                        const custo = parseFloat(String(i.custo).replace(',', '.')) || 0;
+                        const qtd = parseFloat(String(i.quantidade).replace(',', '.')) || 0;
 
-                    if (motivo === 'Não Identificado' || motivo === '') {
-                        perdaDesconhecida += valorFinanceiro;
-                    } else {
-                        perdaAdministrativa += valorFinanceiro;
+                        // CORREÇÃO: Mantemos o sinal real para que os estornos (qtd negativa) abatam do total
+                        const valorFinanceiro = custo * qtd;
+                        const motivo = String(i.motivo || '').trim();
+
+                        if (motivo === 'Não Identificado' || motivo === '') {
+                            perdaDesconhecida += valorFinanceiro;
+                        } else {
+                            perdaAdministrativa += valorFinanceiro;
+                        }
                     }
                 }
             }
