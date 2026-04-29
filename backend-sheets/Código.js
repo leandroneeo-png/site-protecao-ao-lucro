@@ -489,7 +489,8 @@ function doGet(e) {
           resultados.push({
             tipo: "inventario", data_registro: dataI[i][0], lote: dataI[i][4],
             gtin: String(dataI[i][5]).replace(/[^0-9]/g, ''), descricao: dataI[i][6],
-            quantidade: dataI[i][7], id_inventario: dataI[i][8], status: dataI[i][9], filial: dataI[i][2]
+            quantidade: dataI[i][7], custo: converterMoedaParaFloat(dataI[i][8]),
+            motivo: dataI[i][9], id_inventario: dataI[i][10], status: dataI[i][11], filial: dataI[i][2]
           });
         }
       }
