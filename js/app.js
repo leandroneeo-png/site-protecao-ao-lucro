@@ -1992,3 +1992,158 @@ window.imprimirPDF = () => {
     // Abre a janela de impressão do navegador (onde você escolhe 'Salvar como PDF')
     window.print();
 };
+
+// ==========================================
+// MOTOR DE RESULTADOS DE KPI (CONSULTOR)
+// ==========================================
+window.calcularKpiConsultor = () => {
+    const selEmpresa = document.getElementById('kpi-empresa');
+    const selFilial = document.getElementById('kpi-filial');
+    const inputMes = document.getElementById('kpi-mes');
+    const inputVenda = document.getElementById('kpi-venda');
+    const inputDesc = document.getElementById('kpi-desconto-pdv');
+    const inputRef = document.getElementById('kpi-referencia-r$');
+
+    if (!selEmpresa || !selFilial || !inputMes || !inputVenda || !inputDesc || !inputRef) return;
+
+    // 1. Inicializar Selects de Empresa e Filial dinamicamente (se estiverem vazios)
+    if (selEmpresa.options.length <= 1 && sheetsDataRaw && sheetsDataRaw.length > 0) {
+        const empresasUnicas = [...new Set(sheetsDataRaw.map(i => i.empresa).filter(Boolean))];
+        const filiaisUnicas = [...new Set(sheetsDataRaw.map(i => i.filial).filter(Boolean))];
+
+        empresasUnicas.forEach(emp => {
+            const opt = document.createElement('option');
+            opt.value = emp; opt.innerText = emp;
+            selEmpresa.appendChild(opt);
+        });
+
+        filiaisUnicas.forEach(fil => {
+            const opt = document.createElement('option');
+            opt.value = fil; opt.innerText = fil;
+            selFilial.appendChild(opt);
+        });
+
+        // Associar eventos
+        [selEmpresa, selFilial, inputMes, inputVenda, inputDesc, inputRef].forEach(el => {
+            el.addEventListener('change', window.calcularKpiConsultor);
+            el.addEventListener('keyup', window.calcularKpiConsultor); // Para updates via teclado
+        });
+
+        // Setar Mês corrente por padrão
+        if (!inputMes.value) {
+            const hoje = new Date();
+            inputMes.value = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+        }
+    }
+
+    const filtroEmpresa = selEmpresa.value;
+    const filtroFilial = selFilial.value;
+    const filtroMes = inputMes.value; // YYYY-MM
+    const vendaBruta = parseFloat(inputVenda.value) || 0;
+    const descontosPDV = parseFloat(inputDesc.value) || 0;
+    const linhaBase = parseFloat(inputRef.value) || 0;
+
+    let perdaConhecida = 0;
+    let perdaDesconhecida = 0;
+    let perdaAdministrativa = 0;
+    let perdaFinanceira = descontosPDV; // Base começa com descontos no PDV
+
+    // Encontrar inventários fechados
+    const inventariosFechados = new Set();
+    sheetsDataRaw.forEach(i => {
+        if (i.tipo === 'inventario' && i.gtin === 'FECHAMENTO') {
+            inventariosFechados.add(i.id_inventario);
+        }
+    });
+
+    sheetsDataRaw.forEach(i => {
+        // Filtragem por Empresa e Filial
+        if (filtroEmpresa && i.empresa !== filtroEmpresa) return;
+        if (filtroFilial && i.filial !== filtroFilial) return;
+
+        // Filtragem Temporal Flexível
+        let matchData = false;
+        if (filtroMes) {
+            let dataAlvo = i.data_registro || i.mes || i.data_auditoria || i.data_ocorrencia || '';
+            const dataStr = String(dataAlvo).trim();
+
+            // Tentar extrair YYYY-MM
+            if (dataStr.includes('/')) {
+                // Padrão DD/MM/YYYY
+                const partes = dataStr.split(' ')[0].split('/');
+                if (partes.length >= 3) {
+                    const anoMesItem = `${partes[2]}-${partes[1].padStart(2, '0')}`;
+                    if (anoMesItem === filtroMes) matchData = true;
+                }
+            } else if (dataStr.includes('-')) {
+                // Padrão YYYY-MM
+                if (dataStr.startsWith(filtroMes)) matchData = true;
+            }
+        } else {
+            matchData = true; // Se não houver filtro de mês preenchido, não filtra
+        }
+
+        if (!matchData) return;
+
+        const custo = parseFloat(String(i.custo).replace(',', '.')) || 0;
+        const qtd = parseFloat(String(i.quantidade).replace(',', '.')) || 0;
+        const valorFinanceiro = custo * qtd; // Mantemos os estornos intactos
+
+        if (i.tipo === 'quebra') {
+            perdaConhecida += valorFinanceiro;
+        }
+        else if (i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA') {
+            if (inventariosFechados.has(i.id_inventario)) {
+                const motivo = String(i.motivo || '').trim();
+                if (motivo === 'Não Identificado' || motivo === '') {
+                    perdaDesconhecida += valorFinanceiro;
+                } else {
+                    perdaAdministrativa += valorFinanceiro;
+                }
+            }
+        }
+        else if (i.tipo === 'caixa' || i.tipo === 'caixa_central') {
+            // A quebra de caixa já pode vir negativa do Sheets (ex: sobra em vez de falta). Somamos tudo no bolo.
+            const valorFalta = parseFloat(String(i.valor_falta || 0).replace(',', '.')) || 0;
+            perdaFinanceira += valorFalta;
+        }
+    });
+
+    // Aplicamos a trava de zero apenas no total consolidado para não distorcer o balanço
+    perdaConhecida = Math.max(0, perdaConhecida);
+    perdaDesconhecida = Math.max(0, perdaDesconhecida);
+    perdaAdministrativa = Math.max(0, perdaAdministrativa);
+    perdaFinanceira = Math.max(0, perdaFinanceira);
+
+    const perdaGlobal = perdaConhecida + perdaDesconhecida + perdaAdministrativa + perdaFinanceira;
+    const indicePerda = vendaBruta > 0 ? (perdaGlobal / vendaBruta) * 100 : 0;
+    const economia = linhaBase - perdaGlobal;
+
+    // Atualização da UI
+    const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    const uiConhecida = document.getElementById('ui-kpi-conhecida');
+    const uiDesconhecida = document.getElementById('ui-kpi-desconhecida');
+    const uiAdministrativa = document.getElementById('ui-kpi-administrativa');
+    const uiFinanceira = document.getElementById('ui-kpi-financeira');
+    const uiGlobal = document.getElementById('ui-kpi-global');
+    const uiIndice = document.getElementById('ui-kpi-indice');
+    const uiEconomia = document.getElementById('ui-kpi-economia');
+
+    if (uiConhecida) uiConhecida.innerText = formatter.format(perdaConhecida);
+    if (uiDesconhecida) uiDesconhecida.innerText = formatter.format(perdaDesconhecida);
+    if (uiAdministrativa) uiAdministrativa.innerText = formatter.format(perdaAdministrativa);
+    if (uiFinanceira) uiFinanceira.innerText = formatter.format(perdaFinanceira);
+    if (uiGlobal) uiGlobal.innerText = formatter.format(perdaGlobal);
+    if (uiIndice) uiIndice.innerText = indicePerda.toFixed(2) + '%';
+
+    if (uiEconomia) {
+        uiEconomia.innerText = formatter.format(economia);
+        uiEconomia.className = economia >= 0 ? "text-3xl font-black text-emerald-400 relative z-10" : "text-3xl font-black text-red-400 relative z-10";
+    }
+};
+
+// Iniciar Motor se a tab de KPI for aberta
+document.getElementById('btn-admin-tab-kpi')?.addEventListener('click', () => {
+    setTimeout(window.calcularKpiConsultor, 200);
+});

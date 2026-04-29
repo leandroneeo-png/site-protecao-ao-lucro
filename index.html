@@ -348,99 +348,131 @@
                             <p class="text-slate-500 text-sm mb-6">Insira os dados da auditoria. Estes números
                                 atualizarão os gráficos do cliente em tempo real.</p>
 
-                            <form class="space-y-6" id="form-kpi">
-                                <div
-                                    class="p-5 bg-navy/5 border border-navy/10 rounded-xl flex flex-col md:flex-row md:items-end gap-4 mb-6">
-                                    <div class="flex-1">
-                                        <label
-                                            class="block text-sm font-bold text-slate-700 mb-1 flex items-center gap-2"><i
-                                                class="w-4 h-4 text-gold" data-lucide="user-check"></i> E-mail do
-                                            Cliente (Gaveta de Dados)</label>
-                                        <input
-                                            class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white"
-                                            id="input-client-email" placeholder="email@docliente.com" required
-                                            type="email" />
-                                    </div>
-                                    <button
-                                        class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap"
-                                        id="btn-load-admin-history" type="button">
-                                        <i class="w-4 h-4" data-lucide="history"></i> Ver Lançamentos
-                                    </button>
-                                </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-bold text-slate-700 mb-1">Mês de
-                                            Referência</label>
-                                        <input
-                                            class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50"
-                                            id="input-month" placeholder="Ex: Janeiro/2026" required type="text" />
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-bold text-slate-700 mb-1">Ações Implantadas
-                                            (Acumulado)</label>
-                                        <input
-                                            class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-slate-50"
-                                            id="input-actions" min="0" placeholder="Ex: 3 no mês" required
-                                            type="number" />
-                                    </div>
-                                </div>
-
-                                <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
-                                    <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-4 h-4 text-gold"
-                                            data-lucide="target"></i> Dados Globais</h3>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-6" id="kpi-calculator">
+                                <!-- Bloco 1: Filtros de Extração -->
+                                <div class="p-5 bg-navy/5 border border-navy/10 rounded-xl">
+                                    <h3 class="font-bold text-navy flex items-center gap-2 mb-4"><i
+                                            class="w-4 h-4 text-gold" data-lucide="filter"></i> Filtros de Extração</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div>
-                                            <label class="block text-sm font-bold text-slate-700 mb-1">Índice de Perda
-                                                Total (%)</label>
-                                            <input
-                                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white"
-                                                id="input-total" placeholder="Ex: 1.87" required step="0.01"
-                                                type="number" />
+                                            <label class="block text-sm font-bold text-slate-700 mb-1">Empresa
+                                                Cliente</label>
+                                            <select id="kpi-empresa"
+                                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white">
+                                                <option value="">Selecione...</option>
+                                            </select>
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-bold text-slate-700 mb-1">Economia
-                                                Financeira (R$)</label>
-                                            <input
-                                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white"
-                                                id="input-savings" placeholder="Ex: 15000" required step="0.01"
-                                                type="number" />
+                                            <label class="block text-sm font-bold text-slate-700 mb-1">Filial</label>
+                                            <select id="kpi-filial"
+                                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white">
+                                                <option value="">Selecione...</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-bold text-slate-700 mb-1">Mês de
+                                                Referência</label>
+                                            <input id="kpi-mes" type="month"
+                                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white" />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
-                                    <h3 class="font-bold text-navy flex items-center gap-2"><i class="w-4 h-4 text-gold"
-                                            data-lucide="pie-chart"></i> Detalhamento por Pilar (%)</h3>
-                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <div><label
-                                                class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Desconhecidas</label><input
-                                                class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white"
-                                                id="input-pilar1" required step="0.01" type="number" /></div>
-                                        <div><label
-                                                class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Conhecidas</label><input
-                                                class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white"
-                                                id="input-pilar2" required step="0.01" type="number" /></div>
-                                        <div><label
-                                                class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Financeiras</label><input
-                                                class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white"
-                                                id="input-pilar3" required step="0.01" type="number" /></div>
-                                        <div><label
-                                                class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Administrativas</label><input
-                                                class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none bg-white"
-                                                id="input-pilar4" required step="0.01" type="number" /></div>
+                                <!-- Bloco 2: Entradas Manuais Financeiras -->
+                                <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl">
+                                    <h3 class="font-bold text-navy flex items-center gap-2 mb-4"><i
+                                            class="w-4 h-4 text-gold" data-lucide="edit-3"></i> Entradas Manuais
+                                        Financeiras</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-bold text-slate-700 mb-1">Venda Bruta do
+                                                Mês</label>
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-3 text-slate-400 font-bold">R$</span>
+                                                <input id="kpi-venda" type="number" step="0.01"
+                                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white"
+                                                    placeholder="0.00" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-bold text-slate-700 mb-1">Descontos no
+                                                PDV</label>
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-3 text-slate-400 font-bold">R$</span>
+                                                <input id="kpi-desconto-pdv" type="number" step="0.01"
+                                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white"
+                                                    placeholder="0.00" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-bold text-slate-700 mb-1">Linha de Base
+                                                Histórica</label>
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-3 text-slate-400 font-bold">R$</span>
+                                                <input id="kpi-referencia-r$" type="number" step="0.01"
+                                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-navy outline-none bg-white"
+                                                    placeholder="0.00" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <button
-                                    class="w-full bg-emerald hover:bg-emerald/90 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
-                                    id="btn-save-kpi" type="submit">
-                                    <i class="w-5 h-5" data-lucide="save"></i> Publicar Resultados no Portal
-                                </button>
-                                <p class="hidden text-emerald font-bold text-center mt-2" id="msg-success">Dados
-                                    gravados com sucesso!</p>
-                                <p class="hidden text-red-600 font-bold text-center mt-2" id="msg-error"></p>
-                            </form>
+                                <!-- Bloco 3: Motor de Resultados -->
+                                <div class="p-5 bg-navy border border-navy/10 rounded-xl text-white shadow-inner">
+                                    <h3 class="font-bold flex items-center gap-2 mb-6"><i class="w-4 h-4 text-gold"
+                                            data-lucide="bar-chart"></i> Motor de Resultados Automático</h3>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                        <div class="bg-white/10 rounded-lg p-4 border border-white/5">
+                                            <p class="text-[10px] text-slate-300 uppercase tracking-wider mb-1">Perda
+                                                Conhecida</p>
+                                            <p class="text-xl font-bold truncate" id="ui-kpi-conhecida">R$ 0,00</p>
+                                        </div>
+                                        <div class="bg-white/10 rounded-lg p-4 border border-white/5">
+                                            <p class="text-[10px] text-slate-300 uppercase tracking-wider mb-1">Perda
+                                                Desconhecida</p>
+                                            <p class="text-xl font-bold truncate text-red-400" id="ui-kpi-desconhecida">
+                                                R$ 0,00</p>
+                                        </div>
+                                        <div class="bg-white/10 rounded-lg p-4 border border-white/5">
+                                            <p class="text-[10px] text-slate-300 uppercase tracking-wider mb-1">Perda
+                                                Administrativa</p>
+                                            <p class="text-xl font-bold truncate text-orange-400"
+                                                id="ui-kpi-administrativa">R$ 0,00</p>
+                                        </div>
+                                        <div class="bg-white/10 rounded-lg p-4 border border-white/5">
+                                            <p class="text-[10px] text-slate-300 uppercase tracking-wider mb-1">Perda
+                                                Financeira</p>
+                                            <p class="text-xl font-bold truncate text-yellow-400"
+                                                id="ui-kpi-financeira">R$ 0,00</p>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div
+                                            class="bg-white/10 rounded-lg p-5 border border-white/5 text-center flex flex-col justify-center items-center">
+                                            <p class="text-xs text-slate-300 uppercase tracking-wider mb-1">Perda Global
+                                            </p>
+                                            <p class="text-3xl font-black text-white" id="ui-kpi-global">R$ 0,00</p>
+                                        </div>
+                                        <div
+                                            class="bg-white/10 rounded-lg p-5 border border-white/5 text-center flex flex-col justify-center items-center">
+                                            <p class="text-xs text-slate-300 uppercase tracking-wider mb-1">Índice de
+                                                Perda</p>
+                                            <p class="text-3xl font-black text-white" id="ui-kpi-indice">0.00%</p>
+                                        </div>
+                                        <div
+                                            class="bg-emerald/20 rounded-lg p-5 border border-emerald/30 text-center flex flex-col justify-center items-center relative overflow-hidden">
+                                            <div
+                                                class="absolute -right-4 -top-4 w-16 h-16 bg-emerald-400 rounded-full opacity-20 blur-xl">
+                                            </div>
+                                            <p
+                                                class="text-xs text-emerald-200 uppercase tracking-wider mb-1 relative z-10">
+                                                Economia Gerada</p>
+                                            <p class="text-3xl font-black text-emerald-400 relative z-10"
+                                                id="ui-kpi-economia">R$ 0,00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
