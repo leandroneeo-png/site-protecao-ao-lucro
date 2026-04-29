@@ -337,7 +337,8 @@ function doGet(e) {
   let resultados = [];
 
   const podeVer = (linhaEmpresa, linhaFilial) => {
-    if (role === 'admin' || !empresa_buscada) return true; // Libera tudo para o Consultor
+    if (role === 'admin') return true; // Bypass absoluto APENAS para o consultor
+    if (!empresa_buscada || empresa_buscada === '') return false; // Bloqueia usuários não-configurados
     const emp = String(linhaEmpresa).trim();
     const fil = String(linhaFilial).trim();
     return fil === filial_buscada && emp === empresa_buscada;
