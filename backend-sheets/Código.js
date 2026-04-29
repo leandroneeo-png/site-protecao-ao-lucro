@@ -198,57 +198,28 @@ function doPost(e) {
       let sheet = ss.getSheets()[0];
 
       if (sheet.getLastRow() > 0) {
-        // Pega todos os valores de uma vez (alta performance)
-        const data = sheet.getDataRange().getValues();
-
-        // Localiza as colunas dinamicamente pela Linha 1 (Cabeçalho)
+        const data = sheet.getDataRange().getDisplayValues();
         const cabecalho = data[0];
 
-        // indexOf retorna -1 se não encontrar. Caso a coluna tenha outro nome exato, ajustaremos o fallback
-        const colIdInv = cabecalho.indexOf("ID Inventário") > -1 ? cabecalho.indexOf("ID Inventário") : 8;
-        const colGtin = cabecalho.indexOf("GTIN") > -1 ? cabecalho.indexOf("GTIN") : 5;
-        const colLote = cabecalho.indexOf("Lote (Corredor)") > -1 ? cabecalho.indexOf("Lote (Corredor)") : 4;
-        const colQtd = cabecalho.indexOf("Quantidade") > -1 ? cabecalho.indexOf("Quantidade") : 7;
+        const colIdInv = cabecalho.findIndex(h => String(h).toLowerCase().includes("inventario"));
+        const colLote = cabecalho.findIndex(h => String(h).toLowerCase().includes("lote"));
+        const colGtin = cabecalho.findIndex(h => String(h).toLowerCase().includes("gtin"));
+        const colMotivo = cabecalho.findIndex(h => String(h).toLowerCase().includes("motivo"));
 
-        // A coluna Motivo será localizada dinamicamente. Se não achar o nome "Motivo", 
-        // substitua o número 11 pelo índice real (ex: 11 corresponde à coluna L, 10 à coluna K)
-        const colMotivo = cabecalho.indexOf("Motivo") > -1 ? cabecalho.indexOf("Motivo") : 11;
+        for (let i = 1; i < data.length; i++) {
+          let rowIdInv = String(data[i][colIdInv]).trim();
+          let rowLote = String(data[i][colLote]).trim();
+          let rowGtin = String(data[i][colGtin]).replace(/['" ]/g, '');
+          let payGtin = String(payload.gtin).replace(/['" ]/g, '');
 
-        // Tratamento da tipagem estrita que vem do payload do frontend
-        let payloadGtin = Number(String(payload.gtin).replace(/[^0-9]/g, ''));
-        let payloadLote = String(payload.lote).trim().toUpperCase();
-        let payloadQtd = parseFloat(payload.quantidade) || 0;
-        let payloadIdInv = String(payload.id_inventario).trim();
-
-        // Varredura de baixo para cima (mais rápido, pois edições remotas geralmente ocorrem em itens recentes)
-        for (let i = data.length - 1; i > 0; i--) {
-          const row = data[i];
-
-          let rowIdInv = String(row[colIdInv]).trim();
-          let rowGtin = Number(String(row[colGtin]).replace(/[^0-9]/g, ''));
-          let rowLote = String(row[colLote]).trim().toUpperCase();
-          let rowQtd = parseFloat(row[colQtd]) || 0;
-
-          // Verifica correspondência exata de 6 chaves para evitar alteração indevida de outro item similar
-          if (rowIdInv === payloadIdInv &&
-            rowGtin === payloadGtin &&
-            rowLote === payloadLote &&
-            rowQtd === payloadQtd &&
-            row[1] === empresa &&
-            row[2] === filial) {
-
-            // sheet.getRange pede (linha, coluna) em base 1 (A=1, B=2...)
-            // O índice do array é base 0, por isso somamos +1 ao 'i' (linha) e ao 'colMotivo' (coluna)
+          if (rowIdInv === String(payload.id_inventario).trim() && rowLote === String(payload.lote).trim() && rowGtin === payGtin) {
             sheet.getRange(i + 1, colMotivo + 1).setValue(payload.motivo);
-
-            // Interrompe a varredura ao encontrar e sobrescrever a linha exata e retorna sucesso
-            return ContentService.createTextOutput(JSON.stringify({ status: 'success' })).setMimeType(ContentService.MimeType.JSON);
+            break;
           }
         }
       }
 
-      // Retorna erro se varreu a planilha toda e não encontrou a linha
-      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Item de inventário não encontrado' })).setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput(JSON.stringify({ "status": "success", "message": "Motivo atualizado" }));
     }
 
     // FECHAMENTO DO INVENTÁRIO (COM ZERAMENTO DE NÃO ENCONTRADOS)

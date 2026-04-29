@@ -707,17 +707,14 @@ document.getElementById('form-inventario')?.addEventListener('submit', async (e)
     window.renderHistoricoBipagem(idInv);
 });
 
-window.renderHistoricoBipagem = (idInv) => {
-    const divHist = document.getElementById('inv-historico-bipagem'); if (!divHist) return;
+window.atualizarTotaisTelaInventario = (idInv) => {
     const items = sheetsDataRaw.filter(i => i.tipo === 'inventario' && i.id_inventario === idInv && i.gtin !== 'FECHAMENTO');
-    const bipagens = items.filter(i => i.gtin !== 'LISTA_DIRIGIDA').reverse();
+    const bipagens = items.filter(i => i.gtin !== 'LISTA_DIRIGIDA');
 
-    // Lógica Financeira (Dashboard)
     let totalDesconhecida = 0;
     let totalAdministrativa = 0;
 
     bipagens.forEach(i => {
-        // Custo * Qtd (preservando o sinal para abater estornos)
         const c = parseFloat(i.custo) || 0;
         const q = parseFloat(i.quantidade) || 0;
         const valorReal = c * q;
@@ -730,7 +727,6 @@ window.renderHistoricoBipagem = (idInv) => {
         }
     });
 
-    // Evita exibir valores negativos caso os estornos fiquem estranhos
     totalDesconhecida = Math.max(0, totalDesconhecida);
     totalAdministrativa = Math.max(0, totalAdministrativa);
 
@@ -739,6 +735,14 @@ window.renderHistoricoBipagem = (idInv) => {
 
     const uiPerdaAdmin = document.getElementById('ui-inv-perda-admin');
     if (uiPerdaAdmin) uiPerdaAdmin.innerText = 'R$ ' + totalAdministrativa.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+window.renderHistoricoBipagem = (idInv) => {
+    const divHist = document.getElementById('inv-historico-bipagem'); if (!divHist) return;
+    const items = sheetsDataRaw.filter(i => i.tipo === 'inventario' && i.id_inventario === idInv && i.gtin !== 'FECHAMENTO');
+    const bipagens = items.filter(i => i.gtin !== 'LISTA_DIRIGIDA').reverse();
+
+    window.atualizarTotaisTelaInventario(idInv);
 
     if (bipagens.length === 0) {
         divHist.innerHTML = '<p class="text-xs text-slate-400 italic">Nenhum item bipado.</p>';
@@ -806,6 +810,9 @@ window.renderHistoricoBipagem = (idInv) => {
                 if (idx > -1) {
                     sheetsDataRaw[idx].motivo = novoMotivo;
                 }
+
+                // Atualiza totais em tempo real
+                window.atualizarTotaisTelaInventario(item.id_inventario);
 
                 // Feedback visual de carregamento
                 sel.classList.add('border', 'border-emerald', 'text-emerald');
