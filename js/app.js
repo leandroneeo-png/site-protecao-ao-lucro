@@ -755,13 +755,14 @@ window.renderHistoricoBipagem = (idInv) => {
 
             const motivoText = !isEstorno ? `
                 <span class="text-slate-300 mx-1">|</span> 
-                <select onchange="window.atualizarMotivoInventario('${itemEnc}', this.value)" class="bg-transparent text-slate-500 font-semibold focus:outline-none focus:text-navy cursor-pointer hover:bg-slate-200 rounded transition-colors text-[10px] w-28 truncate">
+                <select class="motivo-select bg-transparent text-slate-500 font-semibold focus:outline-none focus:text-navy cursor-pointer hover:bg-slate-200 rounded transition-colors text-[10px] w-28 truncate" data-item="${itemEnc}">
                     <option value="Não Identificado" ${i.motivo === 'Não Identificado' || !i.motivo ? 'selected' : ''}>Não Identificado</option>
                     <option value="Erro de contagem" ${i.motivo === 'Erro de contagem' ? 'selected' : ''}>Erro de contagem</option>
                     <option value="Erro no recebimento" ${i.motivo === 'Erro no recebimento' ? 'selected' : ''}>Erro no recebimento</option>
                     <option value="Erro no PDV" ${i.motivo === 'Erro no PDV' ? 'selected' : ''}>Erro no PDV</option>
                     <option value="Falta de entrada de Nota Fiscal" ${i.motivo === 'Falta de entrada de Nota Fiscal' ? 'selected' : ''}>Falta de entrada de Nota Fiscal</option>
                 </select>
+                <span class="motivo-feedback text-[10px] text-emerald font-bold hidden ml-1">Salvando...</span>
             ` : (i.motivo ? `<span class="text-slate-300 mx-1">|</span> <span class="text-slate-500">Motivo: <span class="font-semibold">${i.motivo}</span></span>` : '');
 
             // Renderiza o botão de lixeira (apenas se não for já um estorno)
@@ -788,37 +789,74 @@ window.renderHistoricoBipagem = (idInv) => {
         });
         divHist.innerHTML = html;
         if (window.lucide) window.lucide.createIcons();
-    }
-};
 
-window.atualizarMotivoInventario = async (itemEncoded, novoMotivo) => {
-    const item = JSON.parse(decodeURIComponent(itemEncoded));
+        // Adiciona event listeners aos selects de motivo
+        const selects = divHist.querySelectorAll('.motivo-select');
+        selects.forEach(select => {
+            select.addEventListener('change', async (e) => {
+                const sel = e.target;
+                const itemEncoded = sel.getAttribute('data-item');
+                const novoMotivo = sel.value;
+                const feedbackSpan = sel.nextElementSibling;
 
-    // Atualiza localmente no cache otimista
-    const idx = sheetsDataRaw.findIndex(i => i.tipo === 'inventario' && i.id_inventario === item.id_inventario && i.gtin === item.gtin && i.quantidade === item.quantidade && i.lote === item.lote);
-    if (idx > -1) {
-        sheetsDataRaw[idx].motivo = novoMotivo;
-    }
+                const item = JSON.parse(decodeURIComponent(itemEncoded));
 
-    window.renderHistoricoBipagem(item.id_inventario);
+                // Atualiza localmente
+                const idx = sheetsDataRaw.findIndex(i => i.tipo === 'inventario' && i.id_inventario === item.id_inventario && i.gtin === item.gtin && i.quantidade === item.quantidade && i.lote === item.lote);
+                if (idx > -1) {
+                    sheetsDataRaw[idx].motivo = novoMotivo;
+                }
 
-    // Atualiza no backend/Google Sheets
-    const payload = {
-        tipo: "atualizar_motivo_inventario",
-        id_inventario: item.id_inventario,
-        gtin: item.gtin,
-        quantidade: item.quantidade,
-        lote: item.lote,
-        motivo: novoMotivo,
-        filial: item.filial,
-        email: window.auth && window.auth.currentUser ? window.auth.currentUser.email : ''
-    };
+                // Feedback visual de carregamento
+                sel.classList.add('border', 'border-emerald', 'text-emerald');
+                if (feedbackSpan) {
+                    feedbackSpan.innerText = 'Salvando...';
+                    feedbackSpan.classList.remove('hidden', 'text-red-600');
+                    feedbackSpan.classList.add('text-emerald');
+                }
 
-    try {
-        await fetch(window.GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) });
-        if (window.currentUserFilial) sessionStorage.setItem(`lucroData_${window.currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...(window.produtosMestre || [])]));
-    } catch (e) {
-        console.warn("Aviso: Motivo atualizado localmente mas falhou ao sincronizar com o servidor.");
+                // Dispara o fetch silenciosamente
+                const payload = {
+                    tipo: "atualizar_motivo_inventario",
+                    id_inventario: item.id_inventario,
+                    gtin: item.gtin,
+                    quantidade: item.quantidade,
+                    lote: item.lote,
+                    motivo: novoMotivo,
+                    filial: item.filial,
+                    empresa: currentUserEmpresa,
+                    email: auth && auth.currentUser ? auth.currentUser.email : ''
+                };
+
+                try {
+                    await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) });
+                    if (window.currentUserFilial) sessionStorage.setItem(`lucroData_${window.currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...(window.produtosMestre || [])]));
+
+                    if (feedbackSpan) {
+                        feedbackSpan.innerText = 'Salvo!';
+                        setTimeout(() => {
+                            feedbackSpan.classList.add('hidden');
+                            sel.classList.remove('border', 'border-emerald', 'text-emerald');
+                        }, 2000);
+                    }
+
+                    if (typeof window.renderDashboardInventarioMaster === 'function') window.renderDashboardInventarioMaster();
+                } catch (err) {
+                    console.warn("Aviso: Falha ao sincronizar com o servidor.");
+                    if (feedbackSpan) {
+                        feedbackSpan.innerText = 'Erro';
+                        feedbackSpan.classList.remove('text-emerald');
+                        feedbackSpan.classList.add('text-red-600');
+                        setTimeout(() => {
+                            feedbackSpan.classList.add('hidden');
+                            feedbackSpan.classList.remove('text-red-600');
+                            feedbackSpan.classList.add('text-emerald');
+                            sel.classList.remove('border', 'border-emerald', 'text-emerald');
+                        }, 2000);
+                    }
+                }
+            });
+        });
     }
 };
 

@@ -486,9 +486,14 @@ function doGet(e) {
       const dataI = sheetI.getDataRange().getDisplayValues();
       for (let i = 1; i < dataI.length; i++) {
         if (podeVer(dataI[i][1], dataI[i][2])) {
+          let gtinOriginal = String(dataI[i][5]).trim();
+          let gtinProcessado = (gtinOriginal === 'FECHAMENTO' || gtinOriginal === 'LISTA_DIRIGIDA')
+            ? gtinOriginal
+            : gtinOriginal.replace(/[^0-9]/g, '');
+
           resultados.push({
             tipo: "inventario", data_registro: dataI[i][0], lote: dataI[i][4],
-            gtin: String(dataI[i][5]).replace(/[^0-9]/g, ''), descricao: dataI[i][6],
+            gtin: gtinProcessado, descricao: dataI[i][6],
             quantidade: dataI[i][7], custo: converterMoedaParaFloat(dataI[i][8]),
             motivo: dataI[i][9], id_inventario: dataI[i][10], status: dataI[i][11], filial: dataI[i][2]
           });
