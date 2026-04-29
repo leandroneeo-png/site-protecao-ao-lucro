@@ -235,6 +235,11 @@ window.fetchSheetsDataComHierarquia = async () => {
                 sheetsDataRaw = data.filter(i => i.tipo !== 'produto');
                 produtosMestre = data.filter(i => i.tipo === 'produto');
                 window.triggerAllRenders();
+
+                // Atualiza a UI do consultor automaticamente se ele estiver logado
+                if (currentUserRole === 'admin' && typeof window.calcularKpiConsultor === 'function') {
+                    window.calcularKpiConsultor();
+                }
             }
         } catch (parseErr) {
             console.error("A API não retornou um JSON válido:", textData);
