@@ -337,9 +337,9 @@ function doGet(e) {
   let resultados = [];
 
   const podeVer = (linhaEmpresa, linhaFilial) => {
+    if (role === 'admin' || !empresa_buscada) return true; // Libera tudo para o Consultor
     const emp = String(linhaEmpresa).trim();
     const fil = String(linhaFilial).trim();
-    if (role === 'admin') return emp === empresa_buscada;
     return fil === filial_buscada && emp === empresa_buscada;
   };
 
