@@ -2006,27 +2006,57 @@ window.calcularKpiConsultor = () => {
 
     if (!selEmpresa || !selFilial || !inputMes || !inputVenda || !inputDesc || !inputRef) return;
 
-    // 1. Inicializar Selects de Empresa e Filial dinamicamente (se estiverem vazios)
-    if (selEmpresa.options.length <= 1 && sheetsDataRaw && sheetsDataRaw.length > 0) {
-        const empresasUnicas = [...new Set(sheetsDataRaw.map(i => i.empresa).filter(Boolean))];
-        const filiaisUnicas = [...new Set(sheetsDataRaw.map(i => i.filial).filter(Boolean))];
+    // 1. Inicializar Selects de Empresa e Filial via FIREBASE (Fonte da Verdade)
+    if (selEmpresa.options.length <= 1) {
 
-        empresasUnicas.forEach(emp => {
-            const opt = document.createElement('option');
-            opt.value = emp; opt.innerText = emp;
-            selEmpresa.appendChild(opt);
+        // Previne múltiplas chamadas e dá feedback visual
+        selEmpresa.innerHTML = '<option value="">Carregando...</option>';
+        selFilial.innerHTML = '<option value="">Carregando...</option>';
+
+        // Busca as permissões diretamente do Firebase
+        db.collection('users_permissions').get().then(snapshot => {
+            const empresasUnicas = new Set();
+            const filiaisUnicas = new Set();
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+
+                // Extrai a Empresa
+                if (data.company_name) empresasUnicas.add(data.company_name.trim());
+
+                // Extrai as Filiais (Tratando as separadas por vírgula, como visto no vídeo)
+                if (data.unit_name) {
+                    const unidades = data.unit_name.split(',').map(u => u.trim()).filter(Boolean);
+                    unidades.forEach(u => filiaisUnicas.add(u));
+                }
+            });
+
+            // Limpa e popula o select de Empresa
+            selEmpresa.innerHTML = '<option value="">Todas as Empresas</option>';
+            [...empresasUnicas].sort().forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp; opt.innerText = emp;
+                selEmpresa.appendChild(opt);
+            });
+
+            // Limpa e popula o select de Filial
+            selFilial.innerHTML = '<option value="">Todas as Filiais</option>';
+            [...filiaisUnicas].sort().forEach(fil => {
+                const opt = document.createElement('option');
+                opt.value = fil; opt.innerText = fil;
+                selFilial.appendChild(opt);
+            });
+
+        }).catch(error => {
+            console.error("Erro ao buscar empresas/filiais no Firebase:", error);
+            selEmpresa.innerHTML = '<option value="">Erro ao carregar</option>';
+            selFilial.innerHTML = '<option value="">Erro ao carregar</option>';
         });
 
-        filiaisUnicas.forEach(fil => {
-            const opt = document.createElement('option');
-            opt.value = fil; opt.innerText = fil;
-            selFilial.appendChild(opt);
-        });
-
-        // Associar eventos
+        // Associar eventos para recalcular ao vivo
         [selEmpresa, selFilial, inputMes, inputVenda, inputDesc, inputRef].forEach(el => {
             el.addEventListener('change', window.calcularKpiConsultor);
-            el.addEventListener('keyup', window.calcularKpiConsultor); // Para updates via teclado
+            el.addEventListener('keyup', window.calcularKpiConsultor);
         });
 
         // Setar Mês corrente por padrão
