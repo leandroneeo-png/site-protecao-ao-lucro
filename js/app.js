@@ -1996,7 +1996,8 @@ window.imprimirPDF = () => {
 // ==========================================
 // MOTOR DE RESULTADOS DE KPI (CONSULTOR)
 // ==========================================
-window.calcularKpiConsultor = () => {
+
+window.carregarFiltrosKpi = async () => {
     const selEmpresa = document.getElementById('kpi-empresa');
     const selFilial = document.getElementById('kpi-filial');
     const inputMes = document.getElementById('kpi-mes');
@@ -2006,65 +2007,82 @@ window.calcularKpiConsultor = () => {
 
     if (!selEmpresa || !selFilial || !inputMes || !inputVenda || !inputDesc || !inputRef) return;
 
-    // 1. Inicializar Selects de Empresa e Filial via FIREBASE (Fonte da Verdade)
-    if (selEmpresa.options.length <= 1) {
+    // Se já foi carregado (já tem mais que 1 option), não carrega de novo
+    if (selEmpresa.options.length > 1) return;
 
-        // Previne múltiplas chamadas e dá feedback visual
-        selEmpresa.innerHTML = '<option value="">Carregando...</option>';
-        selFilial.innerHTML = '<option value="">Carregando...</option>';
+    // Previne múltiplas chamadas e dá feedback visual
+    selEmpresa.innerHTML = '<option value="">Carregando...</option>';
+    selFilial.innerHTML = '<option value="">Carregando...</option>';
 
-        // Busca as permissões diretamente do Firebase
-        db.collection('users_permissions').get().then(snapshot => {
-            const empresasUnicas = new Set();
-            const filiaisUnicas = new Set();
+    try {
+        if (typeof db === 'undefined') throw new Error("Firebase DB não disponível");
 
-            snapshot.forEach(doc => {
-                const data = doc.data();
+        const snapshot = await db.collection('users_permissions').get();
+        const empresasUnicas = new Set();
+        const filiaisUnicas = new Set();
 
-                // Extrai a Empresa
-                if (data.company_name) empresasUnicas.add(data.company_name.trim());
+        snapshot.forEach(doc => {
+            const data = doc.data();
 
-                // Extrai as Filiais (Tratando as separadas por vírgula, como visto no vídeo)
-                if (data.unit_name) {
-                    const unidades = data.unit_name.split(',').map(u => u.trim()).filter(Boolean);
-                    unidades.forEach(u => filiaisUnicas.add(u));
-                }
-            });
+            // Extrai a Empresa
+            if (data.company_name) empresasUnicas.add(data.company_name.trim());
 
-            // Limpa e popula o select de Empresa
-            selEmpresa.innerHTML = '<option value="">Todas as Empresas</option>';
-            [...empresasUnicas].sort().forEach(emp => {
-                const opt = document.createElement('option');
-                opt.value = emp; opt.innerText = emp;
-                selEmpresa.appendChild(opt);
-            });
-
-            // Limpa e popula o select de Filial
-            selFilial.innerHTML = '<option value="">Todas as Filiais</option>';
-            [...filiaisUnicas].sort().forEach(fil => {
-                const opt = document.createElement('option');
-                opt.value = fil; opt.innerText = fil;
-                selFilial.appendChild(opt);
-            });
-
-        }).catch(error => {
-            console.error("Erro ao buscar empresas/filiais no Firebase:", error);
-            selEmpresa.innerHTML = '<option value="">Erro ao carregar</option>';
-            selFilial.innerHTML = '<option value="">Erro ao carregar</option>';
+            // Extrai as Filiais separadas por vírgula
+            if (data.unit_name) {
+                const unidades = data.unit_name.split(',').map(u => u.trim()).filter(Boolean);
+                unidades.forEach(u => filiaisUnicas.add(u));
+            }
         });
 
-        // Associar eventos para recalcular ao vivo
-        [selEmpresa, selFilial, inputMes, inputVenda, inputDesc, inputRef].forEach(el => {
-            el.addEventListener('change', window.calcularKpiConsultor);
-            el.addEventListener('keyup', window.calcularKpiConsultor);
+        // Limpa e popula o select de Empresa
+        selEmpresa.innerHTML = '<option value="">Todas as Empresas</option>';
+        [...empresasUnicas].sort().forEach(emp => {
+            const opt = document.createElement('option');
+            opt.value = emp; opt.innerText = emp;
+            selEmpresa.appendChild(opt);
         });
 
-        // Setar Mês corrente por padrão
-        if (!inputMes.value) {
-            const hoje = new Date();
-            inputMes.value = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-        }
+        // Limpa e popula o select de Filial
+        selFilial.innerHTML = '<option value="">Todas as Filiais</option>';
+        [...filiaisUnicas].sort().forEach(fil => {
+            const opt = document.createElement('option');
+            opt.value = fil; opt.innerText = fil;
+            selFilial.appendChild(opt);
+        });
+
+    } catch (error) {
+        console.error("Erro ao buscar empresas/filiais no Firebase:", error);
+        selEmpresa.innerHTML = '<option value="">Erro de conexão</option>';
+        selFilial.innerHTML = '<option value="">Erro de conexão</option>';
     }
+
+    // Setar Mês corrente por padrão se estiver vazio
+    if (!inputMes.value) {
+        const hoje = new Date();
+        inputMes.value = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    // Associar eventos para recalcular ao vivo
+    [selEmpresa, selFilial, inputMes, inputVenda, inputDesc, inputRef].forEach(el => {
+        el.removeEventListener('change', window.calcularKpiConsultor);
+        el.removeEventListener('keyup', window.calcularKpiConsultor);
+        el.addEventListener('change', window.calcularKpiConsultor);
+        el.addEventListener('keyup', window.calcularKpiConsultor);
+    });
+
+    // Força o primeiro cálculo
+    window.calcularKpiConsultor();
+};
+
+window.calcularKpiConsultor = () => {
+    const selEmpresa = document.getElementById('kpi-empresa');
+    const selFilial = document.getElementById('kpi-filial');
+    const inputMes = document.getElementById('kpi-mes');
+    const inputVenda = document.getElementById('kpi-venda');
+    const inputDesc = document.getElementById('kpi-desconto-pdv');
+    const inputRef = document.getElementById('kpi-referencia-r$');
+
+    if (!selEmpresa || !selFilial || !inputMes || !inputVenda || !inputDesc || !inputRef) return;
 
     const filtroEmpresa = selEmpresa.value;
     const filtroFilial = selFilial.value;
@@ -2175,5 +2193,5 @@ window.calcularKpiConsultor = () => {
 
 // Iniciar Motor se a tab de KPI for aberta
 document.getElementById('btn-admin-tab-kpi')?.addEventListener('click', () => {
-    setTimeout(window.calcularKpiConsultor, 200);
+    setTimeout(window.carregarFiltrosKpi, 200);
 });
