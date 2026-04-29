@@ -1217,7 +1217,12 @@ onAuthStateChanged(auth, async (user) => {
     const loadBox = document.getElementById('login-loading'); if (loadBox) loadBox.classList.add('hidden');
     if (user) {
         if (document.getElementById('top-user-email')) document.getElementById('top-user-email').innerText = user.email;
-        if (user.email === 'leandro@lucroseguro.com.br' || user.email.includes('leandro')) { window.showView('admin'); }
+        if (user.email === 'leandro@lucroseguro.com.br' || user.email.includes('leandro')) {
+            currentUserRole = 'admin';
+            window.showView('admin');
+            window.fetchSheetsDataComHierarquia();
+            if (typeof window.carregarFiltrosKpi === 'function') window.carregarFiltrosKpi();
+        }
         else {
             try {
                 const docSnap = await getDoc(doc(db, 'users_permissions', user.email));
