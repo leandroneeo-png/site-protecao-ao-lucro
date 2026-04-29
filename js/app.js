@@ -2200,6 +2200,11 @@ window.calcularKpiConsultor = () => {
             if (empBanco) rowEmpresa = norm(empBanco);
         }
 
+        console.log('🔍 [AUDITORIA DE LINHA]');
+        console.log('1. Objeto RAW do Sheets:', i);
+        console.log('2. Extração -> Email:', rowEmail, '| Empresa:', rowEmpresa, '| Filial:', rowFilial);
+        console.log('3. Filtros da Tela -> Empresa:', filterEmpStr, '| Filial:', filterFilStr);
+
         if (filterEmpStr && rowEmpresa !== filterEmpStr) return;
         if (filterFilStr && rowFilial !== filterFilStr) return;
 
