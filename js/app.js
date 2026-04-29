@@ -2175,17 +2175,25 @@ window.calcularKpiConsultor = () => {
     // Encontrar inventários fechados
     const inventariosFechados = new Set();
     sheetsDataRaw.forEach(i => {
-        const idInv = i.inventario || i.id_inventario || '';
+        const getVal = (chaveBusca) => {
+            const chaveReal = Object.keys(i).find(k => norm(k).includes(norm(chaveBusca)));
+            return chaveReal ? i[chaveReal] : '';
+        };
+        const idInv = String(getVal('inventario') || getVal('id')).trim();
         if (i.tipo === 'inventario' && i.gtin === 'FECHAMENTO') {
             inventariosFechados.add(idInv);
         }
     });
 
     sheetsDataRaw.forEach(i => {
+        const getVal = (chaveBusca) => {
+            const chaveReal = Object.keys(i).find(k => norm(k).includes(norm(chaveBusca)));
+            return chaveReal ? i[chaveReal] : '';
+        };
         // Filtragem por Empresa e Filial
-        const rowEmail = norm(i.usuario || i.email || i['usuário'] || '');
-        let rowEmpresa = norm(i.empresa || i['empresa cliente'] || '');
-        let rowFilial = norm(i.filial || i.loja || '');
+        const rowEmail = norm(getVal('usu') || getVal('email'));
+        let rowEmpresa = norm(getVal('empresa'));
+        let rowFilial = norm(getVal('filial') || getVal('loja'));
 
         if (rowEmail && window.mapaEmailEmpresa) {
             const empBanco = window.mapaEmailEmpresa[rowEmail] || window.mapaEmailEmpresa[rowEmail.toLowerCase()];
@@ -2227,7 +2235,7 @@ window.calcularKpiConsultor = () => {
             perdaConhecida += valorFinanceiro;
         }
         else if (i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA') {
-            const idInv = i.inventario || i.id_inventario || '';
+            const idInv = String(getVal('inventario') || getVal('id')).trim();
             if (inventariosFechados.has(idInv)) {
                 const motivo = String(i.motivo || '').trim();
                 if (motivo === 'Não Identificado' || motivo === '') {
