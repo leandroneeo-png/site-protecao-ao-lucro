@@ -2066,10 +2066,14 @@ window.carregarFiltrosKpi = async () => {
 
         const snapshot = await getDocs(collection(db, 'users_permissions'));
         window.mapaEmpresasFiliais = {};
+        window.mapaEmailEmpresa = {};
         const todasFiliais = new Set();
 
         snapshot.forEach(doc => {
             const data = doc.data();
+            if (data.email && data.company_name) {
+                window.mapaEmailEmpresa[data.email.trim().toLowerCase()] = data.company_name.trim();
+            }
             const emp = data.company_name?.trim();
 
             if (emp) {
@@ -2174,7 +2178,18 @@ window.calcularKpiConsultor = () => {
 
     sheetsDataRaw.forEach(i => {
         // Filtragem por Empresa e Filial
-        const sheetEmpresa = String(i.empresa || '').trim().toLowerCase();
+        // 1. Tenta pegar o e-mail da linha da planilha (pode vir como usuario, email, etc)
+        const emailRow = String(i.usuario || i.email || '').trim().toLowerCase();
+
+        // 2. Pega a empresa que veio escrita na planilha
+        let sheetEmpresa = String(i.empresa || '').trim().toLowerCase();
+
+        // 3. O CRUZAMENTO (Relational Join): Se o e-mail existir no nosso dicionário do Firebase, 
+        // a empresa VERDADEIRA dessa linha passa a ser a do Firebase, corrigindo qualquer erro da planilha.
+        if (emailRow && window.mapaEmailEmpresa && window.mapaEmailEmpresa[emailRow]) {
+            sheetEmpresa = window.mapaEmailEmpresa[emailRow].toLowerCase();
+        }
+
         const filterEmpresaStr = String(filtroEmpresa || '').trim().toLowerCase();
         if (filterEmpresaStr && sheetEmpresa !== filterEmpresaStr) return;
 
