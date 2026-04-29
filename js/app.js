@@ -2192,8 +2192,8 @@ window.calcularKpiConsultor = () => {
             if (empBanco) rowEmpresa = norm(empBanco);
         }
 
-        if (filterEmpStr && !rowEmpresa.includes(filterEmpStr) && !filterEmpStr.includes(rowEmpresa)) return;
-        if (filterFilStr && !rowFilial.includes(filterFilStr) && !filterFilStr.includes(rowFilial)) return;
+        if (filterEmpStr && rowEmpresa !== filterEmpStr) return;
+        if (filterFilStr && rowFilial !== filterFilStr) return;
 
         // Filtragem Temporal Flexível
         let matchData = false;
