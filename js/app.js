@@ -2147,6 +2147,8 @@ window.carregarFiltrosKpi = async () => {
 };
 
 window.calcularKpiConsultor = () => {
+    const norm = (str) => String(str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+
     const selEmpresa = document.getElementById('kpi-empresa');
     const selFilial = document.getElementById('kpi-filial');
     const inputMes = document.getElementById('kpi-mes');
@@ -2158,6 +2160,8 @@ window.calcularKpiConsultor = () => {
 
     const filtroEmpresa = selEmpresa.value;
     const filtroFilial = selFilial.value;
+    const filterEmpStr = norm(filtroEmpresa);
+    const filterFilStr = norm(filtroFilial);
     const filtroMes = inputMes.value; // YYYY-MM
     const vendaBruta = parseFloat(inputVenda.value) || 0;
     const descontosPDV = parseFloat(inputDesc.value) || 0;
@@ -2171,31 +2175,25 @@ window.calcularKpiConsultor = () => {
     // Encontrar inventários fechados
     const inventariosFechados = new Set();
     sheetsDataRaw.forEach(i => {
+        const idInv = i.inventario || i.id_inventario || '';
         if (i.tipo === 'inventario' && i.gtin === 'FECHAMENTO') {
-            inventariosFechados.add(i.id_inventario);
+            inventariosFechados.add(idInv);
         }
     });
 
     sheetsDataRaw.forEach(i => {
         // Filtragem por Empresa e Filial
-        // 1. Tenta pegar o e-mail da linha da planilha (pode vir como usuario, email, etc)
-        const emailRow = String(i.usuario || i.email || '').trim().toLowerCase();
+        const rowEmail = norm(i.usuario || i.email || i['usuário'] || '');
+        let rowEmpresa = norm(i.empresa || i['empresa cliente'] || '');
+        let rowFilial = norm(i.filial || i.loja || '');
 
-        // 2. Pega a empresa que veio escrita na planilha
-        let sheetEmpresa = String(i.empresa || '').trim().toLowerCase();
-
-        // 3. O CRUZAMENTO (Relational Join): Se o e-mail existir no nosso dicionário do Firebase, 
-        // a empresa VERDADEIRA dessa linha passa a ser a do Firebase, corrigindo qualquer erro da planilha.
-        if (emailRow && window.mapaEmailEmpresa && window.mapaEmailEmpresa[emailRow]) {
-            sheetEmpresa = window.mapaEmailEmpresa[emailRow].toLowerCase();
+        if (rowEmail && window.mapaEmailEmpresa) {
+            const empBanco = window.mapaEmailEmpresa[rowEmail] || window.mapaEmailEmpresa[rowEmail.toLowerCase()];
+            if (empBanco) rowEmpresa = norm(empBanco);
         }
 
-        const filterEmpresaStr = String(filtroEmpresa || '').trim().toLowerCase();
-        if (filterEmpresaStr && sheetEmpresa !== filterEmpresaStr) return;
-
-        const sheetFilial = String(i.filial || '').trim().toLowerCase();
-        const filterFilialStr = String(filtroFilial || '').trim().toLowerCase();
-        if (filterFilialStr && sheetFilial !== filterFilialStr) return;
+        if (filterEmpStr && !rowEmpresa.includes(filterEmpStr) && !filterEmpStr.includes(rowEmpresa)) return;
+        if (filterFilStr && !rowFilial.includes(filterFilStr) && !filterFilStr.includes(rowFilial)) return;
 
         // Filtragem Temporal Flexível
         let matchData = false;
@@ -2229,7 +2227,8 @@ window.calcularKpiConsultor = () => {
             perdaConhecida += valorFinanceiro;
         }
         else if (i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA') {
-            if (inventariosFechados.has(i.id_inventario)) {
+            const idInv = i.inventario || i.id_inventario || '';
+            if (inventariosFechados.has(idInv)) {
                 const motivo = String(i.motivo || '').trim();
                 if (motivo === 'Não Identificado' || motivo === '') {
                     perdaDesconhecida += valorFinanceiro;
