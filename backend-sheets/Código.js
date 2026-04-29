@@ -350,7 +350,7 @@ function doGet(e) {
       const dataQ = sheetQ.getDataRange().getDisplayValues();
       for (let i = 1; i < dataQ.length; i++) {
         if (podeVer(dataQ[i][1], dataQ[i][2])) {
-          resultados.push({ tipo: "quebra", mes: dataQ[i][4], gtin: dataQ[i][5], descricao: dataQ[i][6], quantidade: dataQ[i][7], custo: dataQ[i][8], motivo: dataQ[i][9], filial: dataQ[i][2] });
+          resultados.push({ tipo: "quebra", empresa: String(dataQ[i][1]).trim(), usuario: String(dataQ[i][3]).trim(), mes: dataQ[i][4], gtin: dataQ[i][5], descricao: dataQ[i][6], quantidade: dataQ[i][7], custo: dataQ[i][8], motivo: dataQ[i][9], filial: dataQ[i][2] });
         }
       }
     }
@@ -370,6 +370,8 @@ function doGet(e) {
 
           resultados.push({
             tipo: "recebimento",
+            empresa: String(dataD[i][1]).trim(),
+            usuario: String(dataD[i][3]).trim(),
             data_entrega: dataCorreta,
             fornecedor: dataD[i][5],
             nf: dataD[i][6],
@@ -392,7 +394,7 @@ function doGet(e) {
       for (let i = 1; i < dataV.length; i++) {
         if (podeVer(dataV[i][1], dataV[i][2])) {
           resultados.push({
-            tipo: "validade", gtin: String(dataV[i][4]).replace(/[^0-9]/g, ''),
+            tipo: "validade", empresa: String(dataV[i][1]).trim(), usuario: String(dataV[i][3]).trim(), gtin: String(dataV[i][4]).replace(/[^0-9]/g, ''),
             descricao: dataV[i][5], categoria: dataV[i][6], quantidade: dataV[i][7],
             custo: dataV[i][8], data_validade: dataV[i][9], rebaixado: dataV[i][10] || "NÃO", filial: dataV[i][2]
           });
@@ -409,7 +411,7 @@ function doGet(e) {
       for (let i = 1; i < dataF.length; i++) {
         if (podeVer(dataF[i][1], dataF[i][2])) {
           resultados.push({
-            tipo: "furto", data_hora_registro: dataF[i][0], data_ocorrencia: dataF[i][4], genero: dataF[i][5],
+            tipo: "furto", empresa: String(dataF[i][1]).trim(), usuario: String(dataF[i][3]).trim(), data_hora_registro: dataF[i][0], data_ocorrencia: dataF[i][4], genero: dataF[i][5],
             idade: dataF[i][6], abordagem: dataF[i][7], local: dataF[i][8], descricao: dataF[i][9],
             produto: dataF[i][10], quantidade: dataF[i][11], preco: dataF[i][12], subtotal: dataF[i][13], filial: dataF[i][2]
           });
@@ -426,7 +428,7 @@ function doGet(e) {
       for (let i = 1; i < dataP.length; i++) {
         if (podeVer(dataP[i][1], dataP[i][2])) {
           resultados.push({
-            tipo: "auditoria_preco", data_auditoria: dataP[i][4], gtin: String(dataP[i][5]).replace(/[^0-9]/g, ''),
+            tipo: "auditoria_preco", empresa: String(dataP[i][1]).trim(), usuario: String(dataP[i][3]).trim(), data_auditoria: dataP[i][4], gtin: String(dataP[i][5]).replace(/[^0-9]/g, ''),
             descricao: dataP[i][6], preco_sistema: dataP[i][7], preco_gondola: dataP[i][8], sem_preco: dataP[i][9], filial: dataP[i][2]
           });
         }
@@ -442,7 +444,7 @@ function doGet(e) {
       for (let i = 1; i < dataC.length; i++) {
         if (podeVer(dataC[i][1], dataC[i][2])) {
           resultados.push({
-            tipo: "caixa_central", data_auditoria: dataC[i][4], operador: dataC[i][5], tipo_divergencia: dataC[i][6],
+            tipo: "caixa_central", empresa: String(dataC[i][1]).trim(), usuario: String(dataC[i][3]).trim(), data_auditoria: dataC[i][4], operador: dataC[i][5], tipo_divergencia: dataC[i][6],
             valor_falta: dataC[i][7], observacoes: dataC[i][8], filial: dataC[i][2]
           });
         }
@@ -463,7 +465,7 @@ function doGet(e) {
             : gtinOriginal.replace(/[^0-9]/g, '');
 
           resultados.push({
-            tipo: "inventario", data_registro: dataI[i][0], lote: dataI[i][4],
+            tipo: "inventario", empresa: String(dataI[i][1]).trim(), usuario: String(dataI[i][3]).trim(), data_registro: dataI[i][0], lote: dataI[i][4],
             gtin: gtinProcessado, descricao: dataI[i][6],
             quantidade: dataI[i][7], custo: converterMoedaParaFloat(dataI[i][8]),
             motivo: dataI[i][9], id_inventario: dataI[i][10], status: dataI[i][11], filial: dataI[i][2]
@@ -481,7 +483,7 @@ function doGet(e) {
       for (let i = 1; i < dataT.length; i++) {
         if (podeVer(dataT[i][1], dataT[i][2])) {
           resultados.push({
-            tipo: "tarefa", titulo: dataT[i][4], prazo: dataT[i][5], status: dataT[i][6], filial: dataT[i][2]
+            tipo: "tarefa", empresa: String(dataT[i][1]).trim(), usuario: String(dataT[i][3]).trim(), titulo: dataT[i][4], prazo: dataT[i][5], status: dataT[i][6], filial: dataT[i][2]
           });
         }
       }
@@ -518,7 +520,7 @@ function doGet(e) {
       const dataIR = sheetIR.getDataRange().getDisplayValues();
       for (let i = 1; i < dataIR.length; i++) {
         if (podeVer(dataIR[i][1], dataIR[i][2])) {
-          resultados.push({ tipo: "ind_refugo", data_refugo: dataIR[i][4], turno: dataIR[i][5], maquina: dataIR[i][6], material: dataIR[i][7], quantidade: dataIR[i][8], unidade: dataIR[i][9], motivo: dataIR[i][10], filial: dataIR[i][2] });
+          resultados.push({ tipo: "ind_refugo", empresa: String(dataIR[i][1]).trim(), usuario: String(dataIR[i][3]).trim(), data_refugo: dataIR[i][4], turno: dataIR[i][5], maquina: dataIR[i][6], material: dataIR[i][7], quantidade: dataIR[i][8], unidade: dataIR[i][9], motivo: dataIR[i][10], filial: dataIR[i][2] });
         }
       }
     }
@@ -530,7 +532,7 @@ function doGet(e) {
       const dataIP = sheetIP.getDataRange().getDisplayValues();
       for (let i = 1; i < dataIP.length; i++) {
         if (podeVer(dataIP[i][1], dataIP[i][2])) {
-          resultados.push({ tipo: "ind_paradas", data_parada: dataIP[i][4], turno: dataIP[i][5], maquina: dataIP[i][6], motivo: dataIP[i][7], tempo: dataIP[i][8], custo_hora: dataIP[i][9], observacoes: dataIP[i][10], filial: dataIP[i][2] });
+          resultados.push({ tipo: "ind_paradas", empresa: String(dataIP[i][1]).trim(), usuario: String(dataIP[i][3]).trim(), data_parada: dataIP[i][4], turno: dataIP[i][5], maquina: dataIP[i][6], motivo: dataIP[i][7], tempo: dataIP[i][8], custo_hora: dataIP[i][9], observacoes: dataIP[i][10], filial: dataIP[i][2] });
         }
       }
     }
@@ -542,7 +544,7 @@ function doGet(e) {
       const dataIQ = sheetIQ.getDataRange().getDisplayValues();
       for (let i = 1; i < dataIQ.length; i++) {
         if (podeVer(dataIQ[i][1], dataIQ[i][2])) {
-          resultados.push({ tipo: "ind_qualidade", data_qualidade: dataIQ[i][4], turno: dataIQ[i][5], lote: dataIQ[i][6], produto: dataIQ[i][7], motivo: dataIQ[i][8], qtd: dataIQ[i][9], horas: dataIQ[i][10], custo_hora: dataIQ[i][11], custo_extra: dataIQ[i][12], filial: dataIQ[i][2] });
+          resultados.push({ tipo: "ind_qualidade", empresa: String(dataIQ[i][1]).trim(), usuario: String(dataIQ[i][3]).trim(), data_qualidade: dataIQ[i][4], turno: dataIQ[i][5], lote: dataIQ[i][6], produto: dataIQ[i][7], motivo: dataIQ[i][8], qtd: dataIQ[i][9], horas: dataIQ[i][10], custo_hora: dataIQ[i][11], custo_extra: dataIQ[i][12], filial: dataIQ[i][2] });
         }
       }
     }
@@ -554,7 +556,7 @@ function doGet(e) {
       const dataIA = sheetIA.getDataRange().getDisplayValues();
       for (let i = 1; i < dataIA.length; i++) {
         if (podeVer(dataIA[i][1], dataIA[i][2])) {
-          resultados.push({ tipo: "ind_almoxarifado", data_auditoria: dataIA[i][4], turno: dataIA[i][5], material: dataIA[i][6], qtd_sistema: dataIA[i][7], qtd_fisica: dataIA[i][8], divergencia: dataIA[i][9], custo_unit: dataIA[i][10], impacto: dataIA[i][11], motivo: dataIA[i][12], filial: dataIA[i][2] });
+          resultados.push({ tipo: "ind_almoxarifado", empresa: String(dataIA[i][1]).trim(), usuario: String(dataIA[i][3]).trim(), data_auditoria: dataIA[i][4], turno: dataIA[i][5], material: dataIA[i][6], qtd_sistema: dataIA[i][7], qtd_fisica: dataIA[i][8], divergencia: dataIA[i][9], custo_unit: dataIA[i][10], impacto: dataIA[i][11], motivo: dataIA[i][12], filial: dataIA[i][2] });
         }
       }
     }
@@ -566,7 +568,7 @@ function doGet(e) {
       const dataII = sheetII.getDataRange().getDisplayValues();
       for (let i = 1; i < dataII.length; i++) {
         if (podeVer(dataII[i][1], dataII[i][2])) {
-          resultados.push({ tipo: "ind_inventario", data_registro: dataII[i][0], lote: dataII[i][4], gtin: dataII[i][5], descricao: dataII[i][6], quantidade: dataII[i][7], id_inventario: dataII[i][8], status: dataII[i][9], filial: dataII[i][2] });
+          resultados.push({ tipo: "ind_inventario", empresa: String(dataII[i][1]).trim(), usuario: String(dataII[i][3]).trim(), data_registro: dataII[i][0], lote: dataII[i][4], gtin: dataII[i][5], descricao: dataII[i][6], quantidade: dataII[i][7], id_inventario: dataII[i][8], status: dataII[i][9], filial: dataII[i][2] });
         }
       }
     }
