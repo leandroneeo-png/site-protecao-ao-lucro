@@ -2174,8 +2174,13 @@ window.calcularKpiConsultor = () => {
 
     sheetsDataRaw.forEach(i => {
         // Filtragem por Empresa e Filial
-        if (filtroEmpresa && i.empresa !== filtroEmpresa) return;
-        if (filtroFilial && i.filial !== filtroFilial) return;
+        const sheetEmpresa = String(i.empresa || '').trim().toLowerCase();
+        const filterEmpresaStr = String(filtroEmpresa || '').trim().toLowerCase();
+        if (filterEmpresaStr && sheetEmpresa !== filterEmpresaStr) return;
+
+        const sheetFilial = String(i.filial || '').trim().toLowerCase();
+        const filterFilialStr = String(filtroFilial || '').trim().toLowerCase();
+        if (filterFilialStr && sheetFilial !== filterFilialStr) return;
 
         // Filtragem Temporal Flexível
         let matchData = false;
