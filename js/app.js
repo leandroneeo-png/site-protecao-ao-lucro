@@ -3,7 +3,7 @@
 // ==========================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, serverTimestamp, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCAcWktRvA6670OhbiewfCMW3MADNU5YmE",
@@ -2017,7 +2017,7 @@ window.carregarFiltrosKpi = async () => {
     try {
         if (typeof db === 'undefined') throw new Error("Firebase DB não disponível");
 
-        const snapshot = await db.collection('users_permissions').get();
+        const snapshot = await getDocs(collection(db, 'users_permissions'));
         const empresasUnicas = new Set();
         const filiaisUnicas = new Set();
 
@@ -2195,3 +2195,64 @@ window.calcularKpiConsultor = () => {
 document.getElementById('btn-admin-tab-kpi')?.addEventListener('click', () => {
     setTimeout(window.carregarFiltrosKpi, 200);
 });
+
+// ==========================================
+// GRAVAÇÃO DE KPI (FIREBASE)
+// ==========================================
+window.salvarRelatorioKpi = async () => {
+    const selEmpresa = document.getElementById('kpi-empresa')?.value;
+    const selFilial = document.getElementById('kpi-filial')?.value;
+    const inputMes = document.getElementById('kpi-mes')?.value;
+    const inputVenda = document.getElementById('kpi-venda')?.value;
+
+    if (!selEmpresa || !selFilial || !inputMes) {
+        alert("Por favor, selecione Empresa, Filial e Mês de Referência antes de gravar.");
+        return;
+    }
+
+    const btn = document.getElementById('btn-save-kpi');
+    const msgSuccess = document.getElementById('msg-kpi-success');
+    const msgError = document.getElementById('msg-kpi-error');
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="w-5 h-5 animate-spin" data-lucide="loader-2"></i> Gravando...';
+    if (window.lucide) window.lucide.createIcons();
+    msgSuccess.classList.add('hidden');
+    msgError.classList.add('hidden');
+
+    const parseBRL = (str) => {
+        if (!str) return 0;
+        // Ex: R$ 1.500,50 -> 1500.50
+        const limpo = str.replace(/[^\d,-]/g, '').replace(/\./g, '').replace(',', '.');
+        return parseFloat(limpo) || 0;
+    };
+
+    const payload = {
+        empresa: selEmpresa,
+        filial: selFilial,
+        mes_referencia: inputMes,
+        venda_bruta: parseFloat(inputVenda) || 0,
+        perda_conhecida: parseBRL(document.getElementById('ui-kpi-conhecida')?.innerText),
+        perda_desconhecida: parseBRL(document.getElementById('ui-kpi-desconhecida')?.innerText),
+        perda_administrativa: parseBRL(document.getElementById('ui-kpi-administrativa')?.innerText),
+        perda_financeira: parseBRL(document.getElementById('ui-kpi-financeira')?.innerText),
+        perda_global: parseBRL(document.getElementById('ui-kpi-global')?.innerText),
+        indice_perda: parseFloat((document.getElementById('ui-kpi-indice')?.innerText || '0').replace('%', '')) || 0,
+        economia_gerada: parseBRL(document.getElementById('ui-kpi-economia')?.innerText),
+        timestamp: serverTimestamp()
+    };
+
+    try {
+        await addDoc(collection(db, 'artifacts/lucroseguro-app/public/data/kpis_mensais'), payload);
+        msgSuccess.classList.remove('hidden');
+        setTimeout(() => { msgSuccess.classList.add('hidden'); }, 4000);
+    } catch (error) {
+        console.error("Erro ao gravar KPI:", error);
+        msgError.innerText = "Erro ao gravar histórico: " + error.message;
+        msgError.classList.remove('hidden');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="w-5 h-5" data-lucide="save"></i> Gravar Histórico no Portal';
+        if (window.lucide) window.lucide.createIcons();
+    }
+};
