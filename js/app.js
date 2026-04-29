@@ -1997,6 +1997,8 @@ window.imprimirPDF = () => {
 // MOTOR DE RESULTADOS DE KPI (CONSULTOR)
 // ==========================================
 
+window.mapaEmpresasFiliais = {};
+
 window.carregarFiltrosKpi = async () => {
     const selEmpresa = document.getElementById('kpi-empresa');
     const selFilial = document.getElementById('kpi-filial');
@@ -2018,36 +2020,57 @@ window.carregarFiltrosKpi = async () => {
         if (typeof db === 'undefined') throw new Error("Firebase DB não disponível");
 
         const snapshot = await getDocs(collection(db, 'users_permissions'));
-        const empresasUnicas = new Set();
-        const filiaisUnicas = new Set();
+        window.mapaEmpresasFiliais = {};
+        const todasFiliais = new Set();
 
         snapshot.forEach(doc => {
             const data = doc.data();
+            const emp = data.company_name?.trim();
 
-            // Extrai a Empresa
-            if (data.company_name) empresasUnicas.add(data.company_name.trim());
-
-            // Extrai as Filiais separadas por vírgula
-            if (data.unit_name) {
-                const unidades = data.unit_name.split(',').map(u => u.trim()).filter(Boolean);
-                unidades.forEach(u => filiaisUnicas.add(u));
+            if (emp) {
+                if (!window.mapaEmpresasFiliais[emp]) {
+                    window.mapaEmpresasFiliais[emp] = new Set();
+                }
+                if (data.unit_name) {
+                    const unidades = data.unit_name.split(',').map(u => u.trim()).filter(Boolean);
+                    unidades.forEach(u => {
+                        window.mapaEmpresasFiliais[emp].add(u);
+                        todasFiliais.add(u);
+                    });
+                }
             }
         });
 
         // Limpa e popula o select de Empresa
         selEmpresa.innerHTML = '<option value="">Todas as Empresas</option>';
-        [...empresasUnicas].sort().forEach(emp => {
+        Object.keys(window.mapaEmpresasFiliais).sort().forEach(emp => {
             const opt = document.createElement('option');
             opt.value = emp; opt.innerText = emp;
             selEmpresa.appendChild(opt);
         });
 
-        // Limpa e popula o select de Filial
-        selFilial.innerHTML = '<option value="">Todas as Filiais</option>';
-        [...filiaisUnicas].sort().forEach(fil => {
-            const opt = document.createElement('option');
-            opt.value = fil; opt.innerText = fil;
-            selFilial.appendChild(opt);
+        // Função auxiliar para popular as filiais
+        const popularFiliais = (setFiliais) => {
+            selFilial.innerHTML = '<option value="">Todas as Filiais</option>';
+            [...setFiliais].sort().forEach(fil => {
+                const opt = document.createElement('option');
+                opt.value = fil; opt.innerText = fil;
+                selFilial.appendChild(opt);
+            });
+        };
+
+        // Popula filial inicial (com todas as filiais do banco)
+        popularFiliais(todasFiliais);
+
+        // A Mágica do Cascading (Evento Change na Empresa)
+        selEmpresa.addEventListener('change', () => {
+            const empSelecionada = selEmpresa.value;
+            if (empSelecionada && window.mapaEmpresasFiliais[empSelecionada]) {
+                popularFiliais(window.mapaEmpresasFiliais[empSelecionada]);
+            } else {
+                popularFiliais(todasFiliais); // Se desmarcou empresa, mostra todas
+            }
+            // Não precisa chamar calcularKpiConsultor() aqui, pois o gatilho geral abaixo também vai rodar
         });
 
     } catch (error) {
