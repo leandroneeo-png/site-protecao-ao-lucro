@@ -524,6 +524,71 @@ window.renderListaInventarios = () => {
         html += `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100"><td class="px-6 py-4 font-bold text-navy">${inv.id}</td><td class="px-6 py-4 text-slate-600 text-xs">${inv.filial}</td><td class="px-6 py-4">${statusBadge}</td><td class="px-6 py-4 text-center font-medium text-slate-700">${inv.qtdLeituras}</td><td class="px-6 py-4 text-right space-x-2">${btnContinuar} ${btnExportar}</td></tr>`;
     });
     tbody.innerHTML = html; if (window.lucide) lucide.createIcons();
+    if (typeof window.renderDashboardInventarioMaster === 'function') window.renderDashboardInventarioMaster();
+};
+
+window.renderDashboardInventarioMaster = () => {
+    const selFilial = document.getElementById('filtro-dash-inv-master');
+    if (!selFilial) return;
+
+    if (selFilial.options.length <= 1) {
+        const selectFonte = document.getElementById('filtro-filial-inv');
+        if (selectFonte && selectFonte.options.length > 1) {
+            Array.from(selectFonte.options).forEach(opt => {
+                if (opt.value !== 'todas' && opt.value !== '') {
+                    const newOpt = document.createElement('option');
+                    newOpt.value = opt.value;
+                    newOpt.innerText = opt.text;
+                    selFilial.appendChild(newOpt);
+                }
+            });
+            selFilial.addEventListener('change', window.renderDashboardInventarioMaster);
+        }
+    }
+
+    const filialFiltro = selFilial.value;
+    const fechados = new Set();
+    sheetsDataRaw.forEach(i => {
+        if (i.tipo === 'inventario' && i.gtin === 'FECHAMENTO') {
+            fechados.add(i.id_inventario);
+        }
+    });
+
+    let perdaDesconhecida = 0;
+    let perdaAdministrativa = 0;
+
+    // Passo 2: Calcular totais financeiros apenas para as bipagens dos fechados
+    sheetsDataRaw.forEach(i => {
+        if (i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA') {
+            if (fechados.has(i.id_inventario)) {
+                // Filtro de filial vindo do select
+                if (filialFiltro === 'Todas as Minhas Lojas' || String(i.filial).trim() === String(filialFiltro).trim()) {
+
+                    const custo = parseFloat(String(i.custo).replace(',', '.')) || 0;
+                    const qtd = parseFloat(String(i.quantidade).replace(',', '.')) || 0;
+
+                    // CORREÇÃO: Mantemos o sinal real para que os estornos (qtd negativa) abatam do total
+                    const valorFinanceiro = custo * qtd;
+                    const motivo = String(i.motivo || '').trim();
+
+                    if (motivo === 'Não Identificado' || motivo === '') {
+                        perdaDesconhecida += valorFinanceiro;
+                    } else {
+                        perdaAdministrativa += valorFinanceiro;
+                    }
+                }
+            }
+        }
+    });
+
+    // Passo 3: Atualizar DOM (Aplicando a trava de zero apenas no resultado final consolidado)
+    perdaDesconhecida = Math.max(0, perdaDesconhecida);
+    perdaAdministrativa = Math.max(0, perdaAdministrativa);
+
+    const elDesc = document.getElementById('ui-master-perda-desc');
+    const elAdmin = document.getElementById('ui-master-perda-admin');
+    if (elDesc) elDesc.innerText = perdaDesconhecida.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    if (elAdmin) elAdmin.innerText = perdaAdministrativa.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
 
 window.abrirTelaBipagem = (idInv, filial) => { document.getElementById('inv-tela-selecao').classList.add('hidden'); document.getElementById('inv-tela-bipagem').classList.remove('hidden'); document.getElementById('ui-inv-id').innerText = idInv; document.getElementById('ui-inv-filial').innerText = filial; document.getElementById('inv-id-oculto').value = idInv; document.getElementById('inv-filial-oculto').value = filial; setTimeout(() => document.getElementById('inv-lote').focus(), 100); window.renderHistoricoBipagem(idInv); };

@@ -1989,21 +1989,33 @@
                             <div
                                 class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                                 <div>
-                                    <h3 class="text-lg font-bold text-navy mb-2 flex items-center gap-2"><i
-                                            class="w-5 h-5 text-gold" data-lucide="search"></i> Continuar Inventário
-                                    </h3>
-                                    <p class="text-xs text-slate-500 mb-6">Acesse uma contagem em andamento.</p>
-                                    <label class="block text-xs font-bold text-slate-700 mb-2">Nº do Inventário
-                                        (ID)</label>
-                                    <input
-                                        class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-slate-50 focus:ring-2 focus:ring-navy mb-6 font-bold text-navy uppercase"
-                                        id="inv-id-busca" placeholder="Ex: INV-123456" type="text" />
+                                    <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
+                                        <h3 class="text-lg font-bold text-navy flex items-center gap-2"><i
+                                                class="w-5 h-5 text-gold" data-lucide="bar-chart-2"></i> Dashboard
+                                            Consolidado (Fechados)</h3>
+                                    </div>
+                                    <select id="filtro-dash-inv-master"
+                                        class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none bg-slate-50 focus:ring-2 focus:ring-navy mb-6 font-bold text-navy">
+                                        <option value="Todas as Minhas Lojas">Todas as Minhas Lojas</option>
+                                    </select>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div
+                                            class="bg-red-50 border border-red-100 rounded-lg p-4 shadow-sm flex flex-col items-center text-center">
+                                            <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider mb-1">
+                                                Perda Desconhecida</p>
+                                            <p class="text-xl font-black text-red-600 truncate w-full"
+                                                id="ui-master-perda-desc">R$ 0,00</p>
+                                        </div>
+                                        <div
+                                            class="bg-orange-50 border border-orange-100 rounded-lg p-4 shadow-sm flex flex-col items-center text-center">
+                                            <p
+                                                class="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-1">
+                                                Perda Administrativa</p>
+                                            <p class="text-xl font-black text-orange-600 truncate w-full"
+                                                id="ui-master-perda-admin">R$ 0,00</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <button
-                                    class="w-full bg-navy hover:bg-navyLight text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
-                                    onclick="consultarInventario()" type="button">
-                                    Acessar Contagem
-                                </button>
                             </div>
                         </div>
 
