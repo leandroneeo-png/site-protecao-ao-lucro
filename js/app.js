@@ -2312,6 +2312,7 @@ window.calcularKpiConsultor = () => {
 document.getElementById('btn-admin-tab-kpi')?.addEventListener('click', () => {
     setTimeout(window.carregarFiltrosKpi, 200);
 });
+
 window.carregarKpiDoFirebase = async () => {
     const viewClientActive = !document.getElementById('view-client').classList.contains('hidden');
 
@@ -2319,25 +2320,18 @@ window.carregarKpiDoFirebase = async () => {
     let selFilial = "";
     let inputMes = "";
 
-    // CORREÇÃO: Se a tela do cliente estiver aberta (seja consultor ou cliente real), usa os dados do painel do cliente
     if (viewClientActive) {
         selEmpresa = currentUserEmpresa;
         selFilial = "Todas as Minhas Lojas";
-
-        // No dashboard do cliente, o mês vem do filtro de data daquela aba
         const elMes = document.getElementById('filtro-mes-dash');
         if (elMes) inputMes = elMes.value;
     } else {
-        // Se estiver na aba oficial de KPI do Consultor (Gaveta de Dados)
         selEmpresa = document.getElementById('kpi-empresa')?.value;
         selFilial = document.getElementById('kpi-filial')?.value;
         inputMes = document.getElementById('kpi-mes')?.value;
     }
 
-    if (!selEmpresa || !selFilial || !inputMes) {
-        console.warn("Filtros incompletos para buscar no Firebase.");
-        return;
-    }
+    if (!selEmpresa || !selFilial || !inputMes) return;
 
     const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -2355,45 +2349,40 @@ window.carregarKpiDoFirebase = async () => {
         if (!querySnapshot.empty) {
             const data = querySnapshot.docs[0].data();
 
-            // 1. ATUALIZA A VISÃO DE CONSULTOR (ADMIN) - VALORES EM R$
-            if (document.getElementById('ui-kpi-conhecida')) {
-                document.getElementById('ui-kpi-conhecida').innerText = formatter.format(data.perda_conhecida || 0);
-                document.getElementById('ui-kpi-desconhecida').innerText = formatter.format(data.perda_desconhecida || 0);
-                document.getElementById('ui-kpi-administrativa').innerText = formatter.format(data.perda_administrativa || 0);
-                document.getElementById('ui-kpi-financeira').innerText = formatter.format(data.perda_financeira || 0);
-                document.getElementById('ui-kpi-global').innerText = formatter.format(data.perda_global || 0);
-                document.getElementById('ui-kpi-indice').innerText = (data.indice_perda || 0).toFixed(2) + '%';
+            // FUNÇÃO BLINDADA: Só injeta o valor se o ID existir no HTML
+            const injetarTexto = (id, valor) => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = valor;
+            };
 
-                const uiEco = document.getElementById('ui-kpi-economia');
-                if (uiEco) {
-                    uiEco.innerText = formatter.format(data.economia_gerada || 0);
-                    uiEco.className = data.economia_gerada >= 0 ? "text-3xl font-black text-emerald-400" : "text-3xl font-black text-red-400";
-                }
+            // 1. VISÃO ADMIN (R$)
+            injetarTexto('ui-kpi-conhecida', formatter.format(data.perda_conhecida || 0));
+            injetarTexto('ui-kpi-desconhecida', formatter.format(data.perda_desconhecida || 0));
+            injetarTexto('ui-kpi-administrativa', formatter.format(data.perda_administrativa || 0));
+            injetarTexto('ui-kpi-financeira', formatter.format(data.perda_financeira || 0));
+            injetarTexto('ui-kpi-global', formatter.format(data.perda_global || 0));
+            injetarTexto('ui-kpi-indice', (data.indice_perda || 0).toFixed(2) + '%');
+
+            const uiEco = document.getElementById('ui-kpi-economia');
+            if (uiEco) {
+                uiEco.innerText = formatter.format(data.economia_gerada || 0);
+                uiEco.className = data.economia_gerada >= 0 ? "text-3xl font-black text-emerald-400" : "text-3xl font-black text-red-400";
             }
 
-            // 2. ATUALIZA A VISÃO DO CLIENTE - VALORES EM % (PERDA / VENDA)
-            if (document.getElementById('ui-total-loss')) {
-                const venda = parseFloat(data.venda_bruta) || 1; // Previne divisão por zero
+            // 2. VISÃO CLIENTE (%)
+            const venda = parseFloat(data.venda_bruta) || 1;
+            const calcPerc = (valorPerda) => (((parseFloat(valorPerda) || 0) / venda) * 100).toFixed(2) + '%';
 
-                // Função para calcular a percentagem: (Valor da Perda / Venda Bruta) * 100
-                const calcPerc = (valorPerda) => {
-                    const p = parseFloat(valorPerda) || 0;
-                    return ((p / venda) * 100).toFixed(2) + '%';
-                };
+            injetarTexto('ui-total-loss', (data.indice_perda || 0).toFixed(2) + '%');
+            injetarTexto('ui-savings', formatter.format(data.economia_gerada || 0));
+            injetarTexto('ui-p1', calcPerc(data.perda_desconhecida));
+            injetarTexto('ui-p2', calcPerc(data.perda_conhecida));
+            injetarTexto('ui-p3', calcPerc(data.perda_financeira));
+            injetarTexto('ui-p4', calcPerc(data.perda_administrativa));
 
-                document.getElementById('ui-total-loss').innerText = (data.indice_perda || 0).toFixed(2) + '%';
-                document.getElementById('ui-savings').innerText = formatter.format(data.economia_gerada || 0);
-
-                // Injeção das percentagens nos cards individuais
-                document.getElementById('ui-p1').innerText = calcPerc(data.perda_desconhecida);
-                document.getElementById('ui-p2').innerText = calcPerc(data.perda_conhecida);
-                document.getElementById('ui-p3').innerText = calcPerc(data.perda_financeira);
-                document.getElementById('ui-p4').innerText = calcPerc(data.perda_administrativa);
-            }
-
-            console.log("✅ Dados carregados do Firebase com sucesso!");
+            console.log("✅ Dados do Firebase injetados com sucesso!");
         } else {
-            console.log("ℹ️ Nenhum fechamento gravado para este filtro.");
+            console.log("ℹ️ Nenhum fechamento no Firebase para este filtro.");
             if (currentUserRole === 'admin' && !viewClientActive) window.calcularKpiConsultor();
         }
     } catch (error) {
