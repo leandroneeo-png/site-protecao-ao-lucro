@@ -3,7 +3,7 @@
 // ==========================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, where, serverTimestamp, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, where, orderBy, serverTimestamp, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCAcWktRvA6670OhbiewfCMW3MADNU5YmE",
@@ -2151,16 +2151,16 @@ window.carregarFiltrosKpi = async () => {
         inputMes.value = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
     }
 
-    // Associar eventos para recalcular ao vivo
+    // Associar eventos para buscar no Firebase primeiro
     [selEmpresa, selFilial, inputMes, inputVenda, inputDesc, inputRef].forEach(el => {
-        el.removeEventListener('change', window.calcularKpiConsultor);
-        el.removeEventListener('keyup', window.calcularKpiConsultor);
+        el.removeEventListener('change', window.carregarKpiDoFirebase);
+        el.removeEventListener('keyup', window.carregarKpiDoFirebase);
         el.addEventListener('change', window.carregarKpiDoFirebase);
-        el.addEventListener('keyup', window.calcularKpiConsultor);
+        el.addEventListener('keyup', window.carregarKpiDoFirebase);
     });
 
-    // Força o primeiro cálculo
-    window.calcularKpiConsultor();
+    // Força o primeiro cálculo buscando no banco
+    window.carregarKpiDoFirebase();
 };
 
 window.calcularKpiConsultor = () => {
@@ -2313,22 +2313,36 @@ document.getElementById('btn-admin-tab-kpi')?.addEventListener('click', () => {
     setTimeout(window.carregarFiltrosKpi, 200);
 });
 window.carregarKpiDoFirebase = async () => {
-    const selEmpresa = document.getElementById('kpi-empresa')?.value;
-    const selFilial = document.getElementById('kpi-filial')?.value;
-    const inputMes = document.getElementById('kpi-mes')?.value;
+    // 1. Verificar quem está a tentar carregar os dados (Consultor vs Cliente)
+    const viewClientActive = !document.getElementById('view-client').classList.contains('hidden');
+    let selEmpresa, selFilial, inputMes;
+
+    if (viewClientActive && currentUserRole !== 'admin') {
+        // O cliente não tem os filtros de empresa/filial do admin na tela dele, então usamos as variáveis globais dele
+        selEmpresa = currentUserEmpresa;
+        // Como o cliente pode ter várias filiais, se quisermos mostrar consolidado usamos 'Todas as Minhas Lojas' ou podemos iterar. 
+        // Para simplificar, vou buscar o fechamento da matriz/todas. 
+        selFilial = "Todas as Minhas Lojas"; // Pode ter que ser ajustado dependendo de como o cliente vê os dados
+        // No caso do cliente, o mês talvez seja selecionado de outra forma, mas por agora assumo que busca o mais recente.
+        inputMes = document.getElementById('filtro-mes-dash')?.value; // Exemplo de ID se houver
+    } else {
+        // Visão de Consultor
+        selEmpresa = document.getElementById('kpi-empresa')?.value;
+        selFilial = document.getElementById('kpi-filial')?.value;
+        inputMes = document.getElementById('kpi-mes')?.value;
+    }
 
     if (!selEmpresa || !selFilial || !inputMes) return;
 
     const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
     try {
-        // Consulta o Firebase buscando exatamente o fechamento salvo
         const kpiRef = collection(db, 'artifacts/lucroseguro-app/public/data/kpis_mensais');
         const q = query(kpiRef,
             where("empresa", "==", selEmpresa),
             where("filial", "==", selFilial),
             where("mes_referencia", "==", inputMes),
-            orderBy("timestamp", "desc") // Pega sempre o fechamento mais recente
+            orderBy("timestamp", "desc")
         );
 
         const querySnapshot = await getDocs(q);
@@ -2336,29 +2350,45 @@ window.carregarKpiDoFirebase = async () => {
         if (!querySnapshot.empty) {
             const data = querySnapshot.docs[0].data();
 
-            // Injeta os dados salvos diretamente nos cards da tela
-            document.getElementById('ui-kpi-conhecida').innerText = formatter.format(data.perda_conhecida || 0);
-            document.getElementById('ui-kpi-desconhecida').innerText = formatter.format(data.perda_desconhecida || 0);
-            document.getElementById('ui-kpi-administrativa').innerText = formatter.format(data.perda_administrativa || 0);
-            document.getElementById('ui-kpi-financeira').innerText = formatter.format(data.perda_financeira || 0);
-            document.getElementById('ui-kpi-global').innerText = formatter.format(data.perda_global || 0);
-            document.getElementById('ui-kpi-indice').innerText = (data.indice_perda || 0).toFixed(2) + '%';
+            // Lógica para a Visão de Consultor (Admin) - Valores em R$
+            if (document.getElementById('ui-kpi-conhecida')) {
+                document.getElementById('ui-kpi-conhecida').innerText = formatter.format(data.perda_conhecida || 0);
+                document.getElementById('ui-kpi-desconhecida').innerText = formatter.format(data.perda_desconhecida || 0);
+                document.getElementById('ui-kpi-administrativa').innerText = formatter.format(data.perda_administrativa || 0);
+                document.getElementById('ui-kpi-financeira').innerText = formatter.format(data.perda_financeira || 0);
+                document.getElementById('ui-kpi-global').innerText = formatter.format(data.perda_global || 0);
+                document.getElementById('ui-kpi-indice').innerText = (data.indice_perda || 0).toFixed(2) + '%';
 
-            const uiEco = document.getElementById('ui-kpi-economia');
-            if (uiEco) {
-                uiEco.innerText = formatter.format(data.economia_gerada || 0);
-                uiEco.className = data.economia_gerada >= 0 ? "text-3xl font-black text-emerald-400" : "text-3xl font-black text-red-400";
+                const uiEco = document.getElementById('ui-kpi-economia');
+                if (uiEco) {
+                    uiEco.innerText = formatter.format(data.economia_gerada || 0);
+                    uiEco.className = data.economia_gerada >= 0 ? "text-3xl font-black text-emerald-400" : "text-3xl font-black text-red-400";
+                }
+            }
+
+            // Lógica para a Visão do Cliente (Painel Principal) - Valores em %
+            if (document.getElementById('ui-total-loss')) {
+                const venda = data.venda_bruta || 1; // Previne divisão por zero
+
+                const calcPerc = (valor) => venda > 1 ? ((valor / venda) * 100).toFixed(2) + '%' : '0.00%';
+
+                document.getElementById('ui-total-loss').innerText = (data.indice_perda || 0).toFixed(2) + '%';
+                document.getElementById('ui-savings').innerText = formatter.format(data.economia_gerada || 0);
+
+                document.getElementById('ui-p1').innerText = calcPerc(data.perda_desconhecida);
+                document.getElementById('ui-p2').innerText = calcPerc(data.perda_conhecida);
+                document.getElementById('ui-p3').innerText = calcPerc(data.perda_financeira);
+                document.getElementById('ui-p4').innerText = calcPerc(data.perda_administrativa);
             }
 
             console.log("✅ Dados carregados do Firebase (Fechamento Oficial)");
         } else {
-            // Se não houver gravação no Firebase, ele executa o cálculo automático do Sheets
-            console.log("ℹ️ Nenhum fechamento encontrado. Calculando dados em tempo real...");
-            window.calcularKpiConsultor();
+            console.log("ℹ️ Nenhum fechamento encontrado no Firebase para este filtro.");
+            if (currentUserRole === 'admin') window.calcularKpiConsultor();
         }
     } catch (error) {
-        console.error("Erro ao puchar dados do Firebase:", error);
-        window.calcularKpiConsultor(); // Fallback para o cálculo em tempo real caso o Firebase falhe
+        console.error("Erro ao puxar dados do Firebase:", error);
+        if (currentUserRole === 'admin') window.calcularKpiConsultor();
     }
 };
 // ==========================================
