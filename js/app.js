@@ -1233,6 +1233,8 @@ onAuthStateChanged(auth, async (user) => {
             currentUserEmpresa = ''; // <-- INJETE ESTA LINHA PARA LIMPAR O FILTRO
             window.showView('admin');
             window.fetchSheetsDataComHierarquia();
+            window.carregarKpiDoFirebase();
+            document.getElementById('filtro-mes-dash')?.addEventListener('change', window.carregarKpiDoFirebase);
             if (typeof window.carregarFiltrosKpi === 'function') window.carregarFiltrosKpi();
         }
         else {
@@ -2349,13 +2351,13 @@ window.carregarKpiDoFirebase = async () => {
         if (!querySnapshot.empty) {
             const data = querySnapshot.docs[0].data();
 
-            // FUNÇÃO BLINDADA: Só injeta o valor se o ID existir no HTML
+            // FUNÇÃO BLINDADA: Só escreve na tela se a caixa existir, evitando Crash (o erro "null").
             const injetarTexto = (id, valor) => {
                 const el = document.getElementById(id);
                 if (el) el.innerText = valor;
             };
 
-            // 1. VISÃO ADMIN (R$)
+            // 1. VISÃO ADMIN (Preenche os cards de Reais na Gaveta de Dados)
             injetarTexto('ui-kpi-conhecida', formatter.format(data.perda_conhecida || 0));
             injetarTexto('ui-kpi-desconhecida', formatter.format(data.perda_desconhecida || 0));
             injetarTexto('ui-kpi-administrativa', formatter.format(data.perda_administrativa || 0));
@@ -2369,7 +2371,7 @@ window.carregarKpiDoFirebase = async () => {
                 uiEco.className = data.economia_gerada >= 0 ? "text-3xl font-black text-emerald-400" : "text-3xl font-black text-red-400";
             }
 
-            // 2. VISÃO CLIENTE (%)
+            // 2. VISÃO CLIENTE (Preenche os cards de Percentagem no Dashboard do Cliente)
             const venda = parseFloat(data.venda_bruta) || 1;
             const calcPerc = (valorPerda) => (((parseFloat(valorPerda) || 0) / venda) * 100).toFixed(2) + '%';
 
@@ -2380,7 +2382,7 @@ window.carregarKpiDoFirebase = async () => {
             injetarTexto('ui-p3', calcPerc(data.perda_financeira));
             injetarTexto('ui-p4', calcPerc(data.perda_administrativa));
 
-            console.log("✅ Dados do Firebase injetados com sucesso!");
+            console.log("✅ Dados da Proteção ao Lucro injetados com sucesso!");
         } else {
             console.log("ℹ️ Nenhum fechamento no Firebase para este filtro.");
             if (currentUserRole === 'admin' && !viewClientActive) window.calcularKpiConsultor();
