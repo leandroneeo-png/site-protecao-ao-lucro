@@ -337,11 +337,22 @@ function doGet(e) {
   let resultados = [];
 
   const podeVer = (linhaEmpresa, linhaFilial) => {
-    if (role === 'admin') return true; // Bypass absoluto APENAS para o consultor
-    if (!empresa_buscada || empresa_buscada === '') return false; // Bloqueia usuários não-configurados
-    const emp = String(linhaEmpresa).trim();
-    const fil = String(linhaFilial).trim();
-    return fil === filial_buscada && emp === empresa_buscada;
+    // 1. Chave Mestra: Leandro (Admin) vê tudo
+    if (role === 'admin') return true;
+
+    // Segurança: Se não for admin e não tiver empresa, bloqueia
+    if (!empresa_buscada || empresa_buscada === '') return false;
+
+    const empRow = String(linhaEmpresa).trim();
+    const filRow = String(linhaFilial).trim();
+
+    // 2. Nível Gestor: Vê todas as filiais da própria empresa
+    if (role === 'gestor') {
+      return empRow === empresa_buscada;
+    }
+
+    // 3. Nível Operacional: Vê apenas a sua loja específica
+    return empRow === empresa_buscada && filRow === filial_buscada;
   };
 
   // 1. Busca Quebras
