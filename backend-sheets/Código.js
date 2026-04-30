@@ -337,22 +337,28 @@ function doGet(e) {
   let resultados = [];
 
   const podeVer = (linhaEmpresa, linhaFilial) => {
-    // 1. Chave Mestra: Leandro (Admin) vê tudo
-    if (role === 'admin') return true;
+    // Padroniza requisições para minúsculas para evitar bloqueios textuais
+    const roleReq = String(role).toLowerCase();
+    const empReq = String(empresa_buscada).toLowerCase();
+    const filReq = String(filial_buscada).toLowerCase();
 
-    // Segurança: Se não for admin e não tiver empresa, bloqueia
-    if (!empresa_buscada || empresa_buscada === '') return false;
+    // 1. Chave Mestra do Consultor
+    if (roleReq === 'admin') return true;
 
-    const empRow = String(linhaEmpresa).trim();
-    const filRow = String(linhaFilial).trim();
+    // 2. Trava de segurança contra vazamento
+    if (!empReq || empReq === '') return false;
 
-    // 2. Nível Gestor: Vê todas as filiais da própria empresa
-    if (role === 'gestor') {
-      return empRow === empresa_buscada;
+    // Lê a linha da planilha e também padroniza para minúsculo
+    const empRow = String(linhaEmpresa).trim().toLowerCase();
+    const filRow = String(linhaFilial).trim().toLowerCase();
+
+    // 3. Visão do Gestor (Ignora filial, exige a empresa)
+    if (roleReq === 'gestor') {
+      return empRow === empReq;
     }
 
-    // 3. Nível Operacional: Vê apenas a sua loja específica
-    return empRow === empresa_buscada && filRow === filial_buscada;
+    // 4. Visão Operacional (Exige casamento perfeito de empresa e filial)
+    return empRow === empReq && filRow === filReq;
   };
 
   // 1. Busca Quebras
