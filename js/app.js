@@ -473,7 +473,7 @@ window.renderTarefasDashboard = () => {
     const divSis = document.getElementById('lista-tarefas-sistema'); const divMan = document.getElementById('lista-tarefas-manuais'); if (!divSis || !divMan) return;
     const filtroFilial = document.getElementById('filtro-filial-tar')?.value; let htmlSis = ''; let htmlMan = ''; const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
 
-    let validades = sheetsDataRaw.filter(i => i.tipo === 'validade' && (currentUserRole === 'admin' || i.filial === currentUserFilial));
+    let validades = sheetsDataRaw.filter(i => i.tipo === 'validade');
     if (filtroFilial && filtroFilial !== 'todas') validades = validades.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
     validades.forEach(v => {
         let pData = String(v.data_validade).split('/'); let dVenc = pData.length === 3 ? new Date(pData[2], pData[1] - 1, pData[0]) : new Date(v.data_validade + 'T00:00:00'); let dias = Math.ceil((dVenc.getTime() - hoje.getTime()) / (1000 * 3600 * 24));
@@ -483,7 +483,7 @@ window.renderTarefasDashboard = () => {
         }
     });
 
-    let tarefas = sheetsDataRaw.filter(i => i.tipo === 'tarefa' && i.status === 'PENDENTE' && (currentUserRole === 'admin' || i.filial === currentUserFilial));
+    let tarefas = sheetsDataRaw.filter(i => i.tipo === 'tarefa' && i.status === 'PENDENTE');
     if (filtroFilial && filtroFilial !== 'todas') tarefas = tarefas.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
     tarefas.forEach(t => {
         const tituloEnc = encodeURIComponent(t.titulo);
@@ -508,7 +508,7 @@ window.concluirTarefa = async (tituloEncoded, filial, checkboxEl) => {
 window.renderListaInventarios = () => {
     const tbody = document.getElementById('inv-tbody-consulta'); if (!tbody) return;
     const filtroFilial = document.getElementById('filtro-filial-inv')?.value;
-    let inventarios = sheetsDataRaw.filter(i => i.tipo === 'inventario' && (currentUserRole === 'admin' || i.filial === currentUserFilial));
+    let inventarios = sheetsDataRaw.filter(i => i.tipo === 'inventario');
     if (filtroFilial && filtroFilial !== 'todas') inventarios = inventarios.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
 
     const mapInv = {};
@@ -1767,7 +1767,7 @@ window.renderAlmoxarifadoDashboard = () => {
 window.renderListaInventariosInd = () => {
     const tbody = document.getElementById('inv-ind-tbody-consulta'); if (!tbody) return;
     const filtroFilial = document.getElementById('filtro-filial-contagem-ind')?.value;
-    let inventarios = sheetsDataRaw.filter(i => i.tipo === 'ind_inventario' && (currentUserRole === 'admin' || i.filial === currentUserFilial));
+    let inventarios = sheetsDataRaw.filter(i => i.tipo === 'ind_inventario');
     if (filtroFilial && filtroFilial !== 'todas') inventarios = inventarios.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
 
     const mapInv = {};
