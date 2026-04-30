@@ -2313,58 +2313,49 @@ document.getElementById('btn-admin-tab-kpi')?.addEventListener('click', () => {
     setTimeout(window.carregarFiltrosKpi, 200);
 });
 window.carregarKpiDoFirebase = async () => {
-    // 1. Verificar quem está a tentar carregar os dados
     const viewClientActive = !document.getElementById('view-client').classList.contains('hidden');
 
-    // Declarados explicitamente com 'let' para evitar o erro de constante
     let selEmpresa = "";
     let selFilial = "";
     let inputMes = "";
 
-    if (viewClientActive && currentUserRole !== 'admin') {
+    // CORREÇÃO: Se a tela do cliente estiver aberta (seja consultor ou cliente real), usa os dados do painel do cliente
+    if (viewClientActive) {
         selEmpresa = currentUserEmpresa;
         selFilial = "Todas as Minhas Lojas";
 
-        // Tenta pegar o mês, se não existir, fica vazio para puxar o último fechamento automático
+        // No dashboard do cliente, o mês vem do filtro de data daquela aba
         const elMes = document.getElementById('filtro-mes-dash');
         if (elMes) inputMes = elMes.value;
     } else {
+        // Se estiver na aba oficial de KPI do Consultor (Gaveta de Dados)
         selEmpresa = document.getElementById('kpi-empresa')?.value;
         selFilial = document.getElementById('kpi-filial')?.value;
         inputMes = document.getElementById('kpi-mes')?.value;
     }
 
-    // O mês não é mais obrigatório na validação inicial
-    if (!selEmpresa || !selFilial) return;
+    if (!selEmpresa || !selFilial || !inputMes) {
+        console.warn("Filtros incompletos para buscar no Firebase.");
+        return;
+    }
 
     const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
     try {
         const kpiRef = collection(db, 'artifacts/lucroseguro-app/public/data/kpis_mensais');
-        let q;
-
-        // Inteligência: Se tem mês exato (Consultor), busca ele. Se não tem (Cliente), busca o histórico mais recente.
-        if (inputMes) {
-            q = query(kpiRef,
-                where("empresa", "==", selEmpresa),
-                where("filial", "==", selFilial),
-                where("mes_referencia", "==", inputMes),
-                orderBy("timestamp", "desc")
-            );
-        } else {
-            q = query(kpiRef,
-                where("empresa", "==", selEmpresa),
-                where("filial", "==", selFilial),
-                orderBy("timestamp", "desc")
-            );
-        }
+        const q = query(kpiRef,
+            where("empresa", "==", selEmpresa),
+            where("filial", "==", selFilial),
+            where("mes_referencia", "==", inputMes),
+            orderBy("timestamp", "desc")
+        );
 
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
             const data = querySnapshot.docs[0].data();
 
-            // Lógica Visão Consultor (Valores em R$)
+            // 1. ATUALIZA A VISÃO DE CONSULTOR (ADMIN) - VALORES EM R$
             if (document.getElementById('ui-kpi-conhecida')) {
                 document.getElementById('ui-kpi-conhecida').innerText = formatter.format(data.perda_conhecida || 0);
                 document.getElementById('ui-kpi-desconhecida').innerText = formatter.format(data.perda_desconhecida || 0);
@@ -2380,27 +2371,36 @@ window.carregarKpiDoFirebase = async () => {
                 }
             }
 
-            // Lógica Visão Cliente (Valores em %)
+            // 2. ATUALIZA A VISÃO DO CLIENTE - VALORES EM % (PERDA / VENDA)
             if (document.getElementById('ui-total-loss')) {
-                const venda = data.venda_bruta || 1;
-                const calcPerc = (valor) => venda > 1 ? ((valor / venda) * 100).toFixed(2) + '%' : '0.00%';
+                const venda = parseFloat(data.venda_bruta) || 1; // Previne divisão por zero
+
+                // Função para calcular a percentagem: (Valor da Perda / Venda Bruta) * 100
+                const calcPerc = (valorPerda) => {
+                    const p = parseFloat(valorPerda) || 0;
+                    return ((p / venda) * 100).toFixed(2) + '%';
+                };
 
                 document.getElementById('ui-total-loss').innerText = (data.indice_perda || 0).toFixed(2) + '%';
                 document.getElementById('ui-savings').innerText = formatter.format(data.economia_gerada || 0);
 
+                // Injeção das percentagens nos cards individuais
                 document.getElementById('ui-p1').innerText = calcPerc(data.perda_desconhecida);
                 document.getElementById('ui-p2').innerText = calcPerc(data.perda_conhecida);
                 document.getElementById('ui-p3').innerText = calcPerc(data.perda_financeira);
                 document.getElementById('ui-p4').innerText = calcPerc(data.perda_administrativa);
             }
+
+            console.log("✅ Dados carregados do Firebase com sucesso!");
         } else {
-            if (currentUserRole === 'admin') window.calcularKpiConsultor();
+            console.log("ℹ️ Nenhum fechamento gravado para este filtro.");
+            if (currentUserRole === 'admin' && !viewClientActive) window.calcularKpiConsultor();
         }
     } catch (error) {
         console.error("Erro ao puxar dados do Firebase:", error);
-        if (currentUserRole === 'admin') window.calcularKpiConsultor();
     }
 };
+
 // ==========================================
 // GRAVAÇÃO DE KPI (FIREBASE)
 // ==========================================
