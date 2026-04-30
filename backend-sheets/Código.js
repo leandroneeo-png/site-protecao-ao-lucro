@@ -337,10 +337,18 @@ function doGet(e) {
   let resultados = [];
 
   const podeVer = (linhaEmpresa, linhaFilial) => {
-    // Padroniza requisições para minúsculas para evitar bloqueios textuais
+    // Limpeza NÍVEL MÁXIMO: remove acentos, espaços e caracteres invisíveis
+    const blindar = (str) => {
+      return String(str || "")
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+        .replace(/[^a-zA-Z0-9]/g, "")    // Remove TUDO que não for letra ou número
+        .toLowerCase();
+    };
+
     const roleReq = String(role).toLowerCase();
-    const empReq = String(empresa_buscada).toLowerCase();
-    const filReq = String(filial_buscada).toLowerCase();
+    const empReq = blindar(empresa_buscada);
+    const filReq = blindar(filial_buscada);
 
     // 1. Chave Mestra do Consultor
     if (roleReq === 'admin') return true;
@@ -348,9 +356,8 @@ function doGet(e) {
     // 2. Trava de segurança contra vazamento
     if (!empReq || empReq === '') return false;
 
-    // Lê a linha da planilha e também padroniza para minúsculo
-    const empRow = String(linhaEmpresa).trim().toLowerCase();
-    const filRow = String(linhaFilial).trim().toLowerCase();
+    const empRow = blindar(linhaEmpresa);
+    const filRow = blindar(linhaFilial);
 
     // 3. Visão do Gestor (Ignora filial, exige a empresa)
     if (roleReq === 'gestor') {
