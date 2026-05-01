@@ -2349,19 +2349,22 @@ window.carregarHistoricoKpi = async (empresa, filial) => {
         const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
         historico.forEach(item => {
-            let mesStr = item.mes_referencia; // Formato: YYYY-MM
+            let mesStr = item.mes_referencia;
             if (mesStr && mesStr.includes('-')) {
                 let parts = mesStr.split('-');
                 let mesIdx = parseInt(parts[1], 10) - 1;
-                mesesLabels.push(nomesMeses[mesIdx] + '/' + parts[0].slice(-2)); // Ex: Abril/26
+                mesesLabels.push(nomesMeses[mesIdx] + '/' + parts[0].slice(-2));
             } else {
                 mesesLabels.push(mesStr);
             }
 
-            dataDesconhecida.push(item.perda_desconhecida || 0);
-            dataConhecida.push(item.perda_conhecida || 0);
-            dataFinanceira.push(item.perda_financeira || 0);
-            dataAdmin.push(item.perda_administrativa || 0);
+            let venda = parseFloat(item.venda_bruta) || 1;
+            let calcPerc = (valor) => parseFloat((((parseFloat(valor) || 0) / venda) * 100).toFixed(2));
+
+            dataDesconhecida.push(calcPerc(item.perda_desconhecida));
+            dataConhecida.push(calcPerc(item.perda_conhecida));
+            dataFinanceira.push(calcPerc(item.perda_financeira));
+            dataAdmin.push(calcPerc(item.perda_administrativa));
         });
 
         // 1. Renderizar Gráfico ApexCharts
@@ -2378,13 +2381,13 @@ window.carregarHistoricoKpi = async (empresa, filial) => {
                     { name: 'Perda Admin.', data: dataAdmin }
                 ],
                 chart: { type: 'line', height: 320, fontFamily: 'Inter, sans-serif', toolbar: { show: false } },
-                colors: ['#ef4444', '#f97316', '#10b981', '#3b82f6'], // Vermelho, Laranja, Verde, Azul
+                colors: ['#ef4444', '#f97316', '#10b981', '#3b82f6'],
                 stroke: { width: 3, curve: 'smooth' },
                 xaxis: { categories: mesesLabels },
-                yaxis: { labels: { formatter: function (val) { return "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 0 }); } } },
+                yaxis: { labels: { formatter: function (val) { return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%"; } } },
                 dataLabels: { enabled: false },
                 legend: { position: 'top' },
-                tooltip: { y: { formatter: function (val) { return "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); } } }
+                tooltip: { y: { formatter: function (val) { return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%"; } } }
             };
 
             window.chartEvolucaoInstance = new ApexCharts(divChart, options);
