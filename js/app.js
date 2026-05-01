@@ -1252,14 +1252,22 @@ onAuthStateChanged(auth, async (user) => {
                     let optionsFiltro = listaFiliais.length > 1 ? `<option value="todas">Todas as Minhas Lojas</option>` : '';
                     listaFiliais.forEach(f => optionsFiltro += `<option value="${f}">${f}</option>`);
 
-                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial', 'inv-ind-nova-filial'].forEach(id => { const el = document.getElementById(id); if (el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; } });
-                    ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado', 'filtro-filial-contagem-ind'].forEach(id => {
+                    ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial', 'inv-ind-nova-filial'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.innerHTML = optionsForm;
+                            el.value = listaFiliais[0];
+                        }
+                    });['filtro-filial-dash', 'filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado', 'filtro-filial-contagem-ind'].forEach(id => {
                         const el = document.getElementById(id);
                         if (el) {
                             el.innerHTML = optionsFiltro;
                             el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0];
-                            // Ordem visual: Mostra o filtro se tiver mais que 1 loja, oculta se for só 1
-                            if (listaFiliais.length > 1) { el.classList.remove('hidden'); } else { el.classList.add('hidden'); }
+                            if (listaFiliais.length > 1) {
+                                el.classList.remove('hidden');
+                            } else {
+                                el.classList.add('hidden');
+                            }
                         }
                     });
                     window.showView('client'); window.fetchSheetsDataComHierarquia();
@@ -1367,9 +1375,7 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
             ['q-filial-lancamento', 'r-filial-lancamento', 'v-filial-lancamento', 'f-filial', 'p-filial-lancamento', 'c-filial-lancamento', 'inv-nova-filial', 't-filial', 'ir-filial', 'ip-filial', 'iq-filial', 'ia-filial', 'inv-ind-nova-filial'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; }
-            });
-
-            ['filtro-filial-dash', 'filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado', 'filtro-filial-contagem-ind'].forEach(id => {
+            });['filtro-filial-dash', 'filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado', 'filtro-filial-contagem-ind'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; }
             });
