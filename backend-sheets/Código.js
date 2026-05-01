@@ -185,10 +185,10 @@ function doPost(e) {
       let sheet = ss.getSheets()[0];
 
       if (sheet.getLastRow() === 0) {
-        sheet.appendRow(["Data/Hora Registro", "Empresa", "Filial", "Usuário", "Lote (Corredor)", "GTIN", "Descrição", "Quantidade", "Custo", "Motivo", "ID Inventário", "Status"]);
-        sheet.getRange("A1:L1").setFontWeight("bold").setBackground("#10b981").setFontColor("white");
+        sheet.appendRow(["Data/Hora Registro", "Empresa", "Filial", "Usuário", "Lote (Corredor)", "GTIN", "Descrição", "Qtd Contada", "Custo", "Motivo", "ID Inventário", "Status", "Qtd Sistema", "Divergência"]);
+        sheet.getRange("A1:N1").setFontWeight("bold").setBackground("#10b981").setFontColor("white");
       }
-      sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.lote, "'" + payload.gtin, payload.descricao, payload.quantidade, converterMoedaParaFloat(payload.custo), payload.motivo, payload.id_inventario, payload.status || "ABERTO"]);
+      sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.lote, "'" + payload.gtin, payload.descricao, payload.quantidade, converterMoedaParaFloat(payload.custo), payload.motivo, payload.id_inventario, payload.status || "ABERTO", payload.qtd_sistema || 0, payload.divergencia || 0]);
     }
     // ==========================================
     // 8.1 ATUALIZAR MOTIVO DO INVENTÁRIO (EDIÇÃO REMOTA)
@@ -535,11 +535,12 @@ function doGet(e) {
         if (String(dataProd[i][0]).trim() === empresa_buscada) {
           resultados.push({
             tipo: "produto",
-            filial: String(dataProd[i][1]).trim(),               // <--- ADICIONADO: O robô agora lê a Coluna B (Filial)
-            gtin: String(dataProd[i][2]).replace(/[^0-9]/g, ''), // Coluna C [2] - GTIN
-            descricao: dataProd[i][3],                           // Coluna D [3] - Descrição
-            custo: dataProd[i][4],                               // Coluna E [4] - Custo
-            preco: dataProd[i][5]                                // Coluna F [5] - Preço
+            filial: String(dataProd[i][1]).trim(),
+            gtin: String(dataProd[i][2]).replace(/[^0-9]/g, ''),
+            descricao: dataProd[i][3],
+            custo: dataProd[i][4],
+            preco: dataProd[i][5],
+            qtd_sistema: dataProd[i][6] || 0 // Lê a nova Coluna G
           });
         }
 
