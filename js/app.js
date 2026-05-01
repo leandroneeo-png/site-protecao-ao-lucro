@@ -609,13 +609,19 @@ window.renderDashboardInventarioMaster = () => {
                         let valorFinanceiro = custo * Math.abs(divNum);
                         if (isEstorno) valorFinanceiro = -Math.abs(valorFinanceiro);
 
-                        const sinalRegra = isEstorno ? -divNum : divNum;
                         const motivo = String(i.motivo || '').trim();
 
-                        if (sinalRegra > 0) {
-                            perdaAdministrativa += valorFinanceiro; // Sobra = Admin
-                        } else if (sinalRegra < 0) {
-                            // Falta = Desconhecida se não justificada
+                        if (temDivergencia) {
+                            // REGRA NOVA (Com base na divergência Sist x Físico)
+                            const sinalRegra = isEstorno ? -divNum : divNum;
+                            if (sinalRegra > 0) {
+                                perdaAdministrativa += valorFinanceiro; // Sobra = Admin
+                            } else if (sinalRegra < 0) {
+                                if (motivo === 'Não Identificado' || motivo === '') perdaDesconhecida += valorFinanceiro;
+                                else perdaAdministrativa += valorFinanceiro;
+                            }
+                        } else {
+                            // REGRA ANTIGA (Para linhas antigas que não têm a coluna Divergência)
                             if (motivo === 'Não Identificado' || motivo === '') perdaDesconhecida += valorFinanceiro;
                             else perdaAdministrativa += valorFinanceiro;
                         }
@@ -768,14 +774,17 @@ window.atualizarTotaisTelaInventario = (idInv) => {
         let valorReal = c * Math.abs(divOriginal);
         if (isEstorno) valorReal = -Math.abs(valorReal); // Se estornou, devolve o dinheiro pro bolo
 
-        // Se isEstorno, o sinal que define a regra é o inverso
-        const sinalRegra = isEstorno ? -divOriginal : divOriginal;
-
-        if (sinalRegra > 0) {
-            // Sobra = Sempre Administrativa
-            totalAdministrativa += valorReal;
-        } else if (sinalRegra < 0) {
-            // Falta = Desconhecida se não identificar. Outros casos = Admin.
+        if (temDivergencia) {
+            // REGRA NOVA
+            const sinalRegra = isEstorno ? -divOriginal : divOriginal;
+            if (sinalRegra > 0) {
+                totalAdministrativa += valorReal;
+            } else if (sinalRegra < 0) {
+                if (m === 'Não Identificado' || m === '') totalDesconhecida += valorReal;
+                else totalAdministrativa += valorReal;
+            }
+        } else {
+            // REGRA ANTIGA
             if (m === 'Não Identificado' || m === '') totalDesconhecida += valorReal;
             else totalAdministrativa += valorReal;
         }
@@ -2342,12 +2351,19 @@ window.calcularKpiConsultor = () => {
                 let valFinInv = custo * Math.abs(divNum);
                 if (isEstorno) valFinInv = -Math.abs(valFinInv);
 
-                const sinalRegra = isEstorno ? -divNum : divNum;
                 const motivo = String(i.motivo || '').trim();
 
-                if (sinalRegra > 0) {
-                    perdaAdministrativa += valFinInv;
-                } else if (sinalRegra < 0) {
+                if (temDivergencia) {
+                    // REGRA NOVA
+                    const sinalRegra = isEstorno ? -divNum : divNum;
+                    if (sinalRegra > 0) {
+                        perdaAdministrativa += valFinInv;
+                    } else if (sinalRegra < 0) {
+                        if (motivo === 'Não Identificado' || motivo === '') perdaDesconhecida += valFinInv;
+                        else perdaAdministrativa += valFinInv;
+                    }
+                } else {
+                    // REGRA ANTIGA
                     if (motivo === 'Não Identificado' || motivo === '') perdaDesconhecida += valFinInv;
                     else perdaAdministrativa += valFinInv;
                 }
