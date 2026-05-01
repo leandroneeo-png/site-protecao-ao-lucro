@@ -670,7 +670,14 @@ window.encerrarInventarioAtual = async (event) => {
     sheetsDataRaw.push({ tipo: 'inventario', id_inventario: idInv, status: 'FECHADO', gtin: 'FECHAMENTO', filial: filial });
     window.voltarTelaInventario();
 
-    try { await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) }); sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre])); }
+    try {
+        await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
+    }
     catch (err) { alert('Erro ao fechar no servidor.'); } finally { btn.innerHTML = txtOriginal; }
 };
 
@@ -1863,7 +1870,14 @@ window.encerrarInventarioAtualInd = async (event) => {
 
     sheetsDataRaw.push({ tipo: 'ind_inventario', id_inventario: idInv, status: 'FECHADO', gtin: 'FECHAMENTO', filial: filial });
     window.voltarTelaInventarioInd();
-    try { await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) }); sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre])); }
+    try {
+        await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
+    }
     catch (err) { alert('Erro ao fechar.'); } finally { btn.innerHTML = txtOriginal; }
 };
 

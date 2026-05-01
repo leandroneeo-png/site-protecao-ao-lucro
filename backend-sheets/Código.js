@@ -235,12 +235,12 @@ function doPost(e) {
     else if (tipo === "fechar_inventario") {
       const ss = SpreadsheetApp.openById(ID_INVENTARIO);
       let sheet = ss.getSheets()[0];
-      sheet.appendRow([dataHoraFormatada, empresa, filial, email, "SISTEMA", "FECHAMENTO", "ENCERRAMENTO DE CONTAGEM", 0, 0, "", payload.id_inventario, "FECHADO"]);
+      sheet.appendRow([dataHoraFormatada, empresa, filial, email, "SISTEMA", "FECHAMENTO", "ENCERRAMENTO DE CONTAGEM", 0, 0, "", payload.id_inventario, "FECHADO", 0, 0]);
 
       // Varre o array enviado pelo celular e insere 0 na planilha para os produtos não achados
       if (payload.nao_encontrados && payload.nao_encontrados.length > 0) {
         payload.nao_encontrados.forEach(gtin => {
-          sheet.appendRow([dataHoraFormatada, empresa, filial, email, "SISTEMA (NÃO ACHOU)", "'" + gtin, "ZERAMENTO AUTOMÁTICO", 0, 0, "Não Identificado", payload.id_inventario, "FECHADO"]);
+          sheet.appendRow([dataHoraFormatada, empresa, filial, email, "SISTEMA (NÃO ACHOU)", "'" + gtin, "ZERAMENTO AUTOMÁTICO", 0, 0, "Não Identificado", payload.id_inventario, "FECHADO", 0, 0]);
         });
       }
     }
