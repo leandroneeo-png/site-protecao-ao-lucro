@@ -678,6 +678,14 @@ document.getElementById('form-inventario')?.addEventListener('submit', async (e)
     // Conversão estrita para Float para evitar NaN
     const custoConvertido = parseFloat(String(inputCusto.value).replace(',', '.')) || 0;
     const qtdConvertida = parseFloat(String(inputQtd.value).replace(',', '.')) || 0;
+    const qtdSistemaConvertida = parseFloat(String(document.getElementById('inv-qtd-sistema').value).replace(',', '.')) || 0;
+
+    // MATEMÁTICA DA DIVERGÊNCIA
+    const divergencia = qtdConvertida - qtdSistemaConvertida;
+
+    // Regra da Sobra Física (Físico Maior que Sistema) = Erro Administrativo automático
+    let motivoAutomatico = "Não Identificado";
+    if (divergencia > 0) motivoAutomatico = "Sobra Física (Erro Sistêmico)";
 
     const payload = {
         tipo: "inventario",
@@ -688,8 +696,10 @@ document.getElementById('form-inventario')?.addEventListener('submit', async (e)
         gtin: inputGtin.value,
         descricao: document.getElementById('inv-desc')?.value || "",
         quantidade: qtdConvertida,
+        qtd_sistema: qtdSistemaConvertida,
+        divergencia: divergencia,
         custo: custoConvertido,
-        motivo: "Não Identificado", // Motivo padrão agora que foi removido do form
+        motivo: motivoAutomatico,
         id_inventario: idInv,
         status: "ABERTO"
     };
@@ -726,14 +736,25 @@ window.atualizarTotaisTelaInventario = (idInv) => {
 
     bipagens.forEach(i => {
         const c = parseFloat(i.custo) || 0;
-        const q = parseFloat(i.quantidade) || 0;
-        const valorReal = c * q;
+        // Pega a divergência (ou quantidade como fallback antigo)
+        const divOriginal = parseFloat(i.divergencia !== undefined ? i.divergencia : i.quantidade) || 0;
+        const isEstorno = String(i.descricao).includes('[ESTORNO]');
         const m = (i.motivo || '').trim();
 
-        if (m === 'Não Identificado' || m === '') {
-            totalDesconhecida += valorReal;
-        } else {
+        // O valor do impacto financeiro é sempre o custo vezes o número absoluto da diferença
+        let valorReal = c * Math.abs(divOriginal);
+        if (isEstorno) valorReal = -Math.abs(valorReal); // Se estornou, devolve o dinheiro pro bolo
+
+        // Se isEstorno, o sinal que define a regra é o inverso
+        const sinalRegra = isEstorno ? -divOriginal : divOriginal;
+
+        if (sinalRegra > 0) {
+            // Sobra = Sempre Administrativa
             totalAdministrativa += valorReal;
+        } else if (sinalRegra < 0) {
+            // Falta = Desconhecida se não identificar. Outros casos = Admin.
+            if (m === 'Não Identificado' || m === '') totalDesconhecida += valorReal;
+            else totalAdministrativa += valorReal;
         }
     });
 
@@ -886,6 +907,7 @@ window.estornarBipagem = async (itemEncoded) => {
     const payload = {
         ...item,
         quantidade: -Math.abs(parseFloat(item.quantidade)),
+        divergencia: -(parseFloat(item.divergencia) || 0),
         descricao: "[ESTORNO] " + (item.descricao || "Produto")
     };
 
@@ -1309,6 +1331,9 @@ const autocompletarPorGtin = (gtin, inputsAlvo, filialId) => {
             const custoNum = parseFloat(String(produto.custo || 0).replace(',', '.'));
             document.getElementById(inputsAlvo.custo).value = custoNum > 0 ? custoNum.toFixed(2) : '';
         }
+        if (inputsAlvo.qtdSistema && document.getElementById(inputsAlvo.qtdSistema)) {
+            document.getElementById(inputsAlvo.qtdSistema).value = produto.qtd_sistema || 0;
+        }
         if (inputsAlvo.preco && document.getElementById(inputsAlvo.preco)) {
             const precoNum = parseFloat(String(produto.preco || 0).replace(',', '.'));
             document.getElementById(inputsAlvo.preco).value = precoNum > 0 ? precoNum.toFixed(2) : '';
@@ -1323,7 +1348,7 @@ const autocompletarPorGtin = (gtin, inputsAlvo, filialId) => {
 
 // Liga o "espião" a cada campo de GTIN, ensinando-lhe onde está a caixa de filial correspondente
 [
-    { gtinId: 'inv-gtin', filialId: 'inv-filial-oculto', alvos: { desc: 'inv-desc', custo: 'inv-custo' } },
+    { gtinId: 'inv-gtin', filialId: 'inv-filial-oculto', alvos: { desc: 'inv-desc', custo: 'inv-custo', qtdSistema: 'inv-qtd-sistema' } },
     { gtinId: 'q-gtin', filialId: 'q-filial-lancamento', alvos: { desc: 'q-desc', custo: 'q-custo' } },
     { gtinId: 'p-gtin', filialId: 'p-filial-lancamento', alvos: { desc: 'p-desc', preco: 'p-sistema' } },
     { gtinId: 'v-gtin', filialId: 'v-filial-lancamento', alvos: { desc: 'v-desc', custo: 'v-custo' } }
