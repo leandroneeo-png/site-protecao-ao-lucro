@@ -2406,6 +2406,32 @@ window.carregarKpiDoFirebase = async () => {
             console.log("✅ Dados da Proteção ao Lucro injetados com sucesso!");
         } else {
             console.log("ℹ️ Nenhum fechamento no Firebase para este filtro.");
+
+            const injetarTexto = (id, valor) => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = valor;
+            };
+
+            injetarTexto('ui-kpi-conhecida', 'R$ 0,00');
+            injetarTexto('ui-kpi-desconhecida', 'R$ 0,00');
+            injetarTexto('ui-kpi-administrativa', 'R$ 0,00');
+            injetarTexto('ui-kpi-financeira', 'R$ 0,00');
+            injetarTexto('ui-kpi-global', 'R$ 0,00');
+            injetarTexto('ui-kpi-indice', '0.00%');
+
+            const uiEco = document.getElementById('ui-kpi-economia');
+            if (uiEco) {
+                uiEco.innerText = 'R$ 0,00';
+                uiEco.className = "text-3xl font-black text-emerald-400 relative z-10";
+            }
+
+            injetarTexto('ui-total-loss', '--%');
+            injetarTexto('ui-savings', 'R$ --');
+            injetarTexto('ui-p1', '--%');
+            injetarTexto('ui-p2', '--%');
+            injetarTexto('ui-p3', '--%');
+            injetarTexto('ui-p4', '--%');
+
             if (currentUserRole === 'admin' && !viewClientActive) window.calcularKpiConsultor();
         }
     } catch (error) {
