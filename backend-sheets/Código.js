@@ -209,10 +209,19 @@ function doPost(e) {
         for (let i = 1; i < data.length; i++) {
           let rowIdInv = String(data[i][colIdInv]).trim();
           let rowLote = String(data[i][colLote]).trim();
+          let payLote = String(payload.lote).trim();
           let rowGtin = String(data[i][colGtin]).replace(/['" ]/g, '');
           let payGtin = String(payload.gtin).replace(/['" ]/g, '');
 
-          if (rowIdInv === String(payload.id_inventario).trim() && rowLote === String(payload.lote).trim() && rowGtin === payGtin) {
+          // BURLA DE FORMATAÇÃO: Garante que o Sheets entenda que "01" é igual a "1"
+          let isLoteEqual = false;
+          if (rowLote === payLote) {
+            isLoteEqual = true;
+          } else if (payLote !== "" && rowLote !== "" && Number(rowLote) === Number(payLote)) {
+            isLoteEqual = true;
+          }
+
+          if (rowIdInv === String(payload.id_inventario).trim() && isLoteEqual && rowGtin === payGtin) {
             sheet.getRange(i + 1, colMotivo + 1).setValue(payload.motivo);
             break;
           }
