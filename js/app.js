@@ -84,10 +84,14 @@ window.exportDataToCSV = (tipo, filename) => {
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
 };
 
-// Centralizador de renderização para uso na memória (Instantâneo)
 window.triggerAllRenders = () => {
-    try { window.carregarKpiDoFirebase(); } catch (e) { } // <-- Gatilho da Visão Geral (KPIs) adicionado aqui!
-    try { window.renderQuebrasDashboard(); } catch (e) { } try { window.renderRefugoDashboard(); } catch (e) { } try { window.renderParadasDashboard(); } catch (e) { } try { window.renderQualidadeDashboard(); } catch (e) { } try { window.renderAlmoxarifadoDashboard(); } catch (e) { } try { window.renderListaInventariosInd(); } catch (e) { } try { window.renderQualidadeDashboard(); } catch (e) { } try { window.renderAlmoxarifadoDashboard(); } catch (e) { } try { window.renderListaInventariosInd(); } catch (e) { }
+    try { window.carregarKpiDoFirebase(); } catch (e) { }
+    try { window.renderQuebrasDashboard(); } catch (e) { }
+    try { window.renderRefugoDashboard(); } catch (e) { }
+    try { window.renderParadasDashboard(); } catch (e) { }
+    try { window.renderQualidadeDashboard(); } catch (e) { }
+    try { window.renderAlmoxarifadoDashboard(); } catch (e) { }
+    try { window.renderListaInventariosInd(); } catch (e) { }
     try { window.renderPrecoDashboard(); } catch (e) { }
     try { window.renderDocasDashboard(); } catch (e) { }
     try { window.renderValidadeDashboard(); } catch (e) { }
@@ -933,8 +937,8 @@ window.estornarBipagem = async (itemEncoded) => {
 window.exportarInventarioId = (idInv) => {
     const dataToExport = sheetsDataRaw.filter(i => i.tipo === 'inventario' && i.id_inventario === idInv);
     if (dataToExport.length === 0) { alert("Sem dados."); return; }
-    const rows = []; rows.push(["Data do Registo", "Lote/Corredor", "GTIN", "Descrição", "Quantidade", "Status"].join(";"));
-    dataToExport.forEach(item => { if (item.gtin === 'LISTA_DIRIGIDA' || item.gtin === 'FECHAMENTO') return; rows.push([`"${item.data_registro || ''}"`, `"${item.lote || 'Sem Lote'}"`, `"${item.gtin || ''}"`, `"${item.descricao || 'Produto'}"`, `${item.quantidade || 0}`, `"Contado"`].join(";")); });
+    const rows = []; rows.push(["Data do Registo", "Lote/Corredor", "GTIN", "Descrição", "Qtd Sistema", "Qtd Contada", "Divergência", "Custo Unit.", "Motivo", "Status"].join(";"));
+    dataToExport.forEach(item => { if (item.gtin === 'LISTA_DIRIGIDA' || item.gtin === 'FECHAMENTO') return; rows.push([`"${item.data_registro || ''}"`, `"${item.lote || 'Sem Lote'}"`, `"${item.gtin || ''}"`, `"${item.descricao || 'Produto'}"`, `${item.qtd_sistema || 0}`, `${item.quantidade || 0}`, `${item.divergencia || 0}`, `${item.custo || 0}`, `"${item.motivo || ''}"`, `"Contado"`].join(";")); });
     const csvContent = "\uFEFF" + rows.join("\n"); const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", `Inventario_${idInv}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
 };
@@ -2295,19 +2299,27 @@ window.calcularKpiConsultor = () => {
 
         const custo = parseFloat(String(i.custo).replace(',', '.')) || 0;
         const qtd = parseFloat(String(i.quantidade).replace(',', '.')) || 0;
-        const valorFinanceiro = custo * qtd; // Mantemos os estornos intactos
 
         if (i.tipo === 'quebra') {
-            perdaConhecida += valorFinanceiro;
+            perdaConhecida += (custo * qtd);
         }
         else if (i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA') {
             const idInv = String(getVal('inventario') || getVal('id')).trim();
             if (inventariosFechados.has(idInv)) {
+                const divNum = parseFloat(String(i.divergencia !== undefined ? i.divergencia : i.quantidade).replace(',', '.')) || 0;
+                const isEstorno = String(i.descricao).includes('[ESTORNO]');
+
+                let valFinInv = custo * Math.abs(divNum);
+                if (isEstorno) valFinInv = -Math.abs(valFinInv);
+
+                const sinalRegra = isEstorno ? -divNum : divNum;
                 const motivo = String(i.motivo || '').trim();
-                if (motivo === 'Não Identificado' || motivo === '') {
-                    perdaDesconhecida += valorFinanceiro;
-                } else {
-                    perdaAdministrativa += valorFinanceiro;
+
+                if (sinalRegra > 0) {
+                    perdaAdministrativa += valFinInv;
+                } else if (sinalRegra < 0) {
+                    if (motivo === 'Não Identificado' || motivo === '') perdaDesconhecida += valFinInv;
+                    else perdaAdministrativa += valFinInv;
                 }
             }
         }
