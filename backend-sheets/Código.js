@@ -502,7 +502,8 @@ function doGet(e) {
             tipo: "inventario", empresa: String(dataI[i][1]).trim(), usuario: String(dataI[i][3]).trim(), data_registro: dataI[i][0], lote: dataI[i][4],
             gtin: gtinProcessado, descricao: dataI[i][6],
             quantidade: dataI[i][7], custo: converterMoedaParaFloat(dataI[i][8]),
-            motivo: dataI[i][9], id_inventario: dataI[i][10], status: dataI[i][11], filial: dataI[i][2]
+            motivo: dataI[i][9], id_inventario: dataI[i][10], status: dataI[i][11], filial: dataI[i][2],
+            qtd_sistema: dataI[i][12] || 0, divergencia: dataI[i][13] || 0
           });
         }
       }
