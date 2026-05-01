@@ -598,16 +598,21 @@ window.renderDashboardInventarioMaster = () => {
 
                     if (matchData) {
                         const custo = parseFloat(String(i.custo).replace(',', '.')) || 0;
-                        const qtd = parseFloat(String(i.quantidade).replace(',', '.')) || 0;
+                        const divNum = parseFloat(String(i.divergencia !== undefined ? i.divergencia : i.quantidade).replace(',', '.')) || 0;
+                        const isEstorno = String(i.descricao).includes('[ESTORNO]');
 
-                        // CORREÇÃO: Mantemos o sinal real para que os estornos (qtd negativa) abatam do total
-                        const valorFinanceiro = custo * qtd;
+                        let valorFinanceiro = custo * Math.abs(divNum);
+                        if (isEstorno) valorFinanceiro = -Math.abs(valorFinanceiro);
+
+                        const sinalRegra = isEstorno ? -divNum : divNum;
                         const motivo = String(i.motivo || '').trim();
 
-                        if (motivo === 'Não Identificado' || motivo === '') {
-                            perdaDesconhecida += valorFinanceiro;
-                        } else {
-                            perdaAdministrativa += valorFinanceiro;
+                        if (sinalRegra > 0) {
+                            perdaAdministrativa += valorFinanceiro; // Sobra = Admin
+                        } else if (sinalRegra < 0) {
+                            // Falta = Desconhecida se não justificada
+                            if (motivo === 'Não Identificado' || motivo === '') perdaDesconhecida += valorFinanceiro;
+                            else perdaAdministrativa += valorFinanceiro;
                         }
                     }
                 }
@@ -786,7 +791,8 @@ window.renderHistoricoBipagem = (idInv) => {
             // Cálculos financeiros com conversão para Float
             const custoUnit = parseFloat(i.custo) || 0;
             const qtdNum = parseFloat(i.quantidade) || 0;
-            const totalPerda = custoUnit * Math.abs(qtdNum);
+            const divNum = parseFloat(i.divergencia !== undefined ? i.divergencia : i.quantidade) || 0;
+            const totalPerda = custoUnit * Math.abs(divNum);
 
             const motivoText = !isEstorno ? `
                 <span class="text-slate-300 mx-1">|</span> 
