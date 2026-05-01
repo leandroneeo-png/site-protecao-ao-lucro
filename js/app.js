@@ -183,75 +183,77 @@ window.fetchSheetsDataComHierarquia = async () => {
     // Configuração dos filtros iniciais
     const hoje = new Date();
     const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-    // Adicionado 'dash' na Array para mapear o novo botão de calendário['dash', 'quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas', 'qualidade', 'almoxarifado', 'contagem-ind'].forEach(id => {
-    const filtroMes = document.getElementById(`filtro-mes-${id}`);
-    const filtroFilial = document.getElementById(`filtro-filial-${id}`);
-    if (filtroMes && !filtroMes.value) filtroMes.value = mesAtual;
 
-    const trg = () => {
-        if (id === 'dash') window.carregarKpiDoFirebase(); // <-- Gatilho conectado ao KPI
-        if (id === 'quebra') window.renderQuebrasDashboard();
-        if (id === 'docas') window.renderDocasDashboard();
-        if (id === 'validade') window.renderValidadeDashboard();
-        if (id === 'furtos') window.renderFurtosDashboard();
-        if (id === 'preco') window.renderPrecoDashboard();
-        if (id === 'caixa') window.renderCaixaDashboard();
-        if (id === 'inv') window.renderListaInventarios();
-        if (id === 'tar') window.renderTarefasDashboard(); if (id === 'refugo') window.renderRefugoDashboard(); if (id === 'paradas') window.renderParadasDashboard();
-    };
-    if (filtroMes) filtroMes.onchange = trg;
-    if (filtroFilial) filtroFilial.onchange = trg;
-});
+    // Adicionado 'dash' na Array para mapear o novo botão de calendário
+    ['dash', 'quebra', 'docas', 'validade', 'furtos', 'preco', 'caixa', 'inv', 'tar', 'refugo', 'paradas', 'qualidade', 'almoxarifado', 'contagem-ind'].forEach(id => {
+        const filtroMes = document.getElementById(`filtro-mes-${id}`);
+        const filtroFilial = document.getElementById(`filtro-filial-${id}`);
+        if (filtroMes && !filtroMes.value) filtroMes.value = mesAtual;
 
-// 1. CARREGAMENTO INSTANTÂNEO (SWR CACHE)
-try {
-    const cachedData = sessionStorage.getItem(cacheKey);
-    if (cachedData) {
-        const parsed = JSON.parse(cachedData);
-        sheetsDataRaw = parsed.filter(i => i.tipo !== 'produto');
-        produtosMestre = parsed.filter(i => i.tipo === 'produto');
-        window.triggerAllRenders();
+        const trg = () => {
+            if (id === 'dash') window.carregarKpiDoFirebase();
+            if (id === 'quebra') window.renderQuebrasDashboard();
+            if (id === 'docas') window.renderDocasDashboard();
+            if (id === 'validade') window.renderValidadeDashboard();
+            if (id === 'furtos') window.renderFurtosDashboard();
+            if (id === 'preco') window.renderPrecoDashboard();
+            if (id === 'caixa') window.renderCaixaDashboard();
+            if (id === 'inv') window.renderListaInventarios();
+            if (id === 'tar') window.renderTarefasDashboard(); if (id === 'refugo') window.renderRefugoDashboard(); if (id === 'paradas') window.renderParadasDashboard();
+        };
+        if (filtroMes) filtroMes.onchange = trg;
+        if (filtroFilial) filtroFilial.onchange = trg;
+    });
+
+    // 1. CARREGAMENTO INSTANTÂNEO (SWR CACHE)
+    try {
+        const cachedData = sessionStorage.getItem(cacheKey);
+        if (cachedData) {
+            const parsed = JSON.parse(cachedData);
+            sheetsDataRaw = parsed.filter(i => i.tipo !== 'produto');
+            produtosMestre = parsed.filter(i => i.tipo === 'produto');
+            window.triggerAllRenders();
+            if (loadingQ) loadingQ.classList.add('hidden');
+            if (loadingMain) loadingMain.classList.add('hidden');
+        } else {
+            if (loadingQ) loadingQ.classList.remove('hidden');
+            if (loadingMain) loadingMain.classList.remove('hidden');
+        }
+    } catch (e) { console.error("Erro no Cache", e); }
+
+    // 2. BUSCA NO BACKGROUND BLINDADA
+    try {
+        const userEmailReq = auth.currentUser ? auth.currentUser.email : 'anonimo';
+        const urlSegura = `${GOOGLE_SHEETS_WEBAPP_URL}?empresa=${encodeURIComponent(currentUserEmpresa)}&filial=${encodeURIComponent(currentUserFilial)}&role=${encodeURIComponent(currentUserRole)}&user=${encodeURIComponent(userEmailReq)}&t=${Date.now()}`;
+
+        const res = await fetch(urlSegura);
+        const textData = await res.text(); // Lê como texto primeiro para evitar crash se a Google falhar
+
+        try {
+            const data = JSON.parse(textData);
+            if (data && Array.isArray(data)) {
+                // BLINDAGEM: Impede que o limite de memória do navegador trave o site
+                try { sessionStorage.setItem(cacheKey, JSON.stringify(data)); } catch (err) { console.warn("Cache ignorado: Banco de produtos muito grande para a memória local."); }
+
+                sheetsDataRaw = data.filter(i => i.tipo !== 'produto');
+                produtosMestre = data.filter(i => i.tipo === 'produto');
+                window.triggerAllRenders();
+
+                // Atualiza a UI do consultor automaticamente se ele estiver logado
+                if (currentUserRole === 'admin' && typeof window.calcularKpiConsultor === 'function') {
+                    window.calcularKpiConsultor();
+                }
+            }
+        } catch (parseErr) {
+            console.error("A API não retornou um JSON válido:", textData);
+        }
+
+    } catch (e) {
+        console.error("Erro ao comunicar com o Google Sheets:", e);
+    } finally {
         if (loadingQ) loadingQ.classList.add('hidden');
         if (loadingMain) loadingMain.classList.add('hidden');
-    } else {
-        if (loadingQ) loadingQ.classList.remove('hidden');
-        if (loadingMain) loadingMain.classList.remove('hidden');
     }
-} catch (e) { console.error("Erro no Cache", e); }
-
-// 2. BUSCA NO BACKGROUND BLINDADA
-try {
-    const userEmailReq = auth.currentUser ? auth.currentUser.email : 'anonimo';
-    const urlSegura = `${GOOGLE_SHEETS_WEBAPP_URL}?empresa=${encodeURIComponent(currentUserEmpresa)}&filial=${encodeURIComponent(currentUserFilial)}&role=${encodeURIComponent(currentUserRole)}&user=${encodeURIComponent(userEmailReq)}&t=${Date.now()}`;
-
-    const res = await fetch(urlSegura);
-    const textData = await res.text(); // Lê como texto primeiro para evitar crash se a Google falhar
-
-    try {
-        const data = JSON.parse(textData);
-        if (data && Array.isArray(data)) {
-            // BLINDAGEM: Impede que o limite de memória do navegador trave o site
-            try { sessionStorage.setItem(cacheKey, JSON.stringify(data)); } catch (err) { console.warn("Cache ignorado: Banco de produtos muito grande para a memória local."); }
-
-            sheetsDataRaw = data.filter(i => i.tipo !== 'produto');
-            produtosMestre = data.filter(i => i.tipo === 'produto');
-            window.triggerAllRenders();
-
-            // Atualiza a UI do consultor automaticamente se ele estiver logado
-            if (currentUserRole === 'admin' && typeof window.calcularKpiConsultor === 'function') {
-                window.calcularKpiConsultor();
-            }
-        }
-    } catch (parseErr) {
-        console.error("A API não retornou um JSON válido:", textData);
-    }
-
-} catch (e) {
-    console.error("Erro ao comunicar com o Google Sheets:", e);
-} finally {
-    if (loadingQ) loadingQ.classList.add('hidden');
-    if (loadingMain) loadingMain.classList.add('hidden');
-}
 };
 
 // ==========================================
