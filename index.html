@@ -930,15 +930,22 @@
                             <h1 class="text-3xl font-heading font-bold text-navy">Visão Geral de Perdas</h1>
                             <p class="text-slate-500 mt-1">Evolução dos KPIs após intervenção da LUCROSEGURO.</p>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <!-- Input de Mês Corrigido para carregar os KPIs -->
+                            <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
+                                <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer"
+                                    id="filtro-mes-dash" type="month" />
+                            </div>
+
                             <button
                                 class="text-slate-500 hover:text-navy font-bold text-sm flex items-center gap-2 transition-colors border border-slate-200 px-4 py-2 rounded-lg bg-white hidden sm:flex shadow-sm hover:bg-slate-50"
                                 onclick="window.print()">
                                 <i class="w-4 h-4" data-lucide="printer"></i> Gerar PDF
                             </button>
                             <div
-                                class="bg-emerald/10 text-emerald font-bold px-4 py-2 rounded-lg border border-emerald/20 flex items-center gap-2">
-                                <i class="w-5 h-5" data-lucide="check-circle"></i> Dados Atualizados
+                                class="hidden sm:flex bg-emerald/10 text-emerald font-bold px-4 py-2 rounded-lg border border-emerald/20 items-center gap-2">
+                                <i class="w-5 h-5" data-lucide="check-circle"></i> Atualizado
                             </div>
                         </div>
                     </div>
