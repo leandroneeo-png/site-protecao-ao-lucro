@@ -676,9 +676,14 @@ window.encerrarInventarioAtual = async (event) => {
             body: JSON.stringify(payload),
             headers: { 'Content-Type': 'text/plain;charset=utf-8' }
         });
-        sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
+        try {
+            sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
+        } catch (e) {
+            console.warn("Memória local cheia, mas o inventário foi fechado com sucesso na nuvem.");
+        }
     }
-    catch (err) { alert('Erro ao fechar no servidor.'); } finally { btn.innerHTML = txtOriginal; }
+    catch (err) { alert('Erro de rede ao fechar: ' + err.message); }
+    finally { btn.innerHTML = txtOriginal; }
 };
 
 document.getElementById('form-inventario')?.addEventListener('submit', async (e) => {
@@ -1866,19 +1871,26 @@ window.encerrarInventarioAtualInd = async (event) => {
     const idInv = document.getElementById('inv-ind-id-oculto').value; const filial = document.getElementById('inv-ind-filial-oculto').value;
     if (!confirm(`Deseja encerrar o ${idInv}?`)) return;
     const btn = event.currentTarget; const txtOriginal = btn.innerHTML; btn.innerHTML = '<i class="w-4 h-4 animate-spin" data-lucide="loader-2"></i> Fechando...';
+
     const payload = { tipo: "fechar_ind_inventario", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: filial, id_inventario: idInv };
 
     sheetsDataRaw.push({ tipo: 'ind_inventario', id_inventario: idInv, status: 'FECHADO', gtin: 'FECHAMENTO', filial: filial });
     window.voltarTelaInventarioInd();
+
     try {
         await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: { 'Content-Type': 'text/plain;charset=utf-8' }
         });
-        sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
+        try {
+            sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
+        } catch (e) {
+            console.warn("Memória local cheia, mas salvo com sucesso.");
+        }
     }
-    catch (err) { alert('Erro ao fechar.'); } finally { btn.innerHTML = txtOriginal; }
+    catch (err) { alert('Erro de rede ao fechar: ' + err.message); }
+    finally { btn.innerHTML = txtOriginal; }
 };
 
 document.getElementById('form-inventario-ind')?.addEventListener('submit', async (e) => {
