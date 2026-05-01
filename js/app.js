@@ -85,6 +85,7 @@ window.exportDataToCSV = (tipo, filename) => {
 
 // Centralizador de renderização para uso na memória (Instantâneo)
 window.triggerAllRenders = () => {
+    try { window.carregarKpiDoFirebase(); } catch (e) { } // <-- Gatilho da Visão Geral (KPIs) adicionado aqui!
     try { window.renderQuebrasDashboard(); } catch (e) { } try { window.renderRefugoDashboard(); } catch (e) { } try { window.renderParadasDashboard(); } catch (e) { } try { window.renderQualidadeDashboard(); } catch (e) { } try { window.renderAlmoxarifadoDashboard(); } catch (e) { } try { window.renderListaInventariosInd(); } catch (e) { } try { window.renderQualidadeDashboard(); } catch (e) { } try { window.renderAlmoxarifadoDashboard(); } catch (e) { } try { window.renderListaInventariosInd(); } catch (e) { }
     try { window.renderPrecoDashboard(); } catch (e) { }
     try { window.renderDocasDashboard(); } catch (e) { }
@@ -2357,8 +2358,7 @@ window.carregarKpiDoFirebase = async () => {
         const q = query(kpiRef,
             where("empresa", "==", selEmpresa),
             where("filial", "==", selFilial),
-            where("mes_referencia", "==", inputMes),
-            orderBy("timestamp", "desc")
+            where("mes_referencia", "==", inputMes)
         );
 
         const querySnapshot = await getDocs(q);
