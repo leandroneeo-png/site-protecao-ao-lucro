@@ -28,6 +28,7 @@ const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxmr0Y
 let chartMotivosInstance = null;
 let chartFurtosPerfilInstance = null;
 let chartFurtosLocaisInstance = null;
+let chartEvolucaoInstance = null;
 let sheetsDataRaw = [];
 let produtosMestre = [];
 let itemEmAuditoria = null;
@@ -2325,6 +2326,98 @@ document.getElementById('btn-admin-tab-kpi')?.addEventListener('click', () => {
     setTimeout(window.carregarFiltrosKpi, 200);
 });
 
+// --- NOVO MOTOR: HISTÓRICO PARA GRÁFICO E TABELA ---
+window.carregarHistoricoKpi = async (empresa, filial) => {
+    if (!empresa || !filial) return;
+    try {
+        const kpiRef = collection(db, 'artifacts/lucroseguro-app/public/data/kpis_mensais');
+        const q = query(kpiRef, where("empresa", "==", empresa), where("filial", "==", filial));
+        const snapshot = await getDocs(q);
+
+        let historico = [];
+        snapshot.forEach(doc => historico.push(doc.data()));
+
+        // Ordenar por mês cronologicamente (Ex: 2026-01, 2026-02)
+        historico.sort((a, b) => String(a.mes_referencia).localeCompare(String(b.mes_referencia)));
+
+        const mesesLabels = [];
+        const dataDesconhecida = [];
+        const dataConhecida = [];
+        const dataFinanceira = [];
+        const dataAdmin = [];
+
+        const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+        historico.forEach(item => {
+            let mesStr = item.mes_referencia; // Formato: YYYY-MM
+            if (mesStr && mesStr.includes('-')) {
+                let parts = mesStr.split('-');
+                let mesIdx = parseInt(parts[1], 10) - 1;
+                mesesLabels.push(nomesMeses[mesIdx] + '/' + parts[0].slice(-2)); // Ex: Abril/26
+            } else {
+                mesesLabels.push(mesStr);
+            }
+
+            dataDesconhecida.push(item.perda_desconhecida || 0);
+            dataConhecida.push(item.perda_conhecida || 0);
+            dataFinanceira.push(item.perda_financeira || 0);
+            dataAdmin.push(item.perda_administrativa || 0);
+        });
+
+        // 1. Renderizar Gráfico ApexCharts
+        const divChart = document.querySelector("#mainChart");
+        if (divChart && typeof ApexCharts !== 'undefined') {
+            if (window.chartEvolucaoInstance) window.chartEvolucaoInstance.destroy();
+            divChart.innerHTML = '';
+
+            const options = {
+                series: [
+                    { name: 'Perda Desconhecida', data: dataDesconhecida },
+                    { name: 'Perda Conhecida', data: dataConhecida },
+                    { name: 'Perda Financeira', data: dataFinanceira },
+                    { name: 'Perda Admin.', data: dataAdmin }
+                ],
+                chart: { type: 'line', height: 320, fontFamily: 'Inter, sans-serif', toolbar: { show: false } },
+                colors: ['#ef4444', '#f97316', '#10b981', '#3b82f6'], // Vermelho, Laranja, Verde, Azul
+                stroke: { width: 3, curve: 'smooth' },
+                xaxis: { categories: mesesLabels },
+                yaxis: { labels: { formatter: function (val) { return "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 0 }); } } },
+                dataLabels: { enabled: false },
+                legend: { position: 'top' },
+                tooltip: { y: { formatter: function (val) { return "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); } } }
+            };
+
+            window.chartEvolucaoInstance = new ApexCharts(divChart, options);
+            window.chartEvolucaoInstance.render();
+        }
+
+        // 2. Preencher a Tabela de Razão Analítico (Bônus)
+        const tbody = document.getElementById('client-history-tbody');
+        if (tbody) {
+            if (historico.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-4 text-center text-slate-500 italic">Nenhum histórico encontrado.</td></tr>';
+            } else {
+                let html = '';
+                const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+                // Reverse para a tabela mostrar o mês mais recente primeiro
+                [...historico].reverse().forEach(item => {
+                    html += `<tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="px-6 py-4 font-bold text-navy">${item.mes_referencia}</td>
+                            <td class="px-6 py-4 text-xs text-slate-500">Fechamento Mensal</td>
+                            <td class="px-6 py-4 font-bold text-navy">${formatter.format(item.perda_global || 0)}</td>
+                            <td class="px-6 py-4 font-bold text-emerald">${formatter.format(item.economia_gerada || 0)}</td>
+                            <td class="px-6 py-4 border-l border-slate-200 text-red-500 font-medium">${formatter.format(item.perda_desconhecida || 0)}</td>
+                            <td class="px-6 py-4 text-orange-500 font-medium">${formatter.format(item.perda_conhecida || 0)}</td>
+                            <td class="px-6 py-4 text-emerald-600 font-medium">${formatter.format(item.perda_financeira || 0)}</td>
+                            <td class="px-6 py-4 text-blue-500 font-medium">${formatter.format(item.perda_administrativa || 0)}</td>
+                        </tr>`;
+                });
+                tbody.innerHTML = html;
+            }
+        }
+    } catch (e) { console.error("Erro ao carregar histórico: ", e); }
+};
+
 window.carregarKpiDoFirebase = async () => {
     const viewClientActive = !document.getElementById('view-client').classList.contains('hidden');
 
@@ -2434,6 +2527,12 @@ window.carregarKpiDoFirebase = async () => {
 
             if (currentUserRole === 'admin' && !viewClientActive) window.calcularKpiConsultor();
         }
+
+        // --- DISPARA O GRÁFICO E A TABELA COM OS DADOS DESTA EMPRESA/FILIAL ---
+        if (typeof window.carregarHistoricoKpi === 'function') {
+            window.carregarHistoricoKpi(selEmpresa, selFilial);
+        }
+
     } catch (error) {
         console.error("Erro ao puxar dados do Firebase:", error);
     }
