@@ -503,7 +503,8 @@ function doGet(e) {
             gtin: gtinProcessado, descricao: dataI[i][6],
             quantidade: dataI[i][7], custo: converterMoedaParaFloat(dataI[i][8]),
             motivo: dataI[i][9], id_inventario: dataI[i][10], status: dataI[i][11], filial: dataI[i][2],
-            qtd_sistema: dataI[i][12] || 0, divergencia: dataI[i][13] || 0
+            qtd_sistema: dataI[i][12] || 0,
+            divergencia: dataI[i][13] !== undefined ? dataI[i][13] : ""
           });
         }
       }
