@@ -602,7 +602,8 @@ window.renderDashboardInventarioMaster = () => {
 
                     if (matchData) {
                         const custo = parseFloat(String(i.custo).replace(',', '.')) || 0;
-                        const divNum = parseFloat(String(i.divergencia !== undefined ? i.divergencia : i.quantidade).replace(',', '.')) || 0;
+                        const temDivergencia = i.divergencia !== undefined && i.divergencia !== "";
+                        const divNum = parseFloat(String(temDivergencia ? i.divergencia : i.quantidade).replace(',', '.')) || 0;
                         const isEstorno = String(i.descricao).includes('[ESTORNO]');
 
                         let valorFinanceiro = custo * Math.abs(divNum);
@@ -757,8 +758,9 @@ window.atualizarTotaisTelaInventario = (idInv) => {
 
     bipagens.forEach(i => {
         const c = parseFloat(i.custo) || 0;
-        // Pega a divergência (ou quantidade como fallback antigo)
-        const divOriginal = parseFloat(i.divergencia !== undefined ? i.divergencia : i.quantidade) || 0;
+        // Pega a divergência (se não for vazia) ou a quantidade como fallback antigo
+        const temDivergencia = i.divergencia !== undefined && i.divergencia !== "";
+        const divOriginal = parseFloat(String(temDivergencia ? i.divergencia : i.quantidade).replace(',', '.')) || 0;
         const isEstorno = String(i.descricao).includes('[ESTORNO]');
         const m = (i.motivo || '').trim();
 
@@ -807,7 +809,8 @@ window.renderHistoricoBipagem = (idInv) => {
             // Cálculos financeiros com conversão para Float
             const custoUnit = parseFloat(i.custo) || 0;
             const qtdNum = parseFloat(i.quantidade) || 0;
-            const divNum = parseFloat(i.divergencia !== undefined ? i.divergencia : i.quantidade) || 0;
+            const temDivergencia = i.divergencia !== undefined && i.divergencia !== "";
+            const divNum = parseFloat(String(temDivergencia ? i.divergencia : i.quantidade).replace(',', '.')) || 0;
             const totalPerda = custoUnit * Math.abs(divNum);
 
             const motivoText = !isEstorno ? `
@@ -2332,7 +2335,8 @@ window.calcularKpiConsultor = () => {
         else if (i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA') {
             const idInv = String(getVal('inventario') || getVal('id')).trim();
             if (inventariosFechados.has(idInv)) {
-                const divNum = parseFloat(String(i.divergencia !== undefined ? i.divergencia : i.quantidade).replace(',', '.')) || 0;
+                const temDivergencia = i.divergencia !== undefined && i.divergencia !== "";
+                const divNum = parseFloat(String(temDivergencia ? i.divergencia : i.quantidade).replace(',', '.')) || 0;
                 const isEstorno = String(i.descricao).includes('[ESTORNO]');
 
                 let valFinInv = custo * Math.abs(divNum);
