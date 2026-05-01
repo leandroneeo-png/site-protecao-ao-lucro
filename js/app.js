@@ -1368,7 +1368,7 @@ document.getElementById('btn-switch-client')?.addEventListener('click', async ()
                 if (el) { el.innerHTML = optionsForm; el.value = listaFiliais[0]; }
             });
 
-            ['filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado', 'filtro-filial-contagem-ind'].forEach(id => {
+            ['filtro-filial-dash', 'filtro-filial-quebra', 'filtro-filial-docas', 'filtro-filial-validade', 'filtro-filial-furtos', 'filtro-filial-preco', 'filtro-filial-caixa', 'filtro-filial-inv', 'filtro-filial-tar', 'filtro-filial-refugo', 'filtro-filial-paradas', 'filtro-filial-qualidade', 'filtro-filial-almoxarifado', 'filtro-filial-contagem-ind'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) { el.innerHTML = optionsFiltro; el.value = listaFiliais.length > 1 ? 'todas' : listaFiliais[0]; }
             });
@@ -2327,8 +2327,12 @@ window.carregarKpiDoFirebase = async () => {
 
     if (viewClientActive) {
         selEmpresa = currentUserEmpresa;
-        // Pega a filial principal do usuário (ex: "Fanny") para dar Match exato com o Firebase
-        selFilial = currentUserFilial.split(',')[0].trim();
+
+        // Puxa do seletor que acabamos de criar. Se der algum erro, usa o fallback padrão.
+        const elFilial = document.getElementById('filtro-filial-dash');
+        selFilial = (elFilial && elFilial.value && elFilial.value !== 'todas')
+            ? elFilial.value
+            : currentUserFilial.split(',')[0].trim();
 
         const elMes = document.getElementById('filtro-mes-dash');
         if (elMes && elMes.value) {

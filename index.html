@@ -931,8 +931,15 @@
                             <p class="text-slate-500 mt-1">Evolução dos KPIs após intervenção da LUCROSEGURO.</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <!-- Input de Mês Corrigido para carregar os KPIs -->
+                            <!-- Filtros de Loja e Mês para o Dashboard KPI -->
                             <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="filter"></i>
+                                <select
+                                    class="hidden px-3 py-1 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy"
+                                    id="filtro-filial-dash"></select>
+
+                                <div class="h-6 border-l border-slate-300 mx-1"></div>
+
                                 <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
                                 <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer"
                                     id="filtro-mes-dash" type="month" />
