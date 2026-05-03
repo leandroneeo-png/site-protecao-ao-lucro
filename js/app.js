@@ -480,29 +480,110 @@ window.renderCaixaDashboard = () => {
 
 window.renderTarefasDashboard = () => {
     const divSis = document.getElementById('lista-tarefas-sistema'); const divMan = document.getElementById('lista-tarefas-manuais'); if (!divSis || !divMan) return;
-    const filtroFilial = document.getElementById('filtro-filial-tar')?.value; let htmlSis = ''; let htmlMan = ''; const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const filtroFilial = document.getElementById('filtro-filial-tar')?.value; let htmlMan = '';
 
-    let validades = sheetsDataRaw.filter(i => i.tipo === 'validade');
-    if (filtroFilial && filtroFilial !== 'todas') validades = validades.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
-    validades.forEach(v => {
-        let pData = String(v.data_validade).split('/'); let dVenc = pData.length === 3 ? new Date(pData[2], pData[1] - 1, pData[0]) : new Date(v.data_validade + 'T00:00:00'); let dias = Math.ceil((dVenc.getTime() - hoje.getTime()) / (1000 * 3600 * 24));
-        if (dias <= 15 && dias >= 0) {
-            const itemEnc = encodeURIComponent(JSON.stringify(v));
-            htmlSis += `<div class="p-3 bg-red-50 border border-red-200 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-3"><div class="flex items-start gap-3"><i class="w-5 h-5 text-red-600 mt-1" data-lucide="alert-triangle"></i><div><p class="text-sm font-bold text-red-800">Risco: ${v.descricao || 'Produto sem nome'}</p><p class="text-xs text-red-600 font-medium">Vence em ${dias} dias | Filial: ${v.filial}</p></div></div><button onclick="abrirModalAuditoria('${itemEnc}')" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded shadow-sm transition-colors">Auditar</button></div>`;
+    let htmlSis = '';
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const checkResolvido = (titulo, filial) => {
+        return sheetsDataRaw.some(i => i.tipo === 'tarefa' && i.titulo === titulo && String(i.filial).trim() === String(filial).trim() && i.status === 'CONCLUÍDA');
+    };
+
+    const addDias = (dataStr, dias) => {
+        let d;
+        if (dataStr && String(dataStr).includes('/')) {
+            let p = String(dataStr).split(' ')[0].split('/');
+            d = new Date(p[2], p[1] - 1, p[0]);
+        } else if (dataStr && String(dataStr).includes('-')) {
+            d = new Date(String(dataStr).split('T')[0] + 'T00:00:00');
+        } else {
+            d = new Date();
+        }
+        if (isNaN(d.getTime())) d = new Date();
+        d.setDate(d.getDate() + dias);
+        return d.toISOString().split('T')[0];
+    };
+
+    // ALERTA 1: CAIXA (> R$ 100)
+    let caixas = sheetsDataRaw.filter(i => i.tipo === 'caixa_central' && parseFloat(String(i.valor_falta).replace(',', '.')) > 100);
+    if (filtroFilial && filtroFilial !== 'todas') caixas = caixas.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+    caixas.forEach(c => {
+        const titulo = `[SISTEMA] Auditoria de Caixa - Operador: ${c.operador} (${c.data_auditoria})`;
+        if (!checkResolvido(titulo, c.filial)) {
+            const prazo = addDias(c.data_auditoria, 5);
+            const risco = parseFloat(String(c.valor_falta).replace(',', '.'));
+            const tituloEnc = encodeURIComponent(titulo);
+
+            htmlSis += `<div class="p-3 bg-orange-50 border border-orange-200 rounded-lg flex items-start gap-3 transition-opacity duration-300">
+                <input type="checkbox" onchange="window.concluirTarefaAutomatica('${tituloEnc}', '${c.filial}', '${prazo}', 'Alta', ${risco}, this)" class="w-5 h-5 rounded border-orange-300 text-orange-600 focus:ring-orange-600 cursor-pointer mt-1 shrink-0">
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                        <p class="text-sm font-bold text-orange-800">${titulo}</p>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700">Alta</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-200 text-orange-800">R$ ${risco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <p class="text-xs text-orange-600 font-medium mb-1">Falta financeira confirmada no caixa. | Prazo: ${prazo}</p>
+                    <p class="text-xs text-orange-600 font-bold bg-orange-100 p-1.5 rounded inline-block">Ação: Auditar o operador e registrar a tratativa.</p>
+                </div>
+            </div>`;
         }
     });
 
-    let caixas = sheetsDataRaw.filter(i => i.tipo === 'caixa_central' && parseFloat(i.valor_falta) > 100);
-    if (filtroFilial && filtroFilial !== 'todas') caixas = caixas.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
-    caixas.forEach(c => {
-        htmlSis += `<div class="p-3 bg-orange-50 border border-orange-200 rounded-lg flex flex-col items-start gap-3"><div class="flex items-start gap-3"><i class="w-5 h-5 text-orange-600 mt-1" data-lucide="alert-octagon"></i><div><p class="text-sm font-bold text-orange-800">Falta de Caixa: R$ ${parseFloat(c.valor_falta).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p><p class="text-xs text-orange-600 font-medium">Operador: ${c.operador} | Filial: ${c.filial} | ${c.data_auditoria}</p></div></div></div>`;
+    // ALERTA 2: INVENTÁRIO (Divergência > 500 sem motivo)
+    let invCriticos = sheetsDataRaw.filter(i => i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA' && parseFloat(i.custo) * Math.abs(parseFloat(String(i.divergencia || i.quantidade).replace(',', '.'))) > 500 && (i.motivo === 'Não Identificado' || !i.motivo) && parseFloat(String(i.divergencia || i.quantidade).replace(',', '.')) < 0);
+    if (filtroFilial && filtroFilial !== 'todas') invCriticos = invCriticos.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+    invCriticos.forEach(inv => {
+        const titulo = `[SISTEMA] Ajuste alto sem justificativa - EAN: ${inv.gtin}`;
+        if (!checkResolvido(titulo, inv.filial)) {
+            const prazo = addDias(inv.data_registro, 5);
+            const risco = parseFloat(inv.custo) * Math.abs(parseFloat(String(inv.divergencia || inv.quantidade).replace(',', '.')));
+            const tituloEnc = encodeURIComponent(titulo);
+
+            htmlSis += `<div class="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 transition-opacity duration-300">
+                <input type="checkbox" onchange="window.concluirTarefaAutomatica('${tituloEnc}', '${inv.filial}', '${prazo}', 'Alta', ${risco}, this)" class="w-5 h-5 rounded border-red-300 text-red-600 focus:ring-red-600 cursor-pointer mt-1 shrink-0">
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                        <p class="text-sm font-bold text-red-800">${titulo}</p>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700">Alta</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-200 text-red-800">R$ ${risco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <p class="text-xs text-red-600 font-medium mb-1">Produto: ${inv.descricao || 'N/A'} | Prazo: ${prazo}</p>
+                    <p class="text-xs text-red-600 font-bold bg-red-100 p-1.5 rounded inline-block">Ação: Fazer recontagem do produto.</p>
+                </div>
+            </div>`;
+        }
     });
 
-    let inventariosCriticos = sheetsDataRaw.filter(i => i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA' && parseFloat(i.custo) * Math.abs(parseFloat(String(i.divergencia || i.quantidade).replace(',', '.'))) > 500 && (i.motivo === 'Não Identificado' || !i.motivo) && parseFloat(String(i.divergencia || i.quantidade).replace(',', '.')) < 0);
-    if (filtroFilial && filtroFilial !== 'todas') inventariosCriticos = inventariosCriticos.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
-    inventariosCriticos.forEach(inv => {
-        const perdaValor = parseFloat(inv.custo) * Math.abs(parseFloat(String(inv.divergencia || inv.quantidade).replace(',', '.')));
-        htmlSis += `<div class="p-3 bg-red-50 border border-red-200 rounded-lg flex flex-col items-start gap-3"><div class="flex items-start gap-3"><i class="w-5 h-5 text-red-600 mt-1" data-lucide="package-minus"></i><div><p class="text-sm font-bold text-red-800">Perda Crítica (Inv): ${inv.descricao || inv.gtin}</p><p class="text-xs text-red-600 font-medium">Risco: R$ ${perdaValor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} | Filial: ${inv.filial} | ${inv.id_inventario}</p></div></div></div>`;
+    // ALERTA 3: VALIDADE (<= 15 Dias)
+    let validades = sheetsDataRaw.filter(i => i.tipo === 'validade' && i.rebaixado !== 'SIM');
+    if (filtroFilial && filtroFilial !== 'todas') validades = validades.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+    validades.forEach(v => {
+        let pData = String(v.data_validade).split('/');
+        let dVenc = pData.length === 3 ? new Date(pData[2], pData[1] - 1, pData[0]) : new Date(v.data_validade + 'T00:00:00');
+        let diasParaVencer = Math.ceil((dVenc.getTime() - hoje.getTime()) / (1000 * 3600 * 24));
+
+        if (diasParaVencer <= 15 && diasParaVencer >= 0) {
+            const titulo = `[SISTEMA] Produto próximo ao vencimento - EAN: ${v.gtin}`;
+            if (!checkResolvido(titulo, v.filial)) {
+                const prazo = addDias(null, 2); // Hoje + 2 dias
+                const risco = parseFloat(v.custo) * parseFloat(v.quantidade);
+                const tituloEnc = encodeURIComponent(titulo);
+
+                htmlSis += `<div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-3 transition-opacity duration-300">
+                    <input type="checkbox" onchange="window.concluirTarefaAutomatica('${tituloEnc}', '${v.filial}', '${prazo}', 'Alta', ${risco}, this)" class="w-5 h-5 rounded border-yellow-300 text-yellow-600 focus:ring-yellow-600 cursor-pointer mt-1 shrink-0">
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <p class="text-sm font-bold text-yellow-800">${titulo}</p>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700">Alta</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-200 text-yellow-800">R$ ${risco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                        </div>
+                        <p class="text-xs text-yellow-600 font-medium mb-1">Produto: ${v.descricao} | Vence em ${diasParaVencer} dias | Prazo: ${prazo}</p>
+                        <p class="text-xs text-yellow-600 font-bold bg-yellow-100 p-1.5 rounded inline-block">Ação: Solicitar rebaixa e revender nos caixas.</p>
+                    </div>
+                </div>`;
+            }
+        }
     });
 
     let tarefas = sheetsDataRaw.filter(i => i.tipo === 'tarefa' && i.status === 'PENDENTE');
@@ -558,12 +639,21 @@ window.renderTarefasDashboard = () => {
     }
 };
 
-let tarefaEmConclusao = null;
-window.concluirTarefa = (tituloEncoded, filial, checkboxEl) => {
-    checkboxEl.checked = false; // Aguarda a confirmação via modal
-    const titulo = decodeURIComponent(tituloEncoded);
-    tarefaEmConclusao = { titulo, filial, checkboxEl };
+window.tarefaEmConclusao = null;
 
+window.concluirTarefa = (tituloEncoded, filial, checkboxEl) => {
+    checkboxEl.checked = false;
+    const titulo = decodeURIComponent(tituloEncoded);
+    window.tarefaEmConclusao = { titulo, filial, checkboxEl, isAuto: false };
+    document.getElementById('modal-tarefa-titulo').innerText = titulo;
+    document.getElementById('modal-tar-justificativa').value = '';
+    document.getElementById('modal-conclusao-tarefa').classList.remove('hidden');
+};
+
+window.concluirTarefaAutomatica = (tituloEncoded, filial, prazo, prioridade, risco, checkboxEl) => {
+    checkboxEl.checked = false;
+    const titulo = decodeURIComponent(tituloEncoded);
+    window.tarefaEmConclusao = { titulo, filial, checkboxEl, isAuto: true, prazo, prioridade, risco };
     document.getElementById('modal-tarefa-titulo').innerText = titulo;
     document.getElementById('modal-tar-justificativa').value = '';
     document.getElementById('modal-conclusao-tarefa').classList.remove('hidden');
@@ -571,7 +661,7 @@ window.concluirTarefa = (tituloEncoded, filial, checkboxEl) => {
 
 window.confirmarConclusaoTarefa = async (e) => {
     e.preventDefault();
-    if (!auth.currentUser || !tarefaEmConclusao) return;
+    if (!auth.currentUser || !window.tarefaEmConclusao) return;
 
     const btn = document.getElementById('btn-confirm-tarefa');
     const txtOrig = btn.innerHTML;
@@ -579,40 +669,51 @@ window.confirmarConclusaoTarefa = async (e) => {
     btn.disabled = true;
 
     const justificativa = document.getElementById('modal-tar-justificativa').value;
-    const { titulo, filial, checkboxEl } = tarefaEmConclusao;
-    const parentDiv = checkboxEl.closest('.p-3.bg-slate-50');
+    const t = window.tarefaEmConclusao;
+    const parentDiv = t.checkboxEl.closest('.p-3');
 
     document.getElementById('modal-conclusao-tarefa').classList.add('hidden');
-
     if (parentDiv) parentDiv.style.opacity = '0.4';
-    checkboxEl.checked = true;
-    checkboxEl.disabled = true;
+    t.checkboxEl.checked = true;
+    t.checkboxEl.disabled = true;
 
-    // Atualização otimista
-    const idx = sheetsDataRaw.findIndex(x => x.tipo === 'tarefa' && x.titulo === titulo && x.filial === filial && x.status === 'PENDENTE');
+    // Atualização Otimista
+    let idx = sheetsDataRaw.findIndex(x => x.tipo === 'tarefa' && x.titulo === t.titulo && x.filial === t.filial && x.status === 'PENDENTE');
+
     if (idx > -1) {
         sheetsDataRaw[idx].status = 'CONCLUÍDA';
         sheetsDataRaw[idx].justificativa = justificativa;
         sheetsDataRaw[idx].data_conclusao = new Date().toLocaleString('pt-BR');
+    } else if (t.isAuto) {
+        sheetsDataRaw.push({
+            tipo: 'tarefa', filial: t.filial, titulo: t.titulo, prazo: t.prazo,
+            prioridade: t.prioridade, risco_financeiro: t.risco, status: 'CONCLUÍDA',
+            data_conclusao: new Date().toLocaleString('pt-BR'), justificativa: justificativa
+        });
     }
     window.renderTarefasDashboard();
 
-    const payload = { tipo: "concluir_tarefa", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: filial, titulo: titulo, justificativa: justificativa };
+    const payload = {
+        tipo: "concluir_tarefa", email: auth.currentUser.email, empresa: currentUserEmpresa,
+        filial: t.filial, titulo: t.titulo, justificativa: justificativa,
+        prazo: t.prazo, prioridade: t.prioridade, risco: t.risco
+    };
+
     try {
         await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) });
         sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
     }
     catch (err) {
-        alert("Erro ao concluir a tarefa no banco de dados.");
-        checkboxEl.disabled = false;
-        checkboxEl.checked = false;
+        alert("Erro ao concluir a tarefa.");
+        t.checkboxEl.disabled = false; t.checkboxEl.checked = false;
         if (parentDiv) parentDiv.style.opacity = '1';
         if (idx > -1) sheetsDataRaw[idx].status = 'PENDENTE';
+        else if (t.isAuto) sheetsDataRaw.pop();
         window.renderTarefasDashboard();
     } finally {
-        btn.innerHTML = txtOrig;
-        btn.disabled = false;
+        btn.innerHTML = txtOrig; btn.disabled = false;
         if (window.lucide) lucide.createIcons();
+        window.tarefaEmConclusao = null;
     }
 };
 

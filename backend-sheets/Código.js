@@ -260,19 +260,27 @@ function doPost(e) {
     else if (tipo === "concluir_tarefa") {
       const ss = SpreadsheetApp.openById(ID_TAREFAS);
       let sheet = ss.getSheets()[0];
+      let encontrou = false;
       if (sheet.getLastRow() > 1) {
         const data = sheet.getDataRange().getDisplayValues();
-        // Lemos de baixo para cima para pegar a mais recente
         for (let i = data.length - 1; i > 0; i--) {
           const row = data[i];
-          // row[1]=Empresa, row[2]=Filial, row[4]=Titulo, row[6]=Status
           if (row[1] === empresa && row[2] === filial && row[4] === payload.titulo && row[6] === "PENDENTE") {
-            sheet.getRange(i + 1, 7).setValue("CONCLUÍDA"); // Coluna G
-            sheet.getRange(i + 1, 10).setValue(dataHoraFormatada); // Coluna J (Data Conclusão)
-            sheet.getRange(i + 1, 11).setValue(payload.justificativa); // Coluna K (Justificativa)
+            sheet.getRange(i + 1, 7).setValue("CONCLUÍDA");
+            sheet.getRange(i + 1, 10).setValue(dataHoraFormatada);
+            sheet.getRange(i + 1, 11).setValue(payload.justificativa);
+            encontrou = true;
             break;
           }
         }
+      }
+      // MOTOR GHOST TASK: Cria a tarefa arquivada se ela for do sistema
+      if (!encontrou && String(payload.titulo).indexOf("[SISTEMA]") > -1) {
+        sheet.appendRow([
+          dataHoraFormatada, empresa, filial, email, payload.titulo,
+          payload.prazo || "", "CONCLUÍDA", payload.prioridade || "Alta",
+          converterMoedaParaFloat(payload.risco), dataHoraFormatada, payload.justificativa
+        ]);
       }
     }
 
