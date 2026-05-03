@@ -492,26 +492,128 @@ window.renderTarefasDashboard = () => {
         }
     });
 
+    let caixas = sheetsDataRaw.filter(i => i.tipo === 'caixa_central' && parseFloat(i.valor_falta) > 100);
+    if (filtroFilial && filtroFilial !== 'todas') caixas = caixas.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+    caixas.forEach(c => {
+        htmlSis += `<div class="p-3 bg-orange-50 border border-orange-200 rounded-lg flex flex-col items-start gap-3"><div class="flex items-start gap-3"><i class="w-5 h-5 text-orange-600 mt-1" data-lucide="alert-octagon"></i><div><p class="text-sm font-bold text-orange-800">Falta de Caixa: R$ ${parseFloat(c.valor_falta).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p><p class="text-xs text-orange-600 font-medium">Operador: ${c.operador} | Filial: ${c.filial} | ${c.data_auditoria}</p></div></div></div>`;
+    });
+
+    let inventariosCriticos = sheetsDataRaw.filter(i => i.tipo === 'inventario' && i.gtin !== 'FECHAMENTO' && i.gtin !== 'LISTA_DIRIGIDA' && parseFloat(i.custo) * Math.abs(parseFloat(String(i.divergencia || i.quantidade).replace(',', '.'))) > 500 && (i.motivo === 'Não Identificado' || !i.motivo) && parseFloat(String(i.divergencia || i.quantidade).replace(',', '.')) < 0);
+    if (filtroFilial && filtroFilial !== 'todas') inventariosCriticos = inventariosCriticos.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+    inventariosCriticos.forEach(inv => {
+        const perdaValor = parseFloat(inv.custo) * Math.abs(parseFloat(String(inv.divergencia || inv.quantidade).replace(',', '.')));
+        htmlSis += `<div class="p-3 bg-red-50 border border-red-200 rounded-lg flex flex-col items-start gap-3"><div class="flex items-start gap-3"><i class="w-5 h-5 text-red-600 mt-1" data-lucide="package-minus"></i><div><p class="text-sm font-bold text-red-800">Perda Crítica (Inv): ${inv.descricao || inv.gtin}</p><p class="text-xs text-red-600 font-medium">Risco: R$ ${perdaValor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} | Filial: ${inv.filial} | ${inv.id_inventario}</p></div></div></div>`;
+    });
+
     let tarefas = sheetsDataRaw.filter(i => i.tipo === 'tarefa' && i.status === 'PENDENTE');
     if (filtroFilial && filtroFilial !== 'todas') tarefas = tarefas.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+
+    const prioMap = { 'Alta': 3, 'Média': 2, 'Baixa': 1 };
+    tarefas.sort((a, b) => {
+        const pA = prioMap[a.prioridade] || 0;
+        const pB = prioMap[b.prioridade] || 0;
+        if (pA !== pB) return pB - pA;
+        const rA = parseFloat(a.risco_financeiro) || 0;
+        const rB = parseFloat(b.risco_financeiro) || 0;
+        return rB - rA;
+    });
+
     tarefas.forEach(t => {
         const tituloEnc = encodeURIComponent(t.titulo);
-        htmlMan += `<div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between transition-opacity duration-300"><div class="flex items-center gap-3"><input type="checkbox" onchange="window.concluirTarefa('${tituloEnc}', '${t.filial}', this)" class="w-5 h-5 rounded border-slate-300 text-navy focus:ring-navy cursor-pointer"><div><p class="text-sm font-bold text-navy">${t.titulo}</p><p class="text-xs text-slate-500 font-medium">Prazo: ${t.prazo} | Filial: ${t.filial}</p></div></div></div>`;
+        const prioBadge = t.prioridade ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.prioridade === 'Alta' ? 'bg-red-100 text-red-700' : (t.prioridade === 'Média' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700')}">${t.prioridade}</span>` : '';
+        const riscoBadge = t.risco_financeiro && parseFloat(t.risco_financeiro) > 0 ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700">R$ ${parseFloat(t.risco_financeiro).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>` : '';
+        htmlMan += `<div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between transition-opacity duration-300"><div class="flex items-center gap-3"><input type="checkbox" onchange="window.concluirTarefa('${tituloEnc}', '${t.filial}', this)" class="w-5 h-5 rounded border-slate-300 text-navy focus:ring-navy cursor-pointer"><div><div class="flex items-center gap-2 flex-wrap mb-1"><p class="text-sm font-bold text-navy">${t.titulo}</p>${prioBadge}${riscoBadge}</div><p class="text-xs text-slate-500 font-medium">Prazo: ${t.prazo} | Filial: ${t.filial}</p></div></div></div>`;
     });
 
     divSis.innerHTML = htmlSis || '<p class="text-sm text-slate-400 text-center py-4">Nenhum risco sistêmico detectado.</p>'; divMan.innerHTML = htmlMan || '<p class="text-sm text-slate-400 text-center py-4">Nenhuma demanda pendente.</p>';
+
+    const divChartSla = document.querySelector("#chart-tarefas-sla");
+    if (divChartSla && typeof ApexCharts !== 'undefined') {
+        const concluidas = sheetsDataRaw.filter(i => i.tipo === 'tarefa' && i.status === 'CONCLUÍDA');
+        let noPrazo = 0; let atrasadas = 0;
+        concluidas.forEach(t => {
+            if (t.data_conclusao && t.prazo) {
+                const parts = String(t.data_conclusao).split(' ')[0].split('/');
+                if (parts.length === 3) {
+                    const dtConc = new Date(parts[2], parts[1] - 1, parts[0]);
+                    const partsP = String(t.prazo).split('-');
+                    const dtPraz = new Date(partsP[0], partsP[1] - 1, partsP[2]);
+                    if (dtConc <= dtPraz) noPrazo++; else atrasadas++;
+                } else noPrazo++;
+            } else noPrazo++;
+        });
+        if (concluidas.length === 0) {
+            divChartSla.innerHTML = '<p class="text-sm text-slate-400 self-center h-full flex items-center justify-center">Sem tarefas concluídas.</p>';
+        } else {
+            if (window.chartSlaInstance) window.chartSlaInstance.destroy();
+            divChartSla.innerHTML = '';
+            window.chartSlaInstance = new ApexCharts(divChartSla, {
+                series: [noPrazo, atrasadas], labels: ['No Prazo', 'Atrasadas'],
+                chart: { type: 'donut', height: 200, fontFamily: 'Inter, sans-serif' },
+                colors: ['#10b981', '#ef4444'], dataLabels: { enabled: false }, legend: { position: 'right' },
+                tooltip: { y: { formatter: function (val) { return val + " Tarefas"; } } }
+            });
+            window.chartSlaInstance.render();
+        }
+    }
 };
 
-window.concluirTarefa = async (tituloEncoded, filial, checkboxEl) => {
-    checkboxEl.disabled = true; const titulo = decodeURIComponent(tituloEncoded); const parentDiv = checkboxEl.closest('.p-3.bg-slate-50'); if (parentDiv) parentDiv.style.opacity = '0.4';
+let tarefaEmConclusao = null;
+window.concluirTarefa = (tituloEncoded, filial, checkboxEl) => {
+    checkboxEl.checked = false; // Aguarda a confirmação via modal
+    const titulo = decodeURIComponent(tituloEncoded);
+    tarefaEmConclusao = { titulo, filial, checkboxEl };
+
+    document.getElementById('modal-tarefa-titulo').innerText = titulo;
+    document.getElementById('modal-tar-justificativa').value = '';
+    document.getElementById('modal-conclusao-tarefa').classList.remove('hidden');
+};
+
+window.confirmarConclusaoTarefa = async (e) => {
+    e.preventDefault();
+    if (!auth.currentUser || !tarefaEmConclusao) return;
+
+    const btn = document.getElementById('btn-confirm-tarefa');
+    const txtOrig = btn.innerHTML;
+    btn.innerHTML = '<i class="w-6 h-6 animate-spin" data-lucide="loader-2"></i> Confirmando...';
+    btn.disabled = true;
+
+    const justificativa = document.getElementById('modal-tar-justificativa').value;
+    const { titulo, filial, checkboxEl } = tarefaEmConclusao;
+    const parentDiv = checkboxEl.closest('.p-3.bg-slate-50');
+
+    document.getElementById('modal-conclusao-tarefa').classList.add('hidden');
+
+    if (parentDiv) parentDiv.style.opacity = '0.4';
+    checkboxEl.checked = true;
+    checkboxEl.disabled = true;
 
     // Atualização otimista
     const idx = sheetsDataRaw.findIndex(x => x.tipo === 'tarefa' && x.titulo === titulo && x.filial === filial && x.status === 'PENDENTE');
-    if (idx > -1) sheetsDataRaw[idx].status = 'CONCLUÍDA'; window.renderTarefasDashboard();
+    if (idx > -1) {
+        sheetsDataRaw[idx].status = 'CONCLUÍDA';
+        sheetsDataRaw[idx].justificativa = justificativa;
+        sheetsDataRaw[idx].data_conclusao = new Date().toLocaleString('pt-BR');
+    }
+    window.renderTarefasDashboard();
 
-    const payload = { tipo: "concluir_tarefa", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: filial, titulo: titulo };
-    try { await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) }); sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre])); }
-    catch (e) { alert("Erro ao concluir."); checkboxEl.disabled = false; checkboxEl.checked = false; if (parentDiv) parentDiv.style.opacity = '1'; }
+    const payload = { tipo: "concluir_tarefa", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: filial, titulo: titulo, justificativa: justificativa };
+    try {
+        await fetch(GOOGLE_SHEETS_WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) });
+        sessionStorage.setItem(`lucroData_${currentUserFilial}`, JSON.stringify([...sheetsDataRaw, ...produtosMestre]));
+    }
+    catch (err) {
+        alert("Erro ao concluir a tarefa no banco de dados.");
+        checkboxEl.disabled = false;
+        checkboxEl.checked = false;
+        if (parentDiv) parentDiv.style.opacity = '1';
+        if (idx > -1) sheetsDataRaw[idx].status = 'PENDENTE';
+        window.renderTarefasDashboard();
+    } finally {
+        btn.innerHTML = txtOrig;
+        btn.disabled = false;
+        if (window.lucide) lucide.createIcons();
+    }
 };
 
 window.renderListaInventarios = () => {
@@ -1111,7 +1213,17 @@ document.getElementById('form-furtos')?.addEventListener('submit', async (e) => 
 
 document.getElementById('form-tarefas')?.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!auth.currentUser) return;
-    const payload = { tipo: "tarefa", email: auth.currentUser.email, empresa: currentUserEmpresa, filial: document.getElementById('t-filial').value, titulo: document.getElementById('t-titulo').value, prazo: document.getElementById('t-prazo').value, status: 'PENDENTE' };
+    const payload = {
+        tipo: "tarefa",
+        email: auth.currentUser.email,
+        empresa: currentUserEmpresa,
+        filial: document.getElementById('t-filial').value,
+        titulo: document.getElementById('t-titulo').value,
+        prazo: document.getElementById('t-prazo').value,
+        prioridade: document.getElementById('t-prioridade')?.value || 'Média',
+        risco: document.getElementById('t-risco')?.value || '0',
+        status: 'PENDENTE'
+    };
     await submitToSheets(e.target, 'btn-save-tar', 'msg-tar-success', '', payload, 'Criar Demanda');
 });
 

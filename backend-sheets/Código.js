@@ -251,10 +251,10 @@ function doPost(e) {
       let sheet = ss.getSheets()[0];
 
       if (sheet.getLastRow() === 0) {
-        sheet.appendRow(["Data Criação", "Empresa", "Filial", "Criado Por", "Título / Demanda", "Prazo Limite", "Status"]);
-        sheet.getRange("A1:G1").setFontWeight("bold").setBackground("#f97316").setFontColor("white");
+        sheet.appendRow(["Data Criação", "Empresa", "Filial", "Criado Por", "Título / Demanda", "Prazo Limite", "Status", "Prioridade", "Risco Financeiro (R$)", "Data Conclusão", "Justificativa"]);
+        sheet.getRange("A1:K1").setFontWeight("bold").setBackground("#f97316").setFontColor("white");
       }
-      sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.titulo, payload.prazo, payload.status]);
+      sheet.appendRow([dataHoraFormatada, empresa, filial, email, payload.titulo, payload.prazo, payload.status, payload.prioridade, converterMoedaParaFloat(payload.risco), "", ""]);
     }
     // 10. CONCLUIR TAREFA
     else if (tipo === "concluir_tarefa") {
@@ -268,6 +268,8 @@ function doPost(e) {
           // row[1]=Empresa, row[2]=Filial, row[4]=Titulo, row[6]=Status
           if (row[1] === empresa && row[2] === filial && row[4] === payload.titulo && row[6] === "PENDENTE") {
             sheet.getRange(i + 1, 7).setValue("CONCLUÍDA"); // Coluna G
+            sheet.getRange(i + 1, 10).setValue(dataHoraFormatada); // Coluna J (Data Conclusão)
+            sheet.getRange(i + 1, 11).setValue(payload.justificativa); // Coluna K (Justificativa)
             break;
           }
         }
@@ -519,7 +521,8 @@ function doGet(e) {
       for (let i = 1; i < dataT.length; i++) {
         if (podeVer(dataT[i][1], dataT[i][2])) {
           resultados.push({
-            tipo: "tarefa", empresa: String(dataT[i][1]).trim(), usuario: String(dataT[i][3]).trim(), titulo: dataT[i][4], prazo: dataT[i][5], status: dataT[i][6], filial: dataT[i][2]
+            tipo: "tarefa", empresa: String(dataT[i][1]).trim(), usuario: String(dataT[i][3]).trim(), titulo: dataT[i][4], prazo: dataT[i][5], status: dataT[i][6], filial: dataT[i][2],
+            prioridade: dataT[i][7], risco_financeiro: dataT[i][8], data_conclusao: dataT[i][9], justificativa: dataT[i][10]
           });
         }
       }
