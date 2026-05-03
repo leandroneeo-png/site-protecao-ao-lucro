@@ -627,14 +627,43 @@ window.renderTarefasDashboard = () => {
         let noPrazo = 0; let atrasadas = 0;
         concluidas.forEach(t => {
             if (t.data_conclusao && t.prazo) {
-                const parts = String(t.data_conclusao).split(' ')[0].split('/');
-                if (parts.length === 3) {
-                    const dtConc = new Date(parts[2], parts[1] - 1, parts[0]);
-                    const partsP = String(t.prazo).split('-');
-                    const dtPraz = new Date(partsP[0], partsP[1] - 1, partsP[2]);
-                    if (dtConc <= dtPraz) noPrazo++; else atrasadas++;
-                } else noPrazo++;
-            } else noPrazo++;
+                // 1. Parse da Data de Conclusão (Pode vir como DD/MM/YYYY HH:MM:SS ou AAAA-MM-DD)
+                let dtConc;
+                const concStr = String(t.data_conclusao).split(' ')[0];
+                if (concStr.includes('/')) {
+                    const pC = concStr.split('/'); // [DD, MM, YYYY]
+                    dtConc = new Date(pC[2], pC[1] - 1, pC[0]);
+                } else if (concStr.includes('-')) {
+                    const pC = concStr.split('-'); // [YYYY, MM, DD]
+                    dtConc = new Date(pC[0], pC[1] - 1, pC[2]);
+                } else {
+                    dtConc = new Date();
+                }
+                dtConc.setHours(0, 0, 0, 0);
+
+                // 2. Parse do Prazo Limite (Geralmente AAAA-MM-DD, mas pode vir como DD/MM/YYYY)
+                let dtPraz;
+                const prazStr = String(t.prazo).split(' ')[0];
+                if (prazStr.includes('-')) {
+                    const pP = prazStr.split('-'); // [YYYY, MM, DD]
+                    dtPraz = new Date(pP[0], pP[1] - 1, pP[2]);
+                } else if (prazStr.includes('/')) {
+                    const pP = prazStr.split('/'); // [DD, MM, YYYY]
+                    dtPraz = new Date(pP[2], pP[1] - 1, pP[0]);
+                } else {
+                    dtPraz = new Date();
+                }
+                dtPraz.setHours(0, 0, 0, 0);
+
+                // 3. Comparação Lógica Limpa (Sem fuso horário interferindo)
+                if (dtConc.getTime() <= dtPraz.getTime()) {
+                    noPrazo++;
+                } else {
+                    atrasadas++;
+                }
+            } else {
+                noPrazo++; // Fallback de segurança se faltar alguma data
+            }
         });
         if (concluidas.length === 0) {
             divChartSla.innerHTML = '<p class="text-sm text-slate-400 self-center h-full flex items-center justify-center">Sem tarefas concluídas.</p>';
