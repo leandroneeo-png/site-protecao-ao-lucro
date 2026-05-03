@@ -505,11 +505,24 @@ window.renderTarefasDashboard = () => {
         return d.toISOString().split('T')[0];
     };
 
+    const formatarDataBR = (dataStr) => {
+        if (!dataStr) return '--/--/----';
+        const s = String(dataStr).trim();
+        // Se já está no formato DD/MM/AAAA (ex: 29/04/2026 15:30:00)
+        if (s.includes('/')) return s.split(' ')[0];
+        // Se está no formato AAAA-MM-DD (ex: 2026-04-29)
+        if (s.includes('-')) {
+            const p = s.split('T')[0].split('-');
+            if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+        }
+        return s;
+    };
+
     // ALERTA 1: CAIXA (> R$ 100)
     let caixas = sheetsDataRaw.filter(i => i.tipo === 'caixa_central' && parseFloat(String(i.valor_falta).replace(',', '.')) > 100);
     if (filtroFilial && filtroFilial !== 'todas') caixas = caixas.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
     caixas.forEach(c => {
-        const titulo = `[SISTEMA] Auditoria de Caixa - Operador: ${c.operador} (${c.data_auditoria})`;
+        const titulo = `[SISTEMA] Auditoria de Caixa - Operador: ${c.operador} (${formatarDataBR(c.data_auditoria)})`;
         if (!checkResolvido(titulo, c.filial)) {
             const prazo = addDias(c.data_auditoria, 5);
             const risco = parseFloat(String(c.valor_falta).replace(',', '.'));
@@ -523,7 +536,7 @@ window.renderTarefasDashboard = () => {
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700">Alta</span>
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-200 text-orange-800">R$ ${risco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                     </div>
-                    <p class="text-xs text-orange-600 font-medium mb-1">Falta financeira confirmada no caixa. | Prazo: ${prazo}</p>
+                    <p class="text-xs text-orange-600 font-medium mb-1">Falta financeira confirmada no caixa. | Prazo: ${formatarDataBR(prazo)}</p>
                     <p class="text-xs text-orange-600 font-bold bg-orange-100 p-1.5 rounded inline-block">Ação: Auditar o operador e registrar a tratativa.</p>
                 </div>
             </div>`;
@@ -548,7 +561,7 @@ window.renderTarefasDashboard = () => {
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700">Alta</span>
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-200 text-red-800">R$ ${risco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                     </div>
-                    <p class="text-xs text-red-600 font-medium mb-1">Produto: ${inv.descricao || 'N/A'} | Prazo: ${prazo}</p>
+                    <p class="text-xs text-red-600 font-medium mb-1">Produto: ${inv.descricao || 'N/A'} | Prazo: ${formatarDataBR(prazo)}</p>
                     <p class="text-xs text-red-600 font-bold bg-red-100 p-1.5 rounded inline-block">Ação: Fazer recontagem do produto.</p>
                 </div>
             </div>`;
@@ -578,7 +591,7 @@ window.renderTarefasDashboard = () => {
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700">Alta</span>
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-200 text-yellow-800">R$ ${risco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
-                        <p class="text-xs text-yellow-600 font-medium mb-1">Produto: ${v.descricao} | Vence em ${diasParaVencer} dias | Prazo: ${prazo}</p>
+                        <p class="text-xs text-yellow-600 font-medium mb-1">Produto: ${v.descricao} | Vence em ${diasParaVencer} dias | Prazo: ${formatarDataBR(prazo)}</p>
                         <p class="text-xs text-yellow-600 font-bold bg-yellow-100 p-1.5 rounded inline-block">Ação: Solicitar rebaixa e revender nos caixas.</p>
                     </div>
                 </div>`;
@@ -603,7 +616,7 @@ window.renderTarefasDashboard = () => {
         const tituloEnc = encodeURIComponent(t.titulo);
         const prioBadge = t.prioridade ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.prioridade === 'Alta' ? 'bg-red-100 text-red-700' : (t.prioridade === 'Média' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700')}">${t.prioridade}</span>` : '';
         const riscoBadge = t.risco_financeiro && parseFloat(t.risco_financeiro) > 0 ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700">R$ ${parseFloat(t.risco_financeiro).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>` : '';
-        htmlMan += `<div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between transition-opacity duration-300"><div class="flex items-center gap-3"><input type="checkbox" onchange="window.concluirTarefa('${tituloEnc}', '${t.filial}', this)" class="w-5 h-5 rounded border-slate-300 text-navy focus:ring-navy cursor-pointer"><div><div class="flex items-center gap-2 flex-wrap mb-1"><p class="text-sm font-bold text-navy">${t.titulo}</p>${prioBadge}${riscoBadge}</div><p class="text-xs text-slate-500 font-medium">Prazo: ${t.prazo} | Filial: ${t.filial}</p></div></div></div>`;
+        htmlMan += `<div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between transition-opacity duration-300"><div class="flex items-center gap-3"><input type="checkbox" onchange="window.concluirTarefa('${tituloEnc}', '${t.filial}', this)" class="w-5 h-5 rounded border-slate-300 text-navy focus:ring-navy cursor-pointer"><div><div class="flex items-center gap-2 flex-wrap mb-1"><p class="text-sm font-bold text-navy">${t.titulo}</p>${prioBadge}${riscoBadge}</div><p class="text-xs text-slate-500 font-medium">Prazo: ${formatarDataBR(t.prazo)} | Filial: ${t.filial}</p></div></div></div>`;
     });
 
     divSis.innerHTML = htmlSis || '<p class="text-sm text-slate-400 text-center py-4">Nenhum risco sistêmico detectado.</p>'; divMan.innerHTML = htmlMan || '<p class="text-sm text-slate-400 text-center py-4">Nenhuma demanda pendente.</p>';
