@@ -529,7 +529,7 @@ function doGet(e) {
       for (let i = 1; i < dataT.length; i++) {
         if (podeVer(dataT[i][1], dataT[i][2])) {
           resultados.push({
-            tipo: "tarefa", empresa: String(dataT[i][1]).trim(), usuario: String(dataT[i][3]).trim(), titulo: dataT[i][4], prazo: dataT[i][5], status: dataT[i][6], filial: dataT[i][2],
+            tipo: "tarefa", empresa: String(dataT[i][1]).trim(), usuario: String(dataT[i][3]).trim(), data_criacao: dataT[i][0], titulo: dataT[i][4], prazo: dataT[i][5], status: dataT[i][6], filial: dataT[i][2],
             prioridade: dataT[i][7], risco_financeiro: dataT[i][8], data_conclusao: dataT[i][9], justificativa: dataT[i][10]
           });
         }

@@ -621,62 +621,125 @@ window.renderTarefasDashboard = () => {
 
     divSis.innerHTML = htmlSis || '<p class="text-sm text-slate-400 text-center py-4">Nenhum risco sistêmico detectado.</p>'; divMan.innerHTML = htmlMan || '<p class="text-sm text-slate-400 text-center py-4">Nenhuma demanda pendente.</p>';
 
+    const filtroMesTar = document.getElementById('filtro-mes-tar')?.value;
+
     const divChartSla = document.querySelector("#chart-tarefas-sla");
+    const divChartTempo = document.querySelector("#chart-tarefas-tempo");
+
     if (divChartSla && typeof ApexCharts !== 'undefined') {
-        const concluidas = sheetsDataRaw.filter(i => i.tipo === 'tarefa' && i.status === 'CONCLUÍDA');
+        let concluidas = sheetsDataRaw.filter(i => i.tipo === 'tarefa' && i.status === 'CONCLUÍDA');
+        if (filtroFilial && filtroFilial !== 'todas') concluidas = concluidas.filter(i => String(i.filial).trim() === String(filtroFilial).trim());
+
+        // Filtro de Mês baseado na Data de Conclusão
+        if (filtroMesTar) {
+            concluidas = concluidas.filter(t => {
+                if (!t.data_conclusao) return false;
+                const s = String(t.data_conclusao).split(' ')[0];
+                let anoMes = '';
+                if (s.includes('/')) {
+                    const p = s.split('/');
+                    anoMes = `${p[2]}-${p[1].padStart(2, '0')}`;
+                } else if (s.includes('-')) {
+                    const p = s.split('T')[0].split('-');
+                    anoMes = `${p[0]}-${p[1].padStart(2, '0')}`;
+                }
+                return anoMes === filtroMesTar;
+            });
+        }
+
         let noPrazo = 0; let atrasadas = 0;
+        let somaDiasGlobal = 0; let qtdGlobal = 0;
+        let tPrioridade = { 'Alta': { soma: 0, qtd: 0 }, 'Média': { soma: 0, qtd: 0 }, 'Baixa': { soma: 0, qtd: 0 } };
+
         concluidas.forEach(t => {
+            let temDatas = false;
+            let dtConc, dtPraz;
+
             if (t.data_conclusao && t.prazo) {
-                // 1. Parse da Data de Conclusão (Pode vir como DD/MM/YYYY HH:MM:SS ou AAAA-MM-DD)
-                let dtConc;
+                temDatas = true;
                 const concStr = String(t.data_conclusao).split(' ')[0];
                 if (concStr.includes('/')) {
-                    const pC = concStr.split('/'); // [DD, MM, YYYY]
+                    const pC = concStr.split('/');
                     dtConc = new Date(pC[2], pC[1] - 1, pC[0]);
                 } else if (concStr.includes('-')) {
-                    const pC = concStr.split('-'); // [YYYY, MM, DD]
+                    const pC = concStr.split('-');
                     dtConc = new Date(pC[0], pC[1] - 1, pC[2]);
-                } else {
-                    dtConc = new Date();
-                }
+                } else { dtConc = new Date(); }
                 dtConc.setHours(0, 0, 0, 0);
 
-                // 2. Parse do Prazo Limite (Geralmente AAAA-MM-DD, mas pode vir como DD/MM/YYYY)
-                let dtPraz;
                 const prazStr = String(t.prazo).split(' ')[0];
                 if (prazStr.includes('-')) {
-                    const pP = prazStr.split('-'); // [YYYY, MM, DD]
+                    const pP = prazStr.split('-');
                     dtPraz = new Date(pP[0], pP[1] - 1, pP[2]);
                 } else if (prazStr.includes('/')) {
-                    const pP = prazStr.split('/'); // [DD, MM, YYYY]
+                    const pP = prazStr.split('/');
                     dtPraz = new Date(pP[2], pP[1] - 1, pP[0]);
-                } else {
-                    dtPraz = new Date();
-                }
+                } else { dtPraz = new Date(); }
                 dtPraz.setHours(0, 0, 0, 0);
 
-                // 3. Comparação Lógica Limpa (Sem fuso horário interferindo)
-                if (dtConc.getTime() <= dtPraz.getTime()) {
-                    noPrazo++;
-                } else {
-                    atrasadas++;
-                }
-            } else {
-                noPrazo++; // Fallback de segurança se faltar alguma data
+                if (dtConc.getTime() <= dtPraz.getTime()) noPrazo++; else atrasadas++;
+            } else { noPrazo++; }
+
+            // Cálculo do Tempo de Resolução
+            if (t.data_criacao && dtConc) {
+                let dtCria;
+                const criStr = String(t.data_criacao).split(' ')[0];
+                if (criStr.includes('/')) {
+                    const pCria = criStr.split('/');
+                    dtCria = new Date(pCria[2], pCria[1] - 1, pCria[0]);
+                } else if (criStr.includes('-')) {
+                    const pCria = criStr.split('-');
+                    dtCria = new Date(pCria[0], pCria[1] - 1, pCria[2]);
+                } else { dtCria = new Date(); }
+                dtCria.setHours(0, 0, 0, 0);
+
+                let diffDias = Math.ceil((dtConc.getTime() - dtCria.getTime()) / (1000 * 3600 * 24));
+                diffDias = Math.max(0, diffDias); // Evita números negativos
+
+                somaDiasGlobal += diffDias;
+                qtdGlobal++;
+                const prio = t.prioridade || 'Média';
+                if (tPrioridade[prio]) { tPrioridade[prio].soma += diffDias; tPrioridade[prio].qtd++; }
             }
         });
+
+        // 1. Atualizar KPI de Tempo Global
+        const tmGlobal = qtdGlobal > 0 ? (somaDiasGlobal / qtdGlobal).toFixed(1) : 0;
+        const uiTempoMedio = document.getElementById('ui-tar-tempo-medio');
+        if (uiTempoMedio) uiTempoMedio.innerHTML = `${tmGlobal} <span class="text-sm font-medium text-slate-500">dias</span>`;
+
+        // 2. Gráfico Donut de SLA
         if (concluidas.length === 0) {
-            divChartSla.innerHTML = '<p class="text-sm text-slate-400 self-center h-full flex items-center justify-center">Sem tarefas concluídas.</p>';
+            divChartSla.innerHTML = '<p class="text-sm text-slate-400 self-center h-full flex items-center justify-center">Sem dados no mês.</p>';
+            if (divChartTempo) divChartTempo.innerHTML = '<p class="text-sm text-slate-400 self-center h-full flex items-center justify-center">Sem dados no mês.</p>';
         } else {
             if (window.chartSlaInstance) window.chartSlaInstance.destroy();
             divChartSla.innerHTML = '';
             window.chartSlaInstance = new ApexCharts(divChartSla, {
                 series: [noPrazo, atrasadas], labels: ['No Prazo', 'Atrasadas'],
-                chart: { type: 'donut', height: 200, fontFamily: 'Inter, sans-serif' },
-                colors: ['#10b981', '#ef4444'], dataLabels: { enabled: false }, legend: { position: 'right' },
-                tooltip: { y: { formatter: function (val) { return val + " Tarefas"; } } }
+                chart: { type: 'donut', height: 180, fontFamily: 'Inter, sans-serif' },
+                colors: ['#10b981', '#ef4444'], dataLabels: { enabled: false }, legend: { position: 'right' }
             });
             window.chartSlaInstance.render();
+
+            // 3. Gráfico de Barras de Tempo de Resolução
+            if (divChartTempo) {
+                if (window.chartTempoInstance) window.chartTempoInstance.destroy();
+                divChartTempo.innerHTML = '';
+                const getM = (p) => p.qtd > 0 ? parseFloat((p.soma / p.qtd).toFixed(1)) : 0;
+
+                window.chartTempoInstance = new ApexCharts(divChartTempo, {
+                    series: [{ name: 'Dias para Resolver', data: [getM(tPrioridade['Alta']), getM(tPrioridade['Média']), getM(tPrioridade['Baixa'])] }],
+                    chart: { type: 'bar', height: 180, fontFamily: 'Inter, sans-serif', toolbar: { show: false } },
+                    colors: ['#0A2540'],
+                    plotOptions: { bar: { borderRadius: 4, horizontal: true, distributed: true, dataLabels: { position: 'bottom' } } },
+                    dataLabels: { enabled: true, textAnchor: 'start', style: { colors: ['#fff'] }, formatter: function (val) { return val + " dias"; } },
+                    xaxis: { categories: ['Alta', 'Média', 'Baixa'], labels: { show: false } },
+                    legend: { show: false },
+                    tooltip: { y: { formatter: function (val) { return val + " dias em média"; } } }
+                });
+                window.chartTempoInstance.render();
+            }
         }
     }
 };

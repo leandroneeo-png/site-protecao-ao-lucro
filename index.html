@@ -2468,19 +2468,42 @@
                             <select
                                 class="hidden px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold text-navy shadow-sm outline-none focus:ring-2 focus:ring-navy"
                                 id="filtro-filial-tar"></select>
+                            <div class="h-6 border-l border-slate-300 mx-1"></div>
+                            <i class="w-5 h-5 text-slate-400 ml-1" data-lucide="calendar"></i>
+                            <input class="bg-transparent text-sm font-bold text-navy outline-none cursor-pointer"
+                                id="filtro-mes-tar" type="month" />
                         </div>
                     </div>
 
                     <div
-                        class="max-w-5xl mx-auto mb-6 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row items-center gap-6">
-                        <div class="w-full md:w-1/3">
+                        class="max-w-5xl mx-auto mb-6 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 grid grid-cols-1 md:grid-cols-3 items-center gap-6">
+                        <div>
                             <h2 class="text-lg font-bold text-navy mb-2 flex items-center gap-2">
-                                <i class="w-5 h-5 text-emerald" data-lucide="pie-chart"></i> SLA de Atendimento
+                                <i class="w-5 h-5 text-emerald" data-lucide="pie-chart"></i> Desempenho e SLA
                             </h2>
-                            <p class="text-xs text-slate-500">Acompanhamento do prazo de resolução das tarefas
-                                concluídas.</p>
+                            <p class="text-xs text-slate-500 mb-4">Acompanhamento do prazo e tempo de resolução das
+                                tarefas no mês.</p>
+                            <div
+                                class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Tempo
+                                        Médio Global</p>
+                                    <p class="text-2xl font-black text-navy" id="ui-tar-tempo-medio">0 <span
+                                            class="text-sm font-medium text-slate-500">dias</span></p>
+                                </div>
+                                <i class="w-8 h-8 text-gold opacity-50" data-lucide="clock"></i>
+                            </div>
                         </div>
-                        <div class="w-full md:w-2/3 flex justify-center h-48" id="chart-tarefas-sla"></div>
+                        <div class="flex flex-col items-center justify-center w-full">
+                            <h3 class="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Volume: No Prazo
+                                vs Atraso</h3>
+                            <div class="w-full flex justify-center h-40" id="chart-tarefas-sla"></div>
+                        </div>
+                        <div class="flex flex-col items-center justify-center w-full">
+                            <h3 class="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Tempo Médio por
+                                Prioridade</h3>
+                            <div class="w-full flex justify-center h-40" id="chart-tarefas-tempo"></div>
+                        </div>
                     </div>
 
                     <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
